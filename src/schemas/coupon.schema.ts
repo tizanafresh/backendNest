@@ -14,9 +14,9 @@ export class Coupon {
   @Prop({ required: true })
   discount: number;
 
-  @Prop({ 
-    required: true, 
-    enum: ['PERCENTAGE', 'FIXED']
+  @Prop({
+    required: true,
+    enum: ['PERCENTAGE', 'FIXED'],
   })
   type: string;
 
@@ -39,4 +39,4 @@ export class Coupon {
   active: boolean;
 }
 
-export const CouponSchema = SchemaFactory.createForClass(Coupon); 
+export const CouponSchema = SchemaFactory.createForClass(Coupon);

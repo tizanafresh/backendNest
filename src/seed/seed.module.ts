@@ -9,8 +9,14 @@ import { Category, CategorySchema } from '../schemas/category.schema';
 import { Product, ProductSchema } from '../schemas/product.schema';
 import { Coupon, CouponSchema } from '../schemas/coupon.schema';
 import { Order, OrderSchema } from '../schemas/order.schema';
-import { Notification, NotificationSchema } from '../schemas/notification.schema';
-import { LoyaltyHistory, LoyaltyHistorySchema } from '../schemas/loyalty-history.schema';
+import {
+  Notification,
+  NotificationSchema,
+} from '../schemas/notification.schema';
+import {
+  LoyaltyHistory,
+  LoyaltyHistorySchema,
+} from '../schemas/loyalty-history.schema';
 import { DeviceToken, DeviceTokenSchema } from '../schemas/device-token.schema';
 
 @Module({
@@ -29,4 +35,4 @@ import { DeviceToken, DeviceTokenSchema } from '../schemas/device-token.schema';
   controllers: [SeedController],
   providers: [SeedService],
 })
-export class SeedModule {} 
+export class SeedModule {}

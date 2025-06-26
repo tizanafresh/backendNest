@@ -722,6 +722,316 @@ Response:
                     </div>
                 </div>
             </div>
+
+            <div class="section">
+                <h2>🎯 Casos de Uso Paso a Paso</h2>
+                
+                <div class="endpoint">
+                    <h3>🔐 Caso de Uso 1: Flujo de Autenticación Completo</h3>
+                    <div class="description">
+                        <strong>Escenario:</strong> Un usuario nuevo accede a la aplicación por primera vez y necesita autenticarse para acceder a funcionalidades protegidas.
+                    </div>
+
+                    <h4>📋 Pasos del Proceso:</h4>
+                    
+                    <div class="code-block">
+                        <div class="example-title">Paso 1: Login inicial del usuario</div>
+POST /auth/login
+Content-Type: application/json
+
+{
+  "email": "maria@example.com",
+  "password": "password123"
+}
+
+Response (200 OK):
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MDdmMWY3N2JjZjg2Y2Q3OTk0MzkwMTIiLCJlbWFpbCI6Im1hcmlhQGV4YW1wbGUuY29tIiwicm9sZSI6IkdPTEQiLCJpYXQiOjE3MDMwMDAwMCwiZXhwIjoxNzAzMDg2NDAwfQ.example",
+  "user": {
+    "id": "507f1f77bcf86cd799439012",
+    "email": "maria@example.com",
+    "role": "GOLD",
+    "name": "María González",
+    "points": 750,
+    "level": "GOLD"
+  }
+}
+                    </div>
+
+                    <div class="code-block">
+                        <div class="example-title">Paso 2: Obtener perfil completo del usuario</div>
+GET /auth/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MDdmMWY3N2JjZjg2Y2Q3OTk0MzkwMTIiLCJlbWFpbCI6Im1hcmlhQGV4YW1wbGUuY29tIiwicm9sZSI6IkdPTEQiLCJpYXQiOjE3MDMwMDAwMCwiZXhwIjoxNzAzMDg2NDAwfQ.example
+
+Response (200 OK):
+{
+  "id": "507f1f77bcf86cd799439012",
+  "email": "maria@example.com",
+  "role": "GOLD",
+  "name": "María González",
+  "phone": "+1234567890",
+  "points": 750,
+  "level": "GOLD",
+  "qrCode": "QR_MARIA_002",
+  "createdAt": "2024-01-01T00:00:00.000Z",
+  "updatedAt": "2024-01-15T10:30:00.000Z"
+}
+                    </div>
+
+                    <div class="code-block">
+                        <div class="example-title">Paso 3: Verificar validez del token</div>
+GET /auth/verify
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MDdmMWY3N2JjZjg2Y2Q3OTk0MzkwMTIiLCJlbWFpbCI6Im1hcmlhQGV4YW1wbGUuY29tIiwicm9sZSI6IkdPTEQiLCJpYXQiOjE3MDMwMDAwMCwiZXhwIjoxNzAzMDg2NDAwfQ.example
+
+Response (200 OK):
+{
+  "message": "Token válido",
+  "user": {
+    "id": "507f1f77bcf86cd799439012",
+    "email": "maria@example.com",
+    "role": "GOLD"
+  },
+  "expiresIn": 86400
+}
+                    </div>
+
+                    <div class="code-block">
+                        <div class="example-title">Paso 4: Usar token en endpoint protegido (ejemplo con productos)</div>
+GET /products
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MDdmMWY3N2JjZjg2Y2Q3OTk0MzkwMTIiLCJlbWFpbCI6Im1hcmlhQGV4YW1wbGUuY29tIiwicm9sZSI6IkdPTEQiLCJpYXQiOjE3MDMwMDAwMCwiZXhwIjoxNzAzMDg2NDAwfQ.example
+
+Response (200 OK):
+{
+  "products": [
+    {
+      "id": "507f1f77bcf86cd799439011",
+      "name": "Tizana de Frutilla",
+      "price": 12.50,
+      "available": true
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "total": 15,
+    "pages": 2
+  }
+}
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <h3>🔄 Caso de Uso 2: Renovación de Sesión</h3>
+                    <div class="description">
+                        <strong>Escenario:</strong> Un usuario que ya tiene una sesión activa necesita verificar si su token sigue siendo válido y renovarlo si es necesario.
+                    </div>
+
+                    <h4>📋 Pasos del Proceso:</h4>
+                    
+                    <div class="code-block">
+                        <div class="example-title">Paso 1: Verificar token existente</div>
+GET /auth/verify
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MDdmMWY3N2JjZjg2Y2Q3OTk0MzkwMTIiLCJlbWFpbCI6Im1hcmlhQGV4YW1wbGUuY29tIiwicm9sZSI6IkdPTEQiLCJpYXQiOjE3MDMwMDAwMCwiZXhwIjoxNzAzMDg2NDAwfQ.example
+
+Response (200 OK):
+{
+  "message": "Token válido",
+  "user": {
+    "id": "507f1f77bcf86cd799439012",
+    "email": "maria@example.com",
+    "role": "GOLD"
+  },
+  "expiresIn": 3600
+}
+                    </div>
+
+                    <div class="code-block">
+                        <div class="example-title">Paso 2: Token próximo a expirar, renovar sesión</div>
+POST /auth/login
+Content-Type: application/json
+
+{
+  "email": "maria@example.com",
+  "password": "password123"
+}
+
+Response (200 OK):
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MDdmMWY3N2JjZjg2Y2Q3OTk0MzkwMTIiLCJlbWFpbCI6Im1hcmlhQGV4YW1wbGUuY29tIiwicm9sZSI6IkdPTEQiLCJpYXQiOjE3MDMwMDY0MDAsImV4cCI6MTcwMzA5MjgwMH0.new_token",
+  "user": {
+    "id": "507f1f77bcf86cd799439012",
+    "email": "maria@example.com",
+    "role": "GOLD",
+    "name": "María González",
+    "points": 750,
+    "level": "GOLD"
+  }
+}
+                    </div>
+
+                    <div class="code-block">
+                        <div class="example-title">Paso 3: Verificar nuevo token</div>
+GET /auth/verify
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MDdmMWY3N2JjZjg2Y2Q3OTk0MzkwMTIiLCJlbWFpbCI6Im1hcmlhQGV4YW1wbGUuY29tIiwicm9sZSI6IkdPTEQiLCJpYXQiOjE3MDMwMDY0MDAsImV4cCI6MTcwMzA5MjgwMH0.new_token
+
+Response (200 OK):
+{
+  "message": "Token válido",
+  "user": {
+    "id": "507f1f77bcf86cd799439012",
+    "email": "maria@example.com",
+    "role": "GOLD"
+  },
+  "expiresIn": 86400
+}
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <h3>❌ Caso de Uso 3: Manejo de Errores de Autenticación</h3>
+                    <div class="description">
+                        <strong>Escenario:</strong> Diferentes situaciones donde la autenticación falla y cómo el sistema responde.
+                    </div>
+
+                    <h4>📋 Casos de Error:</h4>
+                    
+                    <div class="code-block">
+                        <div class="example-title">Error 1: Credenciales incorrectas</div>
+POST /auth/login
+Content-Type: application/json
+
+{
+  "email": "maria@example.com",
+  "password": "wrongpassword"
+}
+
+Response (401 Unauthorized):
+{
+  "statusCode": 401,
+  "message": "Credenciales inválidas",
+  "error": "Unauthorized"
+}
+                    </div>
+
+                    <div class="code-block">
+                        <div class="example-title">Error 2: Token expirado</div>
+GET /auth/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.expired_token
+
+Response (401 Unauthorized):
+{
+  "statusCode": 401,
+  "message": "Token inválido o expirado",
+  "error": "Unauthorized"
+}
+                    </div>
+
+                    <div class="code-block">
+                        <div class="example-title">Error 3: Token malformado</div>
+GET /auth/profile
+Authorization: Bearer invalid_token_format
+
+Response (401 Unauthorized):
+{
+  "statusCode": 401,
+  "message": "Unauthorized",
+  "error": "Unauthorized"
+}
+                    </div>
+
+                    <div class="code-block">
+                        <div class="example-title">Error 4: Datos de entrada inválidos</div>
+POST /auth/login
+Content-Type: application/json
+
+{
+  "email": "invalid-email",
+  "password": ""
+}
+
+Response (400 Bad Request):
+{
+  "statusCode": 400,
+  "message": [
+    "email must be an email",
+    "password should not be empty"
+  ],
+  "error": "Bad Request"
+}
+                    </div>
+
+                    <div class="code-block">
+                        <div class="example-title">Error 5: Usuario no encontrado</div>
+POST /auth/login
+Content-Type: application/json
+
+{
+  "email": "nonexistent@example.com",
+  "password": "password123"
+}
+
+Response (401 Unauthorized):
+{
+  "statusCode": 401,
+  "message": "Credenciales inválidas",
+  "error": "Unauthorized"
+}
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <h3>🔐 Caso de Uso 4: Autenticación con Passport Local</h3>
+                    <div class="description">
+                        <strong>Escenario:</strong> Usar el endpoint alternativo que utiliza Passport Local Strategy para autenticación adicional.
+                    </div>
+
+                    <h4>📋 Pasos del Proceso:</h4>
+                    
+                    <div class="code-block">
+                        <div class="example-title">Paso 1: Login usando Passport Local</div>
+POST /auth/login-local
+Content-Type: application/json
+
+{
+  "email": "carlos@example.com",
+  "password": "password123"
+}
+
+Response (200 OK):
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MDdmMWY3N2JjZjg2Y2Q3OTk0MzkwMTMiLCJlbWFpbCI6ImNhcmxvc0BleGFtcGxlLmNvbSIsInJvbGUiOiJTSUxWRVIiLCJpYXQiOjE3MDMwMDAwMCwiZXhwIjoxNzAzMDg2NDAwfQ.example",
+  "user": {
+    "id": "507f1f77bcf86cd799439013",
+    "email": "carlos@example.com",
+    "role": "SILVER",
+    "name": "Carlos Rodríguez",
+    "points": 300,
+    "level": "SILVER"
+  }
+}
+                    </div>
+
+                    <div class="code-block">
+                        <div class="example-title">Paso 2: Verificar perfil con token de Passport</div>
+GET /auth/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MDdmMWY3N2JjZjg2Y2Q3OTk0MzkwMTMiLCJlbWFpbCI6ImNhcmxvc0BleGFtcGxlLmNvbSIsInJvbGUiOiJTSUxWRVIiLCJpYXQiOjE3MDMwMDAwMCwiZXhwIjoxNzAzMDg2NDAwfQ.example
+
+Response (200 OK):
+{
+  "id": "507f1f77bcf86cd799439013",
+  "email": "carlos@example.com",
+  "role": "SILVER",
+  "name": "Carlos Rodríguez",
+  "phone": "+1234567891",
+  "points": 300,
+  "level": "SILVER",
+  "qrCode": "QR_CARLOS_003",
+  "createdAt": "2024-01-01T00:00:00.000Z",
+  "updatedAt": "2024-01-15T10:30:00.000Z"
+}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </body>

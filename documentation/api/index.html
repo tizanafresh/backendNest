@@ -300,30 +300,30 @@
                     <a href="products-api.html">
                         <h3>
                             🍹 API de Productos
-                            <span class="status-badge planned">PLANIFICADO</span>
+                            <span class="status-badge implemented">IMPLEMENTADO</span>
                         </h3>
                     </a>
                     <div class="description">
-                        Gestión completa de productos, categorías, búsqueda y filtrado con información nutricional.
+                        Gestión completa de productos y categorías con búsqueda avanzada, filtros, paginación y CRUD completo.
                     </div>
                     
                     <div class="endpoints">
-                        <strong>Endpoints planificados:</strong>
+                        <strong>Endpoints disponibles:</strong>
                         <ul class="endpoint-list">
                             <li>
                                 <span class="method get">GET</span>
-                                <span class="url">/categories</span>
-                                <span>Listar categorías</span>
-                            </li>
-                            <li>
-                                <span class="method get">GET</span>
-                                <span class="url">/categories/:id</span>
-                                <span>Obtener categoría</span>
-                            </li>
-                            <li>
-                                <span class="method get">GET</span>
                                 <span class="url">/products</span>
-                                <span>Listar productos</span>
+                                <span>Listar productos con filtros</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/products/available</span>
+                                <span>Productos disponibles</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/products/search</span>
+                                <span>Búsqueda de productos</span>
                             </li>
                             <li>
                                 <span class="method get">GET</span>
@@ -333,34 +333,42 @@
                             <li>
                                 <span class="method post">POST</span>
                                 <span class="url">/products</span>
-                                <span>Crear producto (Admin)</span>
+                                <span>Crear producto</span>
                             </li>
                             <li>
-                                <span class="method put">PUT</span>
+                                <span class="method patch">PATCH</span>
                                 <span class="url">/products/:id</span>
-                                <span>Actualizar producto (Admin)</span>
+                                <span>Actualizar producto</span>
                             </li>
                             <li>
                                 <span class="method delete">DELETE</span>
                                 <span class="url">/products/:id</span>
-                                <span>Eliminar producto (Admin)</span>
+                                <span>Eliminar producto</span>
                             </li>
                             <li>
                                 <span class="method get">GET</span>
-                                <span class="url">/products/search</span>
-                                <span>Búsqueda avanzada</span>
+                                <span class="url">/products/categories</span>
+                                <span>Listar categorías</span>
+                            </li>
+                            <li>
+                                <span class="method post">POST</span>
+                                <span class="url">/products/categories</span>
+                                <span>Crear categoría</span>
                             </li>
                         </ul>
                     </div>
 
                     <div class="note">
-                        <strong>🚧 Características planificadas:</strong>
+                        <strong>✅ Características implementadas:</strong>
                         <ul>
-                            <li>CRUD completo de productos y categorías</li>
-                            <li>Búsqueda por texto y filtros avanzados</li>
-                            <li>Información nutricional detallada</li>
-                            <li>Paginación y ordenamiento</li>
-                            <li>Gestión de disponibilidad</li>
+                            <li>CRUD completo para productos y categorías</li>
+                            <li>Búsqueda por texto en nombre, descripción e ingredientes</li>
+                            <li>Filtros por categoría, precio, disponibilidad</li>
+                            <li>Paginación con metadata completa</li>
+                            <li>Ordenamiento personalizable</li>
+                            <li>Validación completa de datos</li>
+                            <li>Autenticación JWT para operaciones sensibles</li>
+                            <li>Protección contra eliminación de categorías con productos</li>
                         </ul>
                     </div>
                 </div>

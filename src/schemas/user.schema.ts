@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 export type UserDocument = User & Document;
 
@@ -20,15 +20,18 @@ export class User {
   @Prop({ default: 0 })
   points: number;
 
-  @Prop({ 
-    required: true, 
+  @Prop({
+    required: true,
     enum: ['BRONZE', 'SILVER', 'GOLD', 'PLATINUM'],
-    default: 'BRONZE'
+    default: 'BRONZE',
   })
   level: string;
 
   @Prop({ required: true, unique: true })
   qrCode: string;
+
+  @Prop({ type: [Types.ObjectId], ref: 'Product', default: [] })
+  favorites: Types.ObjectId[];
 }
 
-export const UserSchema = SchemaFactory.createForClass(User); 
+export const UserSchema = SchemaFactory.createForClass(User);

@@ -8,10 +8,10 @@ export class LoyaltyHistory {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   userId: Types.ObjectId;
 
-  @Prop({ 
-    required: true, 
+  @Prop({
+    required: true,
     enum: ['EARNED', 'SPENT', 'BONUS', 'PROMOTION'],
-    default: 'EARNED'
+    default: 'EARNED',
   })
   type: string;
 
@@ -25,4 +25,5 @@ export class LoyaltyHistory {
   orderId?: Types.ObjectId;
 }
 
-export const LoyaltyHistorySchema = SchemaFactory.createForClass(LoyaltyHistory); 
+export const LoyaltyHistorySchema =
+  SchemaFactory.createForClass(LoyaltyHistory);

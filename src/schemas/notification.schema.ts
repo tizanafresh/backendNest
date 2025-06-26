@@ -14,10 +14,10 @@ export class Notification {
   @Prop({ required: true })
   message: string;
 
-  @Prop({ 
-    required: true, 
+  @Prop({
+    required: true,
     enum: ['ORDER', 'PROMOTION', 'SYSTEM', 'LOYALTY'],
-    default: 'SYSTEM'
+    default: 'SYSTEM',
   })
   type: string;
 
@@ -25,4 +25,4 @@ export class Notification {
   read: boolean;
 }
 
-export const NotificationSchema = SchemaFactory.createForClass(Notification); 
+export const NotificationSchema = SchemaFactory.createForClass(Notification);

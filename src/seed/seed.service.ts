@@ -9,9 +9,18 @@ import { Category, CategoryDocument } from '../schemas/category.schema';
 import { Product, ProductDocument } from '../schemas/product.schema';
 import { Coupon, CouponDocument } from '../schemas/coupon.schema';
 import { Order, OrderDocument } from '../schemas/order.schema';
-import { Notification, NotificationDocument } from '../schemas/notification.schema';
-import { LoyaltyHistory, LoyaltyHistoryDocument } from '../schemas/loyalty-history.schema';
-import { DeviceToken, DeviceTokenDocument } from '../schemas/device-token.schema';
+import {
+  Notification,
+  NotificationDocument,
+} from '../schemas/notification.schema';
+import {
+  LoyaltyHistory,
+  LoyaltyHistoryDocument,
+} from '../schemas/loyalty-history.schema';
+import {
+  DeviceToken,
+  DeviceTokenDocument,
+} from '../schemas/device-token.schema';
 
 @Injectable()
 export class SeedService {
@@ -23,18 +32,21 @@ export class SeedService {
     @InjectModel(Product.name) private productModel: Model<ProductDocument>,
     @InjectModel(Coupon.name) private couponModel: Model<CouponDocument>,
     @InjectModel(Order.name) private orderModel: Model<OrderDocument>,
-    @InjectModel(Notification.name) private notificationModel: Model<NotificationDocument>,
-    @InjectModel(LoyaltyHistory.name) private loyaltyHistoryModel: Model<LoyaltyHistoryDocument>,
-    @InjectModel(DeviceToken.name) private deviceTokenModel: Model<DeviceTokenDocument>,
+    @InjectModel(Notification.name)
+    private notificationModel: Model<NotificationDocument>,
+    @InjectModel(LoyaltyHistory.name)
+    private loyaltyHistoryModel: Model<LoyaltyHistoryDocument>,
+    @InjectModel(DeviceToken.name)
+    private deviceTokenModel: Model<DeviceTokenDocument>,
   ) {}
 
   async seedAll() {
     this.logger.log('🌱 Iniciando proceso de seeding...');
-    
+
     try {
       // Limpiar todas las colecciones
       await this.clearAllCollections();
-      
+
       // Crear datos en orden de dependencias
       const categories = await this.seedCategories();
       const users = await this.seedUsers();
@@ -46,7 +58,7 @@ export class SeedService {
       const deviceTokens = await this.seedDeviceTokens(users);
 
       this.logger.log('✅ Seeding completado exitosamente!');
-      
+
       return {
         message: 'Base de datos poblada exitosamente',
         summary: {
@@ -58,7 +70,7 @@ export class SeedService {
           notifications: notifications.length,
           loyaltyHistory: loyaltyHistory.length,
           deviceTokens: deviceTokens.length,
-        }
+        },
       };
     } catch (error) {
       this.logger.error('❌ Error durante el seeding:', error);
@@ -68,7 +80,7 @@ export class SeedService {
 
   private async clearAllCollections() {
     this.logger.log('🧹 Limpiando colecciones existentes...');
-    
+
     await Promise.all([
       this.userModel.deleteMany({}),
       this.categoryModel.deleteMany({}),
@@ -83,7 +95,7 @@ export class SeedService {
 
   private async seedCategories(): Promise<CategoryDocument[]> {
     this.logger.log('📂 Creando categorías...');
-    
+
     const categoriesData = [
       {
         name: 'Tizanas Clásicas',
@@ -119,9 +131,9 @@ export class SeedService {
 
   private async seedUsers(): Promise<UserDocument[]> {
     this.logger.log('👥 Creando usuarios...');
-    
+
     const hashedPassword = await bcrypt.hash('password123', 10);
-    
+
     const usersData = [
       {
         name: 'Admin Tizanas',
@@ -175,14 +187,17 @@ export class SeedService {
     return users;
   }
 
-  private async seedProducts(categories: CategoryDocument[]): Promise<ProductDocument[]> {
+  private async seedProducts(
+    categories: CategoryDocument[],
+  ): Promise<ProductDocument[]> {
     this.logger.log('🥤 Creando productos...');
-    
+
     const productsData = [
       {
         name: 'Tizana de Frutos Rojos',
-        description: 'Refrescante mezcla de fresas, frambuesas y moras con hierbas naturales',
-        price: 8.50,
+        description:
+          'Refrescante mezcla de fresas, frambuesas y moras con hierbas naturales',
+        price: 8.5,
         category: categories[0]._id, // Frutas
         image: 'https://example.com/tizana-frutos-rojos.jpg',
         ingredients: ['fresas', 'frambuesas', 'moras', 'hierbabuena', 'limón'],
@@ -196,8 +211,9 @@ export class SeedService {
       },
       {
         name: 'Tizana Tropical',
-        description: 'Exótica combinación de piña, mango y coco con jengibre fresco',
-        price: 9.00,
+        description:
+          'Exótica combinación de piña, mango y coco con jengibre fresco',
+        price: 9.0,
         category: categories[0]._id, // Frutas
         image: 'https://example.com/tizana-tropical.jpg',
         ingredients: ['piña', 'mango', 'coco', 'jengibre', 'lima'],
@@ -212,10 +228,16 @@ export class SeedService {
       {
         name: 'Tizana Detox Verde',
         description: 'Potente detox con espinaca, pepino y manzana verde',
-        price: 7.50,
+        price: 7.5,
         category: categories[1]._id, // Detox
         image: 'https://example.com/tizana-detox-verde.jpg',
-        ingredients: ['espinaca', 'pepino', 'manzana verde', 'limón', 'jengibre'],
+        ingredients: [
+          'espinaca',
+          'pepino',
+          'manzana verde',
+          'limón',
+          'jengibre',
+        ],
         nutritionalInfo: {
           calories: 38,
           protein: 2.1,
@@ -226,8 +248,9 @@ export class SeedService {
       },
       {
         name: 'Tizana Energética',
-        description: 'Energizante natural con guaraná, ginseng y frutas cítricas',
-        price: 10.00,
+        description:
+          'Energizante natural con guaraná, ginseng y frutas cítricas',
+        price: 10.0,
         category: categories[2]._id, // Energética
         image: 'https://example.com/tizana-energetica.jpg',
         ingredients: ['guaraná', 'ginseng', 'naranja', 'limón', 'miel'],
@@ -242,7 +265,7 @@ export class SeedService {
       {
         name: 'Tizana Relajante',
         description: 'Calmante mezcla de manzanilla, lavanda y miel',
-        price: 6.50,
+        price: 6.5,
         category: categories[3]._id, // Relajante
         image: 'https://example.com/tizana-relajante.jpg',
         ingredients: ['manzanilla', 'lavanda', 'miel', 'limón', 'canela'],
@@ -263,7 +286,7 @@ export class SeedService {
 
   private async seedCoupons(users: UserDocument[]): Promise<CouponDocument[]> {
     this.logger.log('🎫 Creando cupones...');
-    
+
     const couponsData = [
       {
         code: 'WELCOME10',
@@ -306,9 +329,13 @@ export class SeedService {
     return coupons as CouponDocument[];
   }
 
-  private async seedOrders(users: UserDocument[], products: ProductDocument[], coupons: CouponDocument[]): Promise<OrderDocument[]> {
+  private async seedOrders(
+    users: UserDocument[],
+    products: ProductDocument[],
+    coupons: CouponDocument[],
+  ): Promise<OrderDocument[]> {
     this.logger.log('📦 Creando pedidos...');
-    
+
     const ordersData = [
       {
         userId: users[1]._id, // María
@@ -328,7 +355,7 @@ export class SeedService {
             notes: 'Extra jengibre',
           },
         ],
-        total: 24.50,
+        total: 24.5,
         discount: 2.45,
         finalTotal: 22.05,
         status: 'DELIVERED',
@@ -351,9 +378,9 @@ export class SeedService {
             notes: '',
           },
         ],
-        total: 9.00,
+        total: 9.0,
         discount: 0,
-        finalTotal: 9.00,
+        finalTotal: 9.0,
         status: 'PREPARING',
         deliveryAddress: {
           street: 'Avenida Central 456',
@@ -369,21 +396,25 @@ export class SeedService {
     return orders as OrderDocument[];
   }
 
-  private async seedNotifications(users: UserDocument[]): Promise<NotificationDocument[]> {
+  private async seedNotifications(
+    users: UserDocument[],
+  ): Promise<NotificationDocument[]> {
     this.logger.log('🔔 Creando notificaciones...');
-    
+
     const notificationsData = [
       {
         userId: users[1]._id,
         title: '¡Tu pedido está listo!',
-        message: 'Tu Tizana de Frutos Rojos y Tizana Detox Verde están listas para recoger.',
+        message:
+          'Tu Tizana de Frutos Rojos y Tizana Detox Verde están listas para recoger.',
         type: 'ORDER',
         read: false,
       },
       {
         userId: users[1]._id,
         title: '¡Nuevo cupón disponible!',
-        message: 'Usa el código LOYALTY20 y obtén 20% de descuento en tu próxima compra.',
+        message:
+          'Usa el código LOYALTY20 y obtén 20% de descuento en tu próxima compra.',
         type: 'PROMOTION',
         read: false,
       },
@@ -397,26 +428,32 @@ export class SeedService {
       {
         userId: users[0]._id, // Admin
         title: 'Bienvenido a Tizanas Fresh',
-        message: 'Gracias por unirte a nuestra comunidad de amantes de las tizanas.',
+        message:
+          'Gracias por unirte a nuestra comunidad de amantes de las tizanas.',
         type: 'SYSTEM',
         read: true,
       },
     ];
 
-    const notifications = await this.notificationModel.insertMany(notificationsData);
+    const notifications =
+      await this.notificationModel.insertMany(notificationsData);
     this.logger.log(`✅ ${notifications.length} notificaciones creadas`);
     return notifications as NotificationDocument[];
   }
 
-  private async seedLoyaltyHistory(users: UserDocument[], orders: OrderDocument[]): Promise<LoyaltyHistoryDocument[]> {
+  private async seedLoyaltyHistory(
+    users: UserDocument[],
+    orders: OrderDocument[],
+  ): Promise<LoyaltyHistoryDocument[]> {
     this.logger.log('🏆 Creando historial de fidelización...');
-    
+
     const loyaltyHistoryData = [
       {
         userId: users[1]._id,
         type: 'EARNED',
         points: 50,
-        description: 'Compra realizada - Tizana de Frutos Rojos x2, Tizana Detox Verde x1',
+        description:
+          'Compra realizada - Tizana de Frutos Rojos x2, Tizana Detox Verde x1',
         orderId: orders[0]._id,
       },
       {
@@ -441,14 +478,19 @@ export class SeedService {
       },
     ];
 
-    const loyaltyHistory = await this.loyaltyHistoryModel.insertMany(loyaltyHistoryData);
-    this.logger.log(`✅ ${loyaltyHistory.length} registros de fidelización creados`);
+    const loyaltyHistory =
+      await this.loyaltyHistoryModel.insertMany(loyaltyHistoryData);
+    this.logger.log(
+      `✅ ${loyaltyHistory.length} registros de fidelización creados`,
+    );
     return loyaltyHistory as LoyaltyHistoryDocument[];
   }
 
-  private async seedDeviceTokens(users: UserDocument[]): Promise<DeviceTokenDocument[]> {
+  private async seedDeviceTokens(
+    users: UserDocument[],
+  ): Promise<DeviceTokenDocument[]> {
     this.logger.log('📱 Creando tokens de dispositivos...');
-    
+
     const deviceTokensData = [
       {
         userId: users[1]._id,
@@ -470,8 +512,9 @@ export class SeedService {
       },
     ];
 
-    const deviceTokens = await this.deviceTokenModel.insertMany(deviceTokensData);
+    const deviceTokens =
+      await this.deviceTokenModel.insertMany(deviceTokensData);
     this.logger.log(`✅ ${deviceTokens.length} tokens de dispositivos creados`);
     return deviceTokens as DeviceTokenDocument[];
   }
-} 
+}

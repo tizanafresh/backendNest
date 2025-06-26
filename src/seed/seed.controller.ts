@@ -22,4 +22,4 @@ export class SeedController {
       note: 'Este endpoint solo debe usarse en desarrollo. En producción, considera usar scripts de migración.',
     };
   }
-} 
+}

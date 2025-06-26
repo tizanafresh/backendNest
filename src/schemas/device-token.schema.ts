@@ -11,10 +11,10 @@ export class DeviceToken {
   @Prop({ required: true })
   token: string;
 
-  @Prop({ 
-    required: true, 
+  @Prop({
+    required: true,
     enum: ['IOS', 'ANDROID', 'WEB'],
-    default: 'ANDROID'
+    default: 'ANDROID',
   })
   platform: string;
 
@@ -22,4 +22,4 @@ export class DeviceToken {
   active: boolean;
 }
 
-export const DeviceTokenSchema = SchemaFactory.createForClass(DeviceToken); 
+export const DeviceTokenSchema = SchemaFactory.createForClass(DeviceToken);

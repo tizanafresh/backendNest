@@ -1,288 +1,262 @@
 # 🍹 Tizanas Fresh - Backend API
 
-Backend completo para la aplicación Tizanas Fresh desarrollado con NestJS y MongoDB.
+Backend desarrollado en NestJS con MongoDB para la aplicación Tizanas Fresh, una plataforma de venta de tizanas y bebidas saludables.
 
-## 📋 Descripción
+## 🚀 Características
 
-Tizanas Fresh es una aplicación móvil para pedidos de tizanas y bebidas saludables. Este backend proporciona todas las APIs necesarias para el funcionamiento de la aplicación, incluyendo autenticación, gestión de productos, pedidos, fidelización y notificaciones.
-
-## 🚀 Características Implementadas
-
-### ✅ Completado
-- **Configuración del Proyecto**: NestJS con TypeScript y MongoDB
-- **Autenticación JWT**: Sistema completo de autenticación con bcrypt
-- **Esquemas de Base de Datos**: Todos los modelos de Mongoose implementados
-- **Sistema de Seeding**: Población automática de datos de prueba
-- **Documentación Completa**: APIs documentadas en HTML
-
-### 🚧 En Desarrollo
-- Validación de datos con class-validator
-- Middleware de seguridad
-- Sistema de logging centralizado
-
-### 📋 Planificado
-- Módulo de productos y categorías
-- Sistema de pedidos completo
-- Gestión de cupones
-- Sistema de fidelización
-- Notificaciones push
+- **Autenticación JWT** completa con registro, login y recuperación de contraseña
+- **Sistema de usuarios** con niveles de acceso y gestión de perfiles
+- **Gestión de productos** con categorías, búsqueda y filtros
+- **Sistema de pedidos** con estados y cálculos automáticos
+- **Sistema de fidelización** con puntos y recompensas
+- **Notificaciones push** para dispositivos móviles
+- **API RESTful** documentada con casos de uso
+- **Validación de datos** con class-validator
+- **Logging** completo para debugging y monitoreo
+- **Configuración centralizada** con variables de entorno
 
 ## 🛠️ Stack Tecnológico
 
-- **Framework**: NestJS (Node.js)
+- **Framework**: NestJS
 - **Base de Datos**: MongoDB con Mongoose
-- **Autenticación**: JWT + Passport + bcrypt
-- **Validación**: class-validator + class-transformer
-- **Documentación**: HTML personalizado
+- **Autenticación**: JWT (JSON Web Tokens)
+- **Validación**: class-validator, class-transformer
+- **Email**: Nodemailer con SMTP
+- **Encriptación**: bcrypt
+- **Documentación**: HTML con casos de uso detallados
 
-## 📦 Instalación
+## 📋 Prerrequisitos
 
-### Prerrequisitos
 - Node.js (v18 o superior)
-- MongoDB (local o Atlas)
+- MongoDB (local o MongoDB Atlas)
 - npm o yarn
 
-### Pasos de Instalación
+## 🔧 Instalación
 
 1. **Clonar el repositorio**
-```bash
-git clone <repository-url>
-cd backendNest
-```
+   ```bash
+   git clone <repository-url>
+   cd backendNest
+   ```
 
 2. **Instalar dependencias**
-```bash
-npm install
-```
+   ```bash
+   npm install
+   ```
 
 3. **Configurar variables de entorno**
-```bash
-cp env.example .env
-```
+   ```bash
+   cp env.example .env
+   ```
 
-Editar el archivo `.env` con tus configuraciones:
+4. **Editar el archivo .env** con tus configuraciones:
+   ```env
+   # Configuración del Servidor
+   PORT=5001
+   NODE_ENV=development
+
+   # Base de Datos MongoDB
+   MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/tizanafresh
+
+   # JWT
+   JWT_SECRET=your-super-secret-jwt-key-change-in-production
+   JWT_EXPIRES_IN=24h
+
+   # Email Configuration (usando Gmail)
+   MAIL_MAILER=smtp
+   MAIL_HOST=smtp.gmail.com
+   MAIL_PORT=587
+   MAIL_USERNAME=tu-email@gmail.com
+   MAIL_PASSWORD=tu-app-password
+   MAIL_ENCRYPTION=tls
+   MAIL_FROM_ADDRESS=tu-email@gmail.com
+   MAIL_FROM_NAME="Tizanas Fresh"
+
+   # Frontend URL
+   FRONTEND_URL=http://localhost:3000
+   ```
+
+5. **Ejecutar el servidor**
+   ```bash
+   # Desarrollo
+   npm run start:dev
+
+   # Producción
+   npm run build
+   npm run start:prod
+   ```
+
+## 📧 Configuración de Email
+
+### Para Gmail:
+1. Activar la verificación en dos pasos
+2. Generar una contraseña de aplicación
+3. Usar esa contraseña en `MAIL_PASSWORD`
+
+### Para desarrollo (Ethereal Email):
 ```env
-# MongoDB
-MONGODB_URI=mongodb://localhost:27017/tizanafresh
-
-# JWT
-JWT_SECRET=tu-secreto-super-seguro
-JWT_EXPIRES_IN=24h
-
-# Servidor
-PORT=3000
-NODE_ENV=development
+ETHEREAL_USER=tu-email@ethereal.email
+ETHEREAL_PASS=tu-password
 ```
-
-4. **Poblar la base de datos con datos de prueba**
-```bash
-# Iniciar el servidor
-npm run start:dev
-
-# En otra terminal, poblar la base de datos
-curl -X POST http://localhost:3000/seed
-```
-
-## 🚀 Uso
-
-### Iniciar el servidor
-
-```bash
-# Desarrollo
-npm run start:dev
-
-# Producción
-npm run start:prod
-```
-
-### Probar la API
-
-#### 1. Autenticación
-```bash
-# Login
-curl -X POST http://localhost:3000/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "admin@tizanafresh.com",
-    "password": "password123"
-  }'
-
-# Verificar token
-curl -X GET http://localhost:3000/auth/verify \
-  -H "Authorization: Bearer YOUR_TOKEN"
-```
-
-#### 2. Seeding
-```bash
-# Poblar base de datos
-curl -X POST http://localhost:3000/seed
-
-# Verificar estado
-curl -X GET http://localhost:3000/seed/status
-```
-
-## 📚 Documentación
-
-### Documentación de APIs
-- [Índice de APIs](documentation/api/index.html)
-- [API de Autenticación](documentation/api/auth-api.html)
-- [API de Seeding](documentation/api/seed-api.html)
-- [API de Productos](documentation/api/products-api.html) (Planificada)
-- [API de Pedidos](documentation/api/orders-api.html) (Planificada)
-
-### Documentación Técnica
-- [Documentación Técnica del Backend](documentation/backend_technical_documentation.html)
-- [Esquema de Base de Datos](documentation/database_schema_documentation.html)
-- [Requerimientos del Frontend](documentation/frontend_requirement_for_backend.html)
-- [Documento de Tareas](documentation/task.html)
 
 ## 🗄️ Estructura de la Base de Datos
 
-### Colecciones Implementadas
-- **Users**: Usuarios con niveles de fidelización
-- **Categories**: Categorías de productos
-- **Products**: Productos con información nutricional
-- **Orders**: Pedidos con estados y tracking
-- **Coupons**: Cupones de descuento
-- **Notifications**: Notificaciones push
-- **LoyaltyHistory**: Historial de puntos de fidelización
-- **DeviceTokens**: Tokens para notificaciones
+### Colecciones principales:
+- **users**: Usuarios del sistema
+- **products**: Productos y tizanas
+- **categories**: Categorías de productos
+- **orders**: Pedidos de usuarios
+- **coupons**: Cupones de descuento
+- **loyalty_history**: Historial de puntos
+- **notifications**: Notificaciones push
+- **password_reset**: Tokens de recuperación
 
-### Datos de Prueba
-El sistema de seeding crea automáticamente:
-- 5 usuarios con diferentes niveles
-- 5 categorías de productos
-- 5 productos con información nutricional
-- 3 cupones de diferentes tipos
-- 2 pedidos de ejemplo
-- 4 notificaciones
-- 4 registros de fidelización
-- 3 tokens de dispositivos
+## 🔌 Endpoints API
+
+### Autenticación
+- `POST /api/auth/register` - Registro de usuario
+- `POST /api/auth/login` - Login de usuario
+- `POST /api/auth/forgot-password` - Solicitar recuperación
+- `POST /api/auth/reset-password` - Resetear contraseña
+- `GET /api/auth/verify-reset-token/:token` - Verificar token
+
+### Usuarios
+- `GET /api/auth/profile` - Obtener perfil (requiere JWT)
+- `PUT /api/auth/profile` - Actualizar perfil
+- `POST /api/auth/change-password` - Cambiar contraseña
+
+### Productos
+- `GET /api/products` - Listar productos
+- `GET /api/products/:id` - Obtener producto
+- `POST /api/products` - Crear producto (admin)
+- `PUT /api/products/:id` - Actualizar producto (admin)
+- `DELETE /api/products/:id` - Eliminar producto (admin)
+
+### Categorías
+- `GET /api/categories` - Listar categorías
+- `GET /api/categories/:id` - Obtener categoría
+
+### Seeding (solo desarrollo)
+- `POST /api/seed/products` - Poblar productos
+- `POST /api/seed/categories` - Poblar categorías
+- `POST /api/seed/users` - Poblar usuarios
 
 ## 🔐 Autenticación
 
-### Usuarios de Prueba
-| Email | Contraseña | Nivel | Puntos |
-|-------|------------|-------|--------|
-| admin@tizanafresh.com | password123 | PLATINUM | 1000 |
-| maria@example.com | password123 | GOLD | 750 |
-| carlos@example.com | password123 | SILVER | 500 |
-| ana@example.com | password123 | BRONZE | 250 |
-| luis@example.com | password123 | BRONZE | 100 |
+El sistema usa JWT (JSON Web Tokens) para autenticación:
 
-### Endpoints de Autenticación
-- `POST /auth/login` - Login de usuario
-- `POST /auth/login-local` - Login con guard local
-- `GET /auth/profile` - Obtener perfil (requiere JWT)
-- `GET /auth/verify` - Verificar token (requiere JWT)
+1. **Registro/Login**: Obtener token JWT
+2. **Requests autenticados**: Incluir header `Authorization: Bearer <token>`
+3. **Recuperación de contraseña**: Sistema de emails con tokens seguros
 
-## 📊 Estado del Proyecto
+## 📊 Casos de Uso
 
-### Progreso General: 22%
-- **Fase 1: Configuración Inicial** - 100% ✅
-- **Fase 2: Autenticación y Usuarios** - 33% 🚧
-- **Fase 3: Módulo de Productos** - 0% 📋
-- **Fase 4: Módulo de Pedidos** - 0% 📋
-- **Fase 5: Sistema de Fidelización** - 0% 📋
-- **Fase 6: Sistema de Cupones** - 0% 📋
-- **Fase 7: Sistema de Notificaciones** - 0% 📋
-- **Fase 8: Testing y Documentación** - 0% 📋
-
-### Tareas Completadas: 12/54
-- ✅ Configuración inicial del proyecto
-- ✅ Conexión a MongoDB
-- ✅ Variables de entorno
-- ✅ Logging y manejo de errores
-- ✅ Configuración centralizada
-- ✅ Esquemas de base de datos
-- ✅ Sistema de seeding
-- ✅ Autenticación JWT básica
-- ✅ Documentación de APIs
+La documentación completa con casos de uso está disponible en:
+- `documentation/auth-api.html` - API de autenticación
+- `documentation/products-api.html` - API de productos
+- `documentation/seed-api.html` - API de seeding
 
 ## 🧪 Testing
 
-### Pruebas Manuales
 ```bash
-# 1. Probar autenticación
-curl -X POST http://localhost:3000/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email": "admin@tizanafresh.com", "password": "password123"}'
-
-# 2. Usar el token para acceder a rutas protegidas
-curl -X GET http://localhost:3000/auth/profile \
-  -H "Authorization: Bearer YOUR_TOKEN"
-
-# 3. Poblar base de datos
-curl -X POST http://localhost:3000/seed
-```
-
-## 🔧 Scripts Disponibles
-
-```bash
-# Desarrollo
-npm run start:dev
-
-# Producción
-npm run start:prod
-
-# Build
-npm run build
-
-# Testing
+# Tests unitarios
 npm run test
+
+# Tests e2e
 npm run test:e2e
 
-# Linting
-npm run lint
+# Coverage
+npm run test:cov
 ```
 
-## 📁 Estructura del Proyecto
+## 📝 Scripts Disponibles
 
+```bash
+npm run start:dev      # Desarrollo con hot reload
+npm run build          # Compilar para producción
+npm run start:prod     # Ejecutar en producción
+npm run lint           # Linting
+npm run lint:fix       # Linting con auto-fix
+npm run test           # Tests unitarios
+npm run test:e2e       # Tests end-to-end
 ```
-src/
-├── auth/                 # Módulo de autenticación
-│   ├── auth.controller.ts
-│   ├── auth.service.ts
-│   ├── auth.module.ts
-│   ├── guards/          # Guards de autenticación
-│   ├── strategies/      # Estrategias de Passport
-│   └── decorators/      # Decoradores personalizados
-├── schemas/             # Esquemas de Mongoose
-│   ├── user.schema.ts
-│   ├── product.schema.ts
-│   ├── order.schema.ts
-│   └── ...
-├── seed/                # Sistema de seeding
-│   ├── seed.service.ts
-│   ├── seed.controller.ts
-│   └── seed.module.ts
-├── config/              # Configuración
-│   ├── app.config.ts
-│   └── database.config.ts
-├── app.controller.ts
-├── app.service.ts
-├── app.module.ts
-└── main.ts
+
+## 🔧 Configuración Avanzada
+
+### Variables de Entorno Adicionales
+
+```env
+# Seguridad
+BCRYPT_ROUNDS=12
+PASSWORD_RESET_EXPIRES_IN=3600000
+
+# Logging
+LOG_LEVEL=debug
+LOG_FILE=logs/app.log
+
+# CORS
+CORS_ORIGIN=http://localhost:3000
+CORS_CREDENTIALS=true
+
+# Rate Limiting
+RATE_LIMIT_TTL=60
+RATE_LIMIT_LIMIT=100
+
+# Validación
+VALIDATION_PIPE_TRANSFORM=true
+VALIDATION_PIPE_WHITELIST=true
+VALIDATION_PIPE_FORBID_NON_WHITELISTED=true
+
+# Paginación
+DEFAULT_PAGE_SIZE=10
+MAX_PAGE_SIZE=100
 ```
+
+## 🚀 Despliegue
+
+### Variables de Producción
+```env
+NODE_ENV=production
+PORT=5001
+MONGODB_URI=mongodb+srv://...
+JWT_SECRET=super-secret-production-key
+MAIL_HOST=smtp.gmail.com
+MAIL_USERNAME=production-email@gmail.com
+MAIL_PASSWORD=production-app-password
+```
+
+## 📈 Estado del Proyecto
+
+- ✅ **Fase 1**: Configuración inicial (100%)
+- ✅ **Fase 2**: Autenticación y usuarios (100%)
+- ✅ **Fase 3**: Módulo de productos (100%)
+- 🔄 **Fase 4**: Módulo de pedidos (0%)
+- ⏳ **Fase 5**: Sistema de fidelización (0%)
+- ⏳ **Fase 6**: Notificaciones push (0%)
+- ⏳ **Fase 7**: Optimizaciones y testing (0%)
+- ⏳ **Fase 8**: Documentación final (0%)
+
+**Progreso General: 44% completado**
 
 ## 🤝 Contribución
 
 1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+2. Crear una rama para tu feature (`git checkout -b feature/AmazingFeature`)
 3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
 4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+5. Abrir un Pull Request
 
-## 📝 Licencia
+## 📄 Licencia
 
-Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
+Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para detalles.
 
-## 📞 Contacto
+## 📞 Soporte
 
-- **Proyecto**: Tizanas Fresh Backend
-- **Versión**: 1.0.0
-- **Estado**: En desarrollo
+Para soporte técnico o preguntas:
+- Email: soporte@tizanafresh.com
+- Documentación: `documentation/` folder
+- Issues: GitHub Issues
 
 ---
 
-**Nota**: Este proyecto está en desarrollo activo. Las APIs planificadas se implementarán según el cronograma establecido en la documentación de tareas.
+**🍹 Tizanas Fresh** - Bebidas saludables para una vida mejor

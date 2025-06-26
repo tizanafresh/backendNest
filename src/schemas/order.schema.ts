@@ -8,13 +8,15 @@ export class Order {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   userId: Types.ObjectId;
 
-  @Prop([{
-    productId: { type: Types.ObjectId, ref: 'Product' },
-    name: String,
-    quantity: Number,
-    price: Number,
-    notes: String
-  }])
+  @Prop([
+    {
+      productId: { type: Types.ObjectId, ref: 'Product' },
+      name: String,
+      quantity: Number,
+      price: Number,
+      notes: String,
+    },
+  ])
   items: Array<{
     productId: Types.ObjectId;
     name: string;
@@ -32,10 +34,17 @@ export class Order {
   @Prop({ required: true })
   finalTotal: number;
 
-  @Prop({ 
-    required: true, 
-    enum: ['PENDING', 'CONFIRMED', 'PREPARING', 'READY', 'DELIVERED', 'CANCELLED'],
-    default: 'PENDING'
+  @Prop({
+    required: true,
+    enum: [
+      'PENDING',
+      'CONFIRMED',
+      'PREPARING',
+      'READY',
+      'DELIVERED',
+      'CANCELLED',
+    ],
+    default: 'PENDING',
   })
   status: string;
 
@@ -51,4 +60,4 @@ export class Order {
   };
 }
 
-export const OrderSchema = SchemaFactory.createForClass(Order); 
+export const OrderSchema = SchemaFactory.createForClass(Order);
