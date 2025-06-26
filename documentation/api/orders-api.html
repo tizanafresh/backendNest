@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API de Pedidos - Tizanas Fresh</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 40px;
+        }
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            border-left: 5px solid #e74c3c;
+        }
+        .section h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            font-size: 1.8em;
+        }
+        .endpoint {
+            background: white;
+            margin: 20px 0;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #3498db;
+        }
+        .endpoint h3 {
+            color: #2c3e50;
+            margin-top: 0;
+            font-size: 1.4em;
+        }
+        .method {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-right: 10px;
+            color: white;
+        }
+        .post { background: #27ae60; }
+        .get { background: #3498db; }
+        .put { background: #f39c12; }
+        .delete { background: #e74c3c; }
+        .url {
+            font-family: 'Courier New', monospace;
+            background: #f1f2f6;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 1em;
+            margin: 10px 0;
+            display: block;
+        }
+        .description {
+            color: #7f8c8d;
+            margin: 15px 0;
+        }
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .response-example {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .error-example {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        .table th {
+            background: #34495e;
+            color: white;
+        }
+        .table tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+        .required {
+            background: #e74c3c;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.8em;
+        }
+        .optional {
+            background: #f39c12;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.8em;
+        }
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .security {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .planned {
+            background: #e8f4fd;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+            color: white;
+            margin: 2px;
+        }
+        .pending { background: #f39c12; }
+        .confirmed { background: #3498db; }
+        .preparing { background: #9b59b6; }
+        .ready { background: #2ecc71; }
+        .delivered { background: #27ae60; }
+        .cancelled { background: #e74c3c; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📦 API de Pedidos</h1>
+            <p>Tizanas Fresh - Documentación de Endpoints de Pedidos</p>
+            <p>Gestión completa de pedidos, estados y tracking</p>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2>📋 Información General</h2>
+                <p>El módulo de pedidos proporciona endpoints para la gestión completa del ciclo de vida de los pedidos, desde la creación hasta la entrega. Incluye tracking de estados, gestión de cupones y cálculo de totales.</p>
+                
+                <div class="planned">
+                    <strong>🚧 Estado:</strong> Esta API está planificada y será implementada en la Fase 4 del proyecto.
+                </div>
+
+                <div class="note">
+                    <strong>📝 Nota:</strong> Todos los endpoints de pedidos estarán disponibles en el prefijo <code>/orders</code>
+                </div>
+
+                <div class="security">
+                    <strong>🔒 Autenticación:</strong> La mayoría de endpoints requieren autenticación JWT. Los usuarios solo pueden acceder a sus propios pedidos, excepto los administradores que pueden ver todos.
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📦 Estados de Pedidos</h2>
+                
+                <div class="note">
+                    <strong>Flujo de estados de un pedido:</strong>
+                </div>
+
+                <div class="code-block">
+PENDING → CONFIRMED → PREPARING → READY → DELIVERED
+                </div>
+
+                <table class="table">
+                    <tr>
+                        <th>Estado</th>
+                        <th>Descripción</th>
+                        <th>Acciones Permitidas</th>
+                    </tr>
+                    <tr>
+                        <td><span class="status-badge pending">PENDING</span></td>
+                        <td>Pedido creado, pendiente de confirmación</td>
+                        <td>Confirmar, Cancelar</td>
+                    </tr>
+                    <tr>
+                        <td><span class="status-badge confirmed">CONFIRMED</span></td>
+                        <td>Pedido confirmado por el sistema</td>
+                        <td>Iniciar preparación, Cancelar</td>
+                    </tr>
+                    <tr>
+                        <td><span class="status-badge preparing">PREPARING</span></td>
+                        <td>Pedido en preparación</td>
+                        <td>Marcar como listo</td>
+                    </tr>
+                    <tr>
+                        <td><span class="status-badge ready">READY</span></td>
+                        <td>Pedido listo para entrega</td>
+                        <td>Marcar como entregado</td>
+                    </tr>
+                    <tr>
+                        <td><span class="status-badge delivered">DELIVERED</span></td>
+                        <td>Pedido entregado exitosamente</td>
+                        <td>Ninguna (estado final)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="status-badge cancelled">CANCELLED</span></td>
+                        <td>Pedido cancelado</td>
+                        <td>Ninguna (estado final)</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="section">
+                <h2>📦 Endpoints de Pedidos</h2>
+
+                <div class="endpoint">
+                    <h3>
+                        <span class="method post">POST</span>
+                        Crear Pedido
+                    </h3>
+                    <div class="url">/orders</div>
+                    <div class="description">
+                        Crea un nuevo pedido con los productos seleccionados y aplica cupones si se proporcionan.
+                    </div>
+
+                    <div class="security">
+                        <strong>🔒 Autenticación:</strong> Requiere token JWT de usuario
+                    </div>
+
+                    <h4>📥 Request Body</h4>
+                    <table class="table">
+                        <tr>
+                            <th>Campo</th>
+                            <th>Tipo</th>
+                            <th>Requerido</th>
+                            <th>Descripción</th>
+                        </tr>
+                        <tr>
+                            <td>items</td>
+                            <td>array</td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Array de productos del pedido</td>
+                        </tr>
+                        <tr>
+                            <td>couponCode</td>
+                            <td>string</td>
+                            <td><span class="optional">No</span></td>
+                            <td>Código de cupón para descuento</td>
+                        </tr>
+                        <tr>
+                            <td>deliveryAddress</td>
+                            <td>object</td>
+                            <td><span class="optional">No</span></td>
+                            <td>Dirección de entrega</td>
+                        </tr>
+                    </table>
+
+                    <h4>📥 Estructura de Items</h4>
+                    <div class="code-block">
+{
+  "items": [
+    {
+      "productId": "507f1f77bcf86cd799439011",
+      "quantity": 2,
+      "notes": "Sin hielo"
+    }
+  ]
+}
+                    </div>
+
+                    <h4>📥 Estructura de DeliveryAddress</h4>
+                    <div class="code-block">
+{
+  "deliveryAddress": {
+    "street": "Calle Principal 123",
+    "city": "Ciudad de México",
+    "zipCode": "12345",
+    "instructions": "Entregar en la puerta principal"
+  }
+}
+                    </div>
+
+                    <h4>📤 Response (201 Created)</h4>
+                    <div class="response-example">
+                        <strong>Pedido creado:</strong>
+                        <div class="code-block">
+{
+  "_id": "507f1f77bcf86cd799439011",
+  "userId": "507f1f77bcf86cd799439011",
+  "items": [
+    {
+      "productId": "507f1f77bcf86cd799439011",
+      "name": "Tizana de Frutos Rojos",
+      "quantity": 2,
+      "price": 8.50,
+      "notes": "Sin hielo"
+    }
+  ],
+  "total": 17.00,
+  "discount": 1.70,
+  "finalTotal": 15.30,
+  "status": "PENDING",
+  "couponId": "507f1f77bcf86cd799439011",
+  "deliveryAddress": {
+    "street": "Calle Principal 123",
+    "city": "Ciudad de México",
+    "zipCode": "12345",
+    "instructions": "Entregar en la puerta principal"
+  },
+  "createdAt": "2024-01-01T00:00:00.000Z",
+  "updatedAt": "2024-01-01T00:00:00.000Z"
+}
+                        </div>
+                    </div>
+
+                    <h4>❌ Response (400 Bad Request)</h4>
+                    <div class="error-example">
+                        <strong>Error de validación:</strong>
+                        <div class="code-block">
+{
+  "statusCode": 400,
+  "message": "Items del pedido son requeridos",
+  "error": "Bad Request"
+}
+                        </div>
+                    </div>
+
+                    <h4>🧪 Ejemplo de Uso</h4>
+                    <div class="code-block">
+curl -X POST http://localhost:3000/orders \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "items": [
+      {
+        "productId": "507f1f77bcf86cd799439011",
+        "quantity": 2,
+        "notes": "Sin hielo"
+      }
+    ],
+    "couponCode": "WELCOME10",
+    "deliveryAddress": {
+      "street": "Calle Principal 123",
+      "city": "Ciudad de México",
+      "zipCode": "12345",
+      "instructions": "Entregar en la puerta principal"
+    }
+  }'
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <h3>
+                        <span class="method get">GET</span>
+                        Listar Pedidos del Usuario
+                    </h3>
+                    <div class="url">/orders</div>
+                    <div class="description">
+                        Obtiene todos los pedidos del usuario autenticado con paginación y filtros.
+                    </div>
+
+                    <div class="security">
+                        <strong>🔒 Autenticación:</strong> Requiere token JWT de usuario
+                    </div>
+
+                    <h4>📥 Query Parameters</h4>
+                    <table class="table">
+                        <tr>
+                            <th>Parámetro</th>
+                            <th>Tipo</th>
+                            <th>Requerido</th>
+                            <th>Descripción</th>
+                        </tr>
+                        <tr>
+                            <td>page</td>
+                            <td>number</td>
+                            <td><span class="optional">No</span></td>
+                            <td>Número de página (default: 1)</td>
+                        </tr>
+                        <tr>
+                            <td>limit</td>
+                            <td>number</td>
+                            <td><span class="optional">No</span></td>
+                            <td>Pedidos por página (default: 10)</td>
+                        </tr>
+                        <tr>
+                            <td>status</td>
+                            <td>string</td>
+                            <td><span class="optional">No</span></td>
+                            <td>Filtrar por estado</td>
+                        </tr>
+                        <tr>
+                            <td>startDate</td>
+                            <td>string</td>
+                            <td><span class="optional">No</span></td>
+                            <td>Fecha de inicio (YYYY-MM-DD)</td>
+                        </tr>
+                        <tr>
+                            <td>endDate</td>
+                            <td>string</td>
+                            <td><span class="optional">No</span></td>
+                            <td>Fecha de fin (YYYY-MM-DD)</td>
+                        </tr>
+                    </table>
+
+                    <h4>📤 Response (200 OK)</h4>
+                    <div class="response-example">
+                        <strong>Lista de pedidos:</strong>
+                        <div class="code-block">
+{
+  "orders": [
+    {
+      "_id": "507f1f77bcf86cd799439011",
+      "userId": "507f1f77bcf86cd799439011",
+      "items": [
+        {
+          "productId": "507f1f77bcf86cd799439011",
+          "name": "Tizana de Frutos Rojos",
+          "quantity": 2,
+          "price": 8.50,
+          "notes": "Sin hielo"
+        }
+      ],
+      "total": 17.00,
+      "discount": 1.70,
+      "finalTotal": 15.30,
+      "status": "PENDING",
+      "couponId": "507f1f77bcf86cd799439011",
+      "deliveryAddress": {
+        "street": "Calle Principal 123",
+        "city": "Ciudad de México",
+        "zipCode": "12345",
+        "instructions": "Entregar en la puerta principal"
+      },
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "total": 1,
+    "pages": 1
+  }
+}
+                        </div>
+                    </div>
+
+                    <h4>🧪 Ejemplo de Uso</h4>
+                    <div class="code-block">
+# Obtener todos los pedidos
+curl -X GET http://localhost:3000/orders \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+
+# Filtrar por estado
+curl -X GET "http://localhost:3000/orders?status=PENDING" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+
+# Filtrar por fecha
+curl -X GET "http://localhost:3000/orders?startDate=2024-01-01&endDate=2024-01-31" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <h3>
+                        <span class="method get">GET</span>
+                        Obtener Pedido por ID
+                    </h3>
+                    <div class="url">/orders/:id</div>
+                    <div class="description">
+                        Obtiene un pedido específico por su ID. Los usuarios solo pueden ver sus propios pedidos.
+                    </div>
+
+                    <div class="security">
+                        <strong>🔒 Autenticación:</strong> Requiere token JWT de usuario
+                    </div>
+
+                    <h4>📤 Response (200 OK)</h4>
+                    <div class="response-example">
+                        <strong>Pedido específico:</strong>
+                        <div class="code-block">
+{
+  "_id": "507f1f77bcf86cd799439011",
+  "userId": "507f1f77bcf86cd799439011",
+  "items": [
+    {
+      "productId": "507f1f77bcf86cd799439011",
+      "name": "Tizana de Frutos Rojos",
+      "quantity": 2,
+      "price": 8.50,
+      "notes": "Sin hielo"
+    }
+  ],
+  "total": 17.00,
+  "discount": 1.70,
+  "finalTotal": 15.30,
+  "status": "PENDING",
+  "couponId": {
+    "_id": "507f1f77bcf86cd799439011",
+    "code": "WELCOME10",
+    "discount": 10,
+    "type": "PERCENTAGE"
+  },
+  "deliveryAddress": {
+    "street": "Calle Principal 123",
+    "city": "Ciudad de México",
+    "zipCode": "12345",
+    "instructions": "Entregar en la puerta principal"
+  },
+  "createdAt": "2024-01-01T00:00:00.000Z",
+  "updatedAt": "2024-01-01T00:00:00.000Z"
+}
+                        </div>
+                    </div>
+
+                    <h4>❌ Response (404 Not Found)</h4>
+                    <div class="error-example">
+                        <strong>Pedido no encontrado:</strong>
+                        <div class="code-block">
+{
+  "statusCode": 404,
+  "message": "Pedido no encontrado",
+  "error": "Not Found"
+}
+                        </div>
+                    </div>
+
+                    <h4>🧪 Ejemplo de Uso</h4>
+                    <div class="code-block">
+curl -X GET http://localhost:3000/orders/507f1f77bcf86cd799439011 \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <h3>
+                        <span class="method put">PUT</span>
+                        Actualizar Estado del Pedido
+                    </h3>
+                    <div class="url">/orders/:id/status</div>
+                    <div class="description">
+                        Actualiza el estado de un pedido. Solo administradores pueden cambiar estados.
+                    </div>
+
+                    <div class="security">
+                        <strong>🔒 Autenticación:</strong> Requiere token JWT de administrador
+                    </div>
+
+                    <h4>📥 Request Body</h4>
+                    <table class="table">
+                        <tr>
+                            <th>Campo</th>
+                            <th>Tipo</th>
+                            <th>Requerido</th>
+                            <th>Descripción</th>
+                        </tr>
+                        <tr>
+                            <td>status</td>
+                            <td>string</td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Nuevo estado del pedido</td>
+                        </tr>
+                        <tr>
+                            <td>notes</td>
+                            <td>string</td>
+                            <td><span class="optional">No</span></td>
+                            <td>Notas adicionales sobre el cambio</td>
+                        </tr>
+                    </table>
+
+                    <h4>📤 Response (200 OK)</h4>
+                    <div class="response-example">
+                        <strong>Estado actualizado:</strong>
+                        <div class="code-block">
+{
+  "message": "Estado del pedido actualizado exitosamente",
+  "order": {
+    "_id": "507f1f77bcf86cd799439011",
+    "status": "CONFIRMED",
+    "updatedAt": "2024-01-01T00:00:00.000Z"
+  }
+}
+                        </div>
+                    </div>
+
+                    <h4>🧪 Ejemplo de Uso</h4>
+                    <div class="code-block">
+curl -X PUT http://localhost:3000/orders/507f1f77bcf86cd799439011/status \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "status": "CONFIRMED",
+    "notes": "Pedido confirmado por el sistema"
+  }'
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <h3>
+                        <span class="method delete">DELETE</span>
+                        Cancelar Pedido
+                    </h3>
+                    <div class="url">/orders/:id/cancel</div>
+                    <div class="description">
+                        Cancela un pedido. Solo se pueden cancelar pedidos en estado PENDING o CONFIRMED.
+                    </div>
+
+                    <div class="security">
+                        <strong>🔒 Autenticación:</strong> Requiere token JWT de usuario o administrador
+                    </div>
+
+                    <h4>📥 Request Body</h4>
+                    <table class="table">
+                        <tr>
+                            <th>Campo</th>
+                            <th>Tipo</th>
+                            <th>Requerido</th>
+                            <th>Descripción</th>
+                        </tr>
+                        <tr>
+                            <td>reason</td>
+                            <td>string</td>
+                            <td><span class="optional">No</span></td>
+                            <td>Motivo de la cancelación</td>
+                        </tr>
+                    </table>
+
+                    <h4>📤 Response (200 OK)</h4>
+                    <div class="response-example">
+                        <strong>Pedido cancelado:</strong>
+                        <div class="code-block">
+{
+  "message": "Pedido cancelado exitosamente",
+  "order": {
+    "_id": "507f1f77bcf86cd799439011",
+    "status": "CANCELLED",
+    "updatedAt": "2024-01-01T00:00:00.000Z"
+  }
+}
+                        </div>
+                    </div>
+
+                    <h4>❌ Response (400 Bad Request)</h4>
+                    <div class="error-example">
+                        <strong>No se puede cancelar:</strong>
+                        <div class="code-block">
+{
+  "statusCode": 400,
+  "message": "No se puede cancelar un pedido en estado PREPARING",
+  "error": "Bad Request"
+}
+                        </div>
+                    </div>
+
+                    <h4>🧪 Ejemplo de Uso</h4>
+                    <div class="code-block">
+curl -X DELETE http://localhost:3000/orders/507f1f77bcf86cd799439011/cancel \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "reason": "Cambio de planes"
+  }'
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📊 Endpoints de Administración</h2>
+
+                <div class="endpoint">
+                    <h3>
+                        <span class="method get">GET</span>
+                        Listar Todos los Pedidos (Admin)
+                    </h3>
+                    <div class="url">/orders/admin/all</div>
+                    <div class="description">
+                        Obtiene todos los pedidos del sistema. Solo para administradores.
+                    </div>
+
+                    <div class="security">
+                        <strong>🔒 Autenticación:</strong> Requiere token JWT de administrador
+                    </div>
+
+                    <h4>📥 Query Parameters</h4>
+                    <table class="table">
+                        <tr>
+                            <th>Parámetro</th>
+                            <th>Tipo</th>
+                            <th>Descripción</th>
+                        </tr>
+                        <tr>
+                            <td>status</td>
+                            <td>string</td>
+                            <td>Filtrar por estado</td>
+                        </tr>
+                        <tr>
+                            <td>userId</td>
+                            <td>string</td>
+                            <td>Filtrar por usuario específico</td>
+                        </tr>
+                        <tr>
+                            <td>startDate</td>
+                            <td>string</td>
+                            <td>Fecha de inicio</td>
+                        </tr>
+                        <tr>
+                            <td>endDate</td>
+                            <td>string</td>
+                            <td>Fecha de fin</td>
+                        </tr>
+                        <tr>
+                            <td>page</td>
+                            <td>number</td>
+                            <td>Número de página</td>
+                        </tr>
+                        <tr>
+                            <td>limit</td>
+                            <td>number</td>
+                            <td>Pedidos por página</td>
+                        </tr>
+                    </table>
+
+                    <h4>🧪 Ejemplo de Uso</h4>
+                    <div class="code-block">
+curl -X GET "http://localhost:3000/orders/admin/all?status=PENDING" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <h3>
+                        <span class="method get">GET</span>
+                        Estadísticas de Pedidos (Admin)
+                    </h3>
+                    <div class="url">/orders/admin/stats</div>
+                    <div class="description">
+                        Obtiene estadísticas generales de pedidos. Solo para administradores.
+                    </div>
+
+                    <div class="security">
+                        <strong>🔒 Autenticación:</strong> Requiere token JWT de administrador
+                    </div>
+
+                    <h4>📤 Response (200 OK)</h4>
+                    <div class="response-example">
+                        <strong>Estadísticas:</strong>
+                        <div class="code-block">
+{
+  "totalOrders": 150,
+  "totalRevenue": 2500.50,
+  "averageOrderValue": 16.67,
+  "ordersByStatus": {
+    "PENDING": 10,
+    "CONFIRMED": 15,
+    "PREPARING": 8,
+    "READY": 5,
+    "DELIVERED": 110,
+    "CANCELLED": 2
+  },
+  "ordersByDate": {
+    "today": 5,
+    "thisWeek": 25,
+    "thisMonth": 100
+  }
+}
+                        </div>
+                    </div>
+
+                    <h4>🧪 Ejemplo de Uso</h4>
+                    <div class="code-block">
+curl -X GET http://localhost:3000/orders/admin/stats \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📊 Modelo de Pedido</h2>
+
+                <table class="table">
+                    <tr>
+                        <th>Campo</th>
+                        <th>Tipo</th>
+                        <th>Requerido</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td>_id</td>
+                        <td>ObjectId</td>
+                        <td><span class="required">Sí</span></td>
+                        <td>ID único del pedido</td>
+                    </tr>
+                    <tr>
+                        <td>userId</td>
+                        <td>ObjectId</td>
+                        <td><span class="required">Sí</span></td>
+                        <td>Referencia al usuario</td>
+                    </tr>
+                    <tr>
+                        <td>items</td>
+                        <td>array</td>
+                        <td><span class="required">Sí</span></td>
+                        <td>Array de productos del pedido</td>
+                    </tr>
+                    <tr>
+                        <td>total</td>
+                        <td>number</td>
+                        <td><span class="required">Sí</span></td>
+                        <td>Total antes de descuentos</td>
+                    </tr>
+                    <tr>
+                        <td>discount</td>
+                        <td>number</td>
+                        <td><span class="optional">No</span></td>
+                        <td>Descuento aplicado</td>
+                    </tr>
+                    <tr>
+                        <td>finalTotal</td>
+                        <td>number</td>
+                        <td><span class="required">Sí</span></td>
+                        <td>Total final después de descuentos</td>
+                    </tr>
+                    <tr>
+                        <td>status</td>
+                        <td>string</td>
+                        <td><span class="required">Sí</span></td>
+                        <td>Estado del pedido</td>
+                    </tr>
+                    <tr>
+                        <td>couponId</td>
+                        <td>ObjectId</td>
+                        <td><span class="optional">No</span></td>
+                        <td>Referencia al cupón usado</td>
+                    </tr>
+                    <tr>
+                        <td>deliveryAddress</td>
+                        <td>object</td>
+                        <td><span class="optional">No</span></td>
+                        <td>Dirección de entrega</td>
+                    </tr>
+                    <tr>
+                        <td>createdAt</td>
+                        <td>Date</td>
+                        <td><span class="required">Sí</span></td>
+                        <td>Fecha de creación</td>
+                    </tr>
+                    <tr>
+                        <td>updatedAt</td>
+                        <td>Date</td>
+                        <td><span class="required">Sí</span></td>
+                        <td>Fecha de última actualización</td>
+                    </tr>
+                </table>
+
+                <h3>📦 Estructura de Items</h3>
+                <table class="table">
+                    <tr>
+                        <th>Campo</th>
+                        <th>Tipo</th>
+                        <th>Requerido</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td>productId</td>
+                        <td>ObjectId</td>
+                        <td><span class="required">Sí</span></td>
+                        <td>ID del producto</td>
+                    </tr>
+                    <tr>
+                        <td>name</td>
+                        <td>string</td>
+                        <td><span class="required">Sí</span></td>
+                        <td>Nombre del producto</td>
+                    </tr>
+                    <tr>
+                        <td>quantity</td>
+                        <td>number</td>
+                        <td><span class="required">Sí</span></td>
+                        <td>Cantidad del producto</td>
+                    </tr>
+                    <tr>
+                        <td>price</td>
+                        <td>number</td>
+                        <td><span class="required">Sí</span></td>
+                        <td>Precio unitario</td>
+                    </tr>
+                    <tr>
+                        <td>notes</td>
+                        <td>string</td>
+                        <td><span class="optional">No</span></td>
+                        <td>Notas especiales</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="section">
+                <h2>📋 Códigos de Estado HTTP</h2>
+                
+                <table class="table">
+                    <tr>
+                        <th>Código</th>
+                        <th>Descripción</th>
+                        <th>Uso</th>
+                    </tr>
+                    <tr>
+                        <td>200</td>
+                        <td>OK</td>
+                        <td>Operación exitosa</td>
+                    </tr>
+                    <tr>
+                        <td>201</td>
+                        <td>Created</td>
+                        <td>Pedido creado exitosamente</td>
+                    </tr>
+                    <tr>
+                        <td>400</td>
+                        <td>Bad Request</td>
+                        <td>Datos de entrada inválidos</td>
+                    </tr>
+                    <tr>
+                        <td>401</td>
+                        <td>Unauthorized</td>
+                        <td>Token inválido o no proporcionado</td>
+                    </tr>
+                    <tr>
+                        <td>403</td>
+                        <td>Forbidden</td>
+                        <td>Acceso denegado</td>
+                    </tr>
+                    <tr>
+                        <td>404</td>
+                        <td>Not Found</td>
+                        <td>Pedido no encontrado</td>
+                    </tr>
+                    <tr>
+                        <td>409</td>
+                        <td>Conflict</td>
+                        <td>Estado de pedido inválido para la operación</td>
+                    </tr>
+                    <tr>
+                        <td>500</td>
+                        <td>Internal Server Error</td>
+                        <td>Error interno del servidor</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

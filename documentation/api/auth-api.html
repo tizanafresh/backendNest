@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API de Autenticación - Tizanas Fresh</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 40px;
+        }
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            border-left: 5px solid #e74c3c;
+        }
+        .section h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            font-size: 1.8em;
+        }
+        .endpoint {
+            background: white;
+            margin: 20px 0;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #3498db;
+        }
+        .endpoint h3 {
+            color: #2c3e50;
+            margin-top: 0;
+            font-size: 1.4em;
+        }
+        .method {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-right: 10px;
+            color: white;
+        }
+        .post { background: #27ae60; }
+        .get { background: #3498db; }
+        .put { background: #f39c12; }
+        .delete { background: #e74c3c; }
+        .url {
+            font-family: 'Courier New', monospace;
+            background: #f1f2f6;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 1em;
+            margin: 10px 0;
+            display: block;
+        }
+        .description {
+            color: #7f8c8d;
+            margin: 15px 0;
+        }
+        .overview {
+            background: #e8f4fd;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .use-case {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .response-example {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .error-example {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        .table th {
+            background: #34495e;
+            color: white;
+        }
+        .table tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+        .required {
+            background: #e74c3c;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.8em;
+        }
+        .optional {
+            background: #f39c12;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.8em;
+        }
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .security {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .test-data {
+            background: #e8f5e8;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 API de Autenticación</h1>
+            <p>Tizanas Fresh - Documentación de Endpoints de Autenticación</p>
+            <p>Módulo de autenticación JWT con gestión de usuarios</p>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2>📋 Descripción General</h2>
+                <p>El módulo de autenticación de Tizanas Fresh proporciona un sistema completo de autenticación y autorización basado en JWT (JSON Web Tokens). Este módulo permite a los usuarios registrarse, iniciar sesión y acceder a funcionalidades protegidas de la aplicación.</p>
+                
+                <div class="overview">
+                    <strong>🎯 Funcionalidades Principales:</strong>
+                    <ul>
+                        <li><strong>Autenticación JWT:</strong> Sistema de tokens seguros para mantener sesiones de usuario</li>
+                        <li><strong>Hash de Contraseñas:</strong> Encriptación segura con bcrypt para proteger credenciales</li>
+                        <li><strong>Validación de Tokens:</strong> Verificación automática de tokens en cada petición</li>
+                        <li><strong>Gestión de Perfiles:</strong> Acceso a información del usuario autenticado</li>
+                        <li><strong>Roles de Usuario:</strong> Sistema de niveles (BRONZE, SILVER, GOLD, PLATINUM)</li>
+                    </ul>
+                </div>
+
+                <div class="security">
+                    <strong>🔒 Medidas de Seguridad:</strong>
+                    <ul>
+                        <li>Contraseñas hasheadas con bcrypt (salt rounds: 10)</li>
+                        <li>JWT tokens con expiración configurable (24h por defecto)</li>
+                        <li>Validación de tokens en cada request autenticado</li>
+                        <li>Protección de rutas con guards de NestJS</li>
+                        <li>Validación de entrada con DTOs</li>
+                    </ul>
+                </div>
+
+                <div class="test-data">
+                    <strong>🧪 Datos de Prueba Disponibles:</strong>
+                    <ul>
+                        <li><strong>Admin:</strong> admin@tizanafresh.com / password123</li>
+                        <li><strong>María:</strong> maria@example.com / password123</li>
+                        <li><strong>Carlos:</strong> carlos@example.com / password123</li>
+                        <li><strong>Ana:</strong> ana@example.com / password123</li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <strong>📝 Nota:</strong> Todos los endpoints de autenticación están disponibles en el prefijo <code>/auth</code> y el servidor corre en <code>http://localhost:5001</code>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔑 Endpoints de Autenticación</h2>
+
+                <div class="endpoint">
+                    <h3>
+                        <span class="method post">POST</span>
+                        Login de Usuario
+                    </h3>
+                    <div class="url">/auth/login</div>
+                    
+                    <div class="overview">
+                        <strong>📖 Descripción General:</strong>
+                        <p>Este endpoint permite a los usuarios autenticarse en el sistema proporcionando su email y contraseña. Si las credenciales son válidas, devuelve un token JWT que debe ser incluido en el header Authorization de todas las peticiones posteriores.</p>
+                    </div>
+
+                    <div class="use-case">
+                        <strong>🎯 Casos de Uso:</strong>
+                        <ul>
+                            <li><strong>Login inicial:</strong> Usuario accede a la aplicación por primera vez</li>
+                            <li><strong>Renovación de sesión:</strong> Usuario vuelve a la aplicación después de cerrar sesión</li>
+                            <li><strong>Cambio de dispositivo:</strong> Usuario accede desde un nuevo dispositivo</li>
+                            <li><strong>Integración con frontend:</strong> Aplicación móvil o web que necesita autenticar usuarios</li>
+                        </ul>
+                    </div>
+
+                    <h4>📥 Request Body</h4>
+                    <table class="table">
+                        <tr>
+                            <th>Campo</th>
+                            <th>Tipo</th>
+                            <th>Requerido</th>
+                            <th>Descripción</th>
+                            <th>Ejemplo</th>
+                        </tr>
+                        <tr>
+                            <td>email</td>
+                            <td>string</td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Email válido del usuario</td>
+                            <td>admin@tizanafresh.com</td>
+                        </tr>
+                        <tr>
+                            <td>password</td>
+                            <td>string</td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Contraseña del usuario (mín. 6 caracteres)</td>
+                            <td>password123</td>
+                        </tr>
+                    </table>
+
+                    <h4>📤 Response (200 OK)</h4>
+                    <div class="response-example">
+                        <strong>Ejemplo de respuesta exitosa:</strong>
+                        <div class="code-block">
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MDdmMWY3N2JjZjg2Y2Q3OTk0MzkwMTEiLCJlbWFpbCI6ImFkbWluQHRpemFuYWZyZXNoLmNvbSIsInJvbGUiOiJQTEFUSU5VTSIsImlhdCI6MTcwMzAwMDAwMCwiZXhwIjoxNzAzMDg2NDAwfQ.example",
+  "user": {
+    "id": "507f1f77bcf86cd799439011",
+    "email": "admin@tizanafresh.com",
+    "role": "PLATINUM",
+    "name": "Admin Tizanas",
+    "points": 1000,
+    "level": "PLATINUM"
+  }
+}
+                        </div>
+                    </div>
+
+                    <h4>❌ Response (401 Unauthorized)</h4>
+                    <div class="error-example">
+                        <strong>Credenciales inválidas:</strong>
+                        <div class="code-block">
+{
+  "statusCode": 401,
+  "message": "Credenciales inválidas",
+  "error": "Unauthorized"
+}
+                        </div>
+                    </div>
+
+                    <h4>❌ Response (400 Bad Request)</h4>
+                    <div class="error-example">
+                        <strong>Datos faltantes o inválidos:</strong>
+                        <div class="code-block">
+{
+  "statusCode": 400,
+  "message": ["email must be an email", "password should not be empty"],
+  "error": "Bad Request"
+}
+                        </div>
+                    </div>
+
+                    <h4>🧪 Ejemplo de Uso con cURL</h4>
+                    <div class="code-block">
+curl -X POST http://localhost:5001/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "admin@tizanafresh.com",
+    "password": "password123"
+  }'
+                    </div>
+
+                    <h4>🧪 Ejemplo de Uso con JavaScript</h4>
+                    <div class="code-block">
+const response = await fetch('http://localhost:5001/auth/login', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    email: 'admin@tizanafresh.com',
+    password: 'password123'
+  })
+});
+
+const data = await response.json();
+console.log('Token:', data.access_token);
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <h3>
+                        <span class="method post">POST</span>
+                        Login con Guard Local
+                    </h3>
+                    <div class="url">/auth/login-local</div>
+                    
+                    <div class="overview">
+                        <strong>📖 Descripción General:</strong>
+                        <p>Endpoint alternativo que utiliza Passport Local Strategy para autenticación. Proporciona la misma funcionalidad que /auth/login pero con validación adicional del guard local de Passport.</p>
+                    </div>
+
+                    <div class="use-case">
+                        <strong>🎯 Casos de Uso:</strong>
+                        <ul>
+                            <li><strong>Autenticación con Passport:</strong> Cuando se requiere usar la estrategia local de Passport</li>
+                            <li><strong>Validación adicional:</strong> Cuando se necesita validación extra en el proceso de login</li>
+                            <li><strong>Compatibilidad:</strong> Para mantener compatibilidad con sistemas que usan Passport</li>
+                        </ul>
+                    </div>
+
+                    <div class="note">
+                        <strong>📝 Nota:</strong> Este endpoint utiliza el mismo request body y response que /auth/login pero con validación adicional del guard local.
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <h3>
+                        <span class="method get">GET</span>
+                        Obtener Perfil de Usuario
+                    </h3>
+                    <div class="url">/auth/profile</div>
+                    
+                    <div class="overview">
+                        <strong>📖 Descripción General:</strong>
+                        <p>Obtiene la información completa del perfil del usuario autenticado. Este endpoint requiere un token JWT válido en el header de autorización y devuelve todos los datos del usuario incluyendo su nivel de fidelización, puntos acumulados y código QR.</p>
+                    </div>
+
+                    <div class="use-case">
+                        <strong>🎯 Casos de Uso:</strong>
+                        <ul>
+                            <li><strong>Dashboard de usuario:</strong> Mostrar información personal en el panel de usuario</li>
+                            <li><strong>Verificación de sesión:</strong> Confirmar que el usuario está autenticado</li>
+                            <li><strong>Mostrar puntos de fidelización:</strong> Visualizar puntos acumulados y nivel</li>
+                            <li><strong>Generar código QR:</strong> Obtener el código QR personal del usuario</li>
+                            <li><strong>Actualizar información:</strong> Obtener datos actualizados del perfil</li>
+                        </ul>
+                    </div>
+
+                    <h4>🔒 Autenticación</h4>
+                    <div class="security">
+                        <strong>Header requerido:</strong> <code>Authorization: Bearer {token}</code>
+                    </div>
+
+                    <h4>📤 Response (200 OK)</h4>
+                    <div class="response-example">
+                        <strong>Información completa del usuario:</strong>
+                        <div class="code-block">
+{
+  "id": "507f1f77bcf86cd799439011",
+  "email": "admin@tizanafresh.com",
+  "role": "PLATINUM",
+  "name": "Admin Tizanas",
+  "phone": "+1234567890",
+  "points": 1000,
+  "level": "PLATINUM",
+  "qrCode": "QR_ADMIN_001",
+  "createdAt": "2024-01-01T00:00:00.000Z",
+  "updatedAt": "2024-01-15T10:30:00.000Z"
+}
+                        </div>
+                    </div>
+
+                    <h4>❌ Response (401 Unauthorized)</h4>
+                    <div class="error-example">
+                        <strong>Token inválido o expirado:</strong>
+                        <div class="code-block">
+{
+  "statusCode": 401,
+  "message": "Unauthorized",
+  "error": "Unauthorized"
+}
+                        </div>
+                    </div>
+
+                    <h4>🧪 Ejemplo de Uso con cURL</h4>
+                    <div class="code-block">
+curl -X GET http://localhost:5001/auth/profile \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MDdmMWY3N2JjZjg2Y2Q3OTk0MzkwMTEiLCJlbWFpbCI6ImFkbWluQHRpemFuYWZyZXNoLmNvbSIsInJvbGUiOiJQTEFUSU5VTSIsImlhdCI6MTcwMzAwMDAwMCwiZXhwIjoxNzAzMDg2NDAwfQ.example"
+                    </div>
+
+                    <h4>🧪 Ejemplo de Uso con JavaScript</h4>
+                    <div class="code-block">
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...';
+
+const response = await fetch('http://localhost:5001/auth/profile', {
+  method: 'GET',
+  headers: {
+    'Authorization': `Bearer ${token}`
+  }
+});
+
+const userProfile = await response.json();
+console.log('Usuario:', userProfile.name);
+console.log('Puntos:', userProfile.points);
+console.log('Nivel:', userProfile.level);
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <h3>
+                        <span class="method get">GET</span>
+                        Verificar Token
+                    </h3>
+                    <div class="url">/auth/verify</div>
+                    
+                    <div class="overview">
+                        <strong>📖 Descripción General:</strong>
+                        <p>Verifica si el token JWT proporcionado es válido y no ha expirado. Este endpoint es útil para validar tokens en el frontend o para verificar la autenticación antes de realizar operaciones sensibles.</p>
+                    </div>
+
+                    <div class="use-case">
+                        <strong>🎯 Casos de Uso:</strong>
+                        <ul>
+                            <li><strong>Validación de sesión:</strong> Verificar si el usuario sigue autenticado</li>
+                            <li><strong>Renovación de token:</strong> Comprobar si el token necesita renovación</li>
+                            <li><strong>Protección de rutas:</strong> Validar autenticación antes de mostrar contenido</li>
+                            <li><strong>Debugging:</strong> Verificar problemas de autenticación</li>
+                            <li><strong>Integración con frontend:</strong> Validar tokens en aplicaciones cliente</li>
+                        </ul>
+                    </div>
+
+                    <h4>🔒 Autenticación</h4>
+                    <div class="security">
+                        <strong>Header requerido:</strong> <code>Authorization: Bearer {token}</code>
+                    </div>
+
+                    <h4>📤 Response (200 OK)</h4>
+                    <div class="response-example">
+                        <strong>Token válido:</strong>
+                        <div class="code-block">
+{
+  "message": "Token válido",
+  "user": {
+    "id": "507f1f77bcf86cd799439011",
+    "email": "admin@tizanafresh.com",
+    "role": "PLATINUM"
+  },
+  "expiresIn": 86400
+}
+                        </div>
+                    </div>
+
+                    <h4>❌ Response (401 Unauthorized)</h4>
+                    <div class="error-example">
+                        <strong>Token inválido o expirado:</strong>
+                        <div class="code-block">
+{
+  "statusCode": 401,
+  "message": "Token inválido o expirado",
+  "error": "Unauthorized"
+}
+                        </div>
+                    </div>
+
+                    <h4>🧪 Ejemplo de Uso con cURL</h4>
+                    <div class="code-block">
+curl -X GET http://localhost:5001/auth/verify \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MDdmMWY3N2JjZjg2Y2Q3OTk0MzkwMTEiLCJlbWFpbCI6ImFkbWluQHRpemFuYWZyZXNoLmNvbSIsInJvbGUiOiJQTEFUSU5VTSIsImlhdCI6MTcwMzAwMDAwMCwiZXhwIjoxNzAzMDg2NDAwfQ.example"
+                    </div>
+
+                    <h4>🧪 Ejemplo de Uso con JavaScript</h4>
+                    <div class="code-block">
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...';
+
+const response = await fetch('http://localhost:5001/auth/verify', {
+  method: 'GET',
+  headers: {
+    'Authorization': `Bearer ${token}`
+  }
+});
+
+if (response.ok) {
+  const data = await response.json();
+  console.log('Token válido para:', data.user.email);
+} else {
+  console.log('Token inválido, redirigir a login');
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>👥 Modelo de Usuario</h2>
+                
+                <table class="table">
+                    <tr>
+                        <th>Campo</th>
+                        <th>Tipo</th>
+                        <th>Requerido</th>
+                        <th>Descripción</th>
+                        <th>Ejemplo</th>
+                    </tr>
+                    <tr>
+                        <td>_id</td>
+                        <td>ObjectId</td>
+                        <td><span class="required">Sí</span></td>
+                        <td>ID único del usuario</td>
+                        <td>507f1f77bcf86cd799439011</td>
+                    </tr>
+                    <tr>
+                        <td>name</td>
+                        <td>string</td>
+                        <td><span class="required">Sí</span></td>
+                        <td>Nombre completo del usuario</td>
+                        <td>Admin Tizanas</td>
+                    </tr>
+                    <tr>
+                        <td>email</td>
+                        <td>string</td>
+                        <td><span class="required">Sí</span></td>
+                        <td>Email único del usuario</td>
+                        <td>admin@tizanafresh.com</td>
+                    </tr>
+                    <tr>
+                        <td>password</td>
+                        <td>string</td>
+                        <td><span class="required">Sí</span></td>
+                        <td>Contraseña hasheada</td>
+                        <td>$2b$10$...</td>
+                    </tr>
+                    <tr>
+                        <td>phone</td>
+                        <td>string</td>
+                        <td><span class="optional">No</span></td>
+                        <td>Número de teléfono</td>
+                        <td>+1234567890</td>
+                    </tr>
+                    <tr>
+                        <td>points</td>
+                        <td>number</td>
+                        <td><span class="optional">No</span></td>
+                        <td>Puntos de fidelización</td>
+                        <td>1000</td>
+                    </tr>
+                    <tr>
+                        <td>level</td>
+                        <td>string</td>
+                        <td><span class="optional">No</span></td>
+                        <td>Nivel de fidelización</td>
+                        <td>PLATINUM</td>
+                    </tr>
+                    <tr>
+                        <td>qrCode</td>
+                        <td>string</td>
+                        <td><span class="optional">No</span></td>
+                        <td>Código QR único</td>
+                        <td>QR_ADMIN_001</td>
+                    </tr>
+                    <tr>
+                        <td>createdAt</td>
+                        <td>Date</td>
+                        <td><span class="optional">No</span></td>
+                        <td>Fecha de creación</td>
+                        <td>2024-01-01T00:00:00.000Z</td>
+                    </tr>
+                    <tr>
+                        <td>updatedAt</td>
+                        <td>Date</td>
+                        <td><span class="optional">No</span></td>
+                        <td>Fecha de actualización</td>
+                        <td>2024-01-15T10:30:00.000Z</td>
+                    </tr>
+                </table>
+
+                <div class="note">
+                    <strong>📝 Niveles de Fidelización:</strong>
+                    <ul>
+                        <li><strong>BRONZE:</strong> 0-99 puntos</li>
+                        <li><strong>SILVER:</strong> 100-499 puntos</li>
+                        <li><strong>GOLD:</strong> 500-999 puntos</li>
+                        <li><strong>PLATINUM:</strong> 1000+ puntos</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔧 Configuración y Variables de Entorno</h2>
+                
+                <table class="table">
+                    <tr>
+                        <th>Variable</th>
+                        <th>Descripción</th>
+                        <th>Valor por Defecto</th>
+                        <th>Ejemplo</th>
+                    </tr>
+                    <tr>
+                        <td>JWT_SECRET</td>
+                        <td>Clave secreta para firmar JWT</td>
+                        <td>tizanafresh-super-secret-key</td>
+                        <td>my-super-secret-jwt-key-2024</td>
+                    </tr>
+                    <tr>
+                        <td>JWT_EXPIRES_IN</td>
+                        <td>Tiempo de expiración del token</td>
+                        <td>24h</td>
+                        <td>7d, 30m, 1h</td>
+                    </tr>
+                    <tr>
+                        <td>PORT</td>
+                        <td>Puerto del servidor</td>
+                        <td>3000</td>
+                        <td>5001</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="section">
+                <h2>🚀 Flujo de Autenticación Completo</h2>
+                
+                <div class="overview">
+                    <strong>1. Login del Usuario:</strong>
+                    <div class="code-block">
+POST /auth/login
+{
+  "email": "admin@tizanafresh.com",
+  "password": "password123"
+}
+
+Response:
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": { ... }
+}
+                    </div>
+                </div>
+
+                <div class="overview">
+                    <strong>2. Usar Token en Peticiones:</strong>
+                    <div class="code-block">
+GET /auth/profile
+Headers:
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+Response:
+{
+  "id": "507f1f77bcf86cd799439011",
+  "email": "admin@tizanafresh.com",
+  "role": "PLATINUM",
+  ...
+}
+                    </div>
+                </div>
+
+                <div class="overview">
+                    <strong>3. Verificar Token:</strong>
+                    <div class="code-block">
+GET /auth/verify
+Headers:
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+Response:
+{
+  "message": "Token válido",
+  "user": { ... }
+}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

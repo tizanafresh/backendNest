@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación del Esquema de Base de Datos - Tizanas Fresh</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 40px;
+        }
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            border-left: 5px solid #27ae60;
+        }
+        .section h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            font-size: 1.8em;
+        }
+        .section h3 {
+            color: #34495e;
+            margin-top: 25px;
+            font-size: 1.4em;
+        }
+        .schema-card {
+            background: white;
+            margin: 20px 0;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #3498db;
+        }
+        .schema-card h4 {
+            color: #2c3e50;
+            margin-top: 0;
+            font-size: 1.3em;
+        }
+        .field-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .field-table th, .field-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        .field-table th {
+            background: #34495e;
+            color: white;
+        }
+        .field-table tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+        .type {
+            font-family: 'Courier New', monospace;
+            background: #e8f4fd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .required {
+            background: #e74c3c;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.8em;
+        }
+        .optional {
+            background: #f39c12;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.8em;
+        }
+        .flowchart {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .flowchart svg {
+            max-width: 100%;
+            height: auto;
+        }
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .relationship {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .index-info {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗄️ Tizanas Fresh</h1>
+            <p>Documentación del Esquema de Base de Datos</p>
+            <p>MongoDB + Mongoose - Versión 1.0</p>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2>📋 Introducción</h2>
+                <p>Este documento describe el esquema completo de la base de datos MongoDB para el sistema Tizanas Fresh. La base de datos está diseñada para soportar todas las funcionalidades del frontend React Native, incluyendo usuarios, productos, pedidos, fidelización, cupones y notificaciones.</p>
+                
+                <div class="relationship">
+                    <strong>Nota:</strong> MongoDB es una base de datos NoSQL orientada a documentos, por lo que las relaciones se manejan principalmente a través de referencias (ObjectIds) y documentos embebidos según sea apropiado.
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔗 Diagrama de Relaciones de Entidades</h2>
+                <div class="flowchart">
+                    <svg width="1000" height="700" viewBox="0 0 1000 700">
+                        <defs>
+                            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="#333" />
+                            </marker>
+                        </defs>
+                        
+                        <!-- Users Collection -->
+                        <rect x="50" y="50" width="150" height="100" rx="10" fill="#3498db" stroke="#2980b9" stroke-width="3"/>
+                        <text x="125" y="85" text-anchor="middle" fill="white" font-weight="bold">Users</text>
+                        <text x="125" y="105" text-anchor="middle" fill="white" font-size="12">_id, name, email</text>
+                        <text x="125" y="120" text-anchor="middle" fill="white" font-size="12">password, phone, points</text>
+                        <text x="125" y="135" text-anchor="middle" fill="white" font-size="12">level, qrCode</text>
+                        
+                        <!-- Products Collection -->
+                        <rect x="300" y="50" width="150" height="100" rx="10" fill="#2ecc71" stroke="#27ae60" stroke-width="3"/>
+                        <text x="375" y="85" text-anchor="middle" fill="white" font-weight="bold">Products</text>
+                        <text x="375" y="105" text-anchor="middle" fill="white" font-size="12">_id, name, description</text>
+                        <text x="375" y="120" text-anchor="middle" fill="white" font-size="12">price, category, image</text>
+                        <text x="375" y="135" text-anchor="middle" fill="white" font-size="12">available, ingredients</text>
+                        
+                        <!-- Orders Collection -->
+                        <rect x="550" y="50" width="150" height="100" rx="10" fill="#e74c3c" stroke="#c0392b" stroke-width="3"/>
+                        <text x="625" y="85" text-anchor="middle" fill="white" font-weight="bold">Orders</text>
+                        <text x="625" y="105" text-anchor="middle" fill="white" font-size="12">_id, userId, items[]</text>
+                        <text x="625" y="120" text-anchor="middle" fill="white" font-size="12">total, status, createdAt</text>
+                        <text x="625" y="135" text-anchor="middle" fill="white" font-size="12">couponId, deliveryAddress</text>
+                        
+                        <!-- Coupons Collection -->
+                        <rect x="800" y="50" width="150" height="100" rx="10" fill="#f39c12" stroke="#e67e22" stroke-width="3"/>
+                        <text x="875" y="85" text-anchor="middle" fill="white" font-weight="bold">Coupons</text>
+                        <text x="875" y="105" text-anchor="middle" fill="white" font-size="12">_id, code, discount</text>
+                        <text x="875" y="120" text-anchor="middle" fill="white" font-size="12">type, minAmount, expiresAt</text>
+                        <text x="875" y="135" text-anchor="middle" fill="white" font-size="12">used, userId</text>
+                        
+                        <!-- Notifications Collection -->
+                        <rect x="50" y="250" width="150" height="100" rx="10" fill="#9b59b6" stroke="#8e44ad" stroke-width="3"/>
+                        <text x="125" y="285" text-anchor="middle" fill="white" font-weight="bold">Notifications</text>
+                        <text x="125" y="305" text-anchor="middle" fill="white" font-size="12">_id, userId, title</text>
+                        <text x="125" y="320" text-anchor="middle" fill="white" font-size="12">message, type, read</text>
+                        <text x="125" y="335" text-anchor="middle" fill="white" font-size="12">createdAt</text>
+                        
+                        <!-- Loyalty History Collection -->
+                        <rect x="300" y="250" width="150" height="100" rx="10" fill="#1abc9c" stroke="#16a085" stroke-width="3"/>
+                        <text x="375" y="285" text-anchor="middle" fill="white" font-weight="bold">LoyaltyHistory</text>
+                        <text x="375" y="305" text-anchor="middle" fill="white" font-size="12">_id, userId, type</text>
+                        <text x="375" y="320" text-anchor="middle" fill="white" font-size="12">points, description</text>
+                        <text x="375" y="335" text-anchor="middle" fill="white" font-size="12">createdAt</text>
+                        
+                        <!-- Device Tokens Collection -->
+                        <rect x="550" y="250" width="150" height="100" rx="10" fill="#34495e" stroke="#2c3e50" stroke-width="3"/>
+                        <text x="625" y="285" text-anchor="middle" fill="white" font-weight="bold">DeviceTokens</text>
+                        <text x="625" y="305" text-anchor="middle" fill="white" font-size="12">_id, userId, token</text>
+                        <text x="625" y="320" text-anchor="middle" fill="white" font-size="12">platform, active</text>
+                        <text x="625" y="335" text-anchor="middle" fill="white" font-size="12">createdAt</text>
+                        
+                        <!-- Categories Collection -->
+                        <rect x="800" y="250" width="150" height="100" rx="10" fill="#95a5a6" stroke="#7f8c8d" stroke-width="3"/>
+                        <text x="875" y="285" text-anchor="middle" fill="white" font-weight="bold">Categories</text>
+                        <text x="875" y="305" text-anchor="middle" fill="white" font-size="12">_id, name, description</text>
+                        <text x="875" y="320" text-anchor="middle" fill="white" font-size="12">image, active</text>
+                        <text x="875" y="335" text-anchor="middle" fill="white" font-size="12">createdAt</text>
+                        
+                        <!-- Flechas de Relaciones -->
+                        <line x1="200" y1="100" x2="300" y2="100" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <line x1="200" y1="100" x2="550" y2="100" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <line x1="200" y1="100" x2="800" y2="100" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <line x1="200" y1="100" x2="50" y2="250" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <line x1="200" y1="100" x2="300" y2="250" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <line x1="200" y1="100" x2="550" y2="250" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <line x1="450" y1="100" x2="550" y2="100" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <line x1="700" y1="100" x2="800" y2="100" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <line x1="950" y1="100" x2="950" y2="250" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Texto en flechas -->
+                        <text x="250" y="95" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">1:N</text>
+                        <text x="375" y="95" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">1:N</text>
+                        <text x="500" y="95" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">1:N</text>
+                        <text x="625" y="95" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">1:N</text>
+                        <text x="750" y="95" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">1:N</text>
+                        <text x="875" y="95" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">1:N</text>
+                        <text x="125" y="175" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">1:N</text>
+                        <text x="375" y="175" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">1:N</text>
+                        <text x="625" y="175" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">1:N</text>
+                        <text x="875" y="175" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">1:N</text>
+                        <text x="875" y="225" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">1:N</text>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📊 Esquemas de Colecciones</h2>
+                
+                <div class="schema-card">
+                    <h4>👤 Users Collection</h4>
+                    <p>Almacena información de usuarios registrados en la aplicación.</p>
+                    
+                    <table class="field-table">
+                        <tr>
+                            <th>Campo</th>
+                            <th>Tipo</th>
+                            <th>Requerido</th>
+                            <th>Descripción</th>
+                        </tr>
+                        <tr>
+                            <td>_id</td>
+                            <td><span class="type">ObjectId</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Identificador único del usuario</td>
+                        </tr>
+                        <tr>
+                            <td>name</td>
+                            <td><span class="type">String</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Nombre completo del usuario</td>
+                        </tr>
+                        <tr>
+                            <td>email</td>
+                            <td><span class="type">String</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Email único del usuario</td>
+                        </tr>
+                        <tr>
+                            <td>password</td>
+                            <td><span class="type">String</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Contraseña encriptada</td>
+                        </tr>
+                        <tr>
+                            <td>phone</td>
+                            <td><span class="type">String</span></td>
+                            <td><span class="optional">No</span></td>
+                            <td>Número de teléfono</td>
+                        </tr>
+                        <tr>
+                            <td>points</td>
+                            <td><span class="type">Number</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Puntos de fidelización (default: 0)</td>
+                        </tr>
+                        <tr>
+                            <td>level</td>
+                            <td><span class="type">String</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Nivel de fidelización (BRONZE, SILVER, GOLD, PLATINUM)</td>
+                        </tr>
+                        <tr>
+                            <td>qrCode</td>
+                            <td><span class="type">String</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Código QR único del usuario</td>
+                        </tr>
+                        <tr>
+                            <td>createdAt</td>
+                            <td><span class="type">Date</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Fecha de creación</td>
+                        </tr>
+                        <tr>
+                            <td>updatedAt</td>
+                            <td><span class="type">Date</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Fecha de última actualización</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="index-info">
+                        <strong>Índices:</strong>
+                        <ul>
+                            <li>email (único)</li>
+                            <li>qrCode (único)</li>
+                            <li>createdAt</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="schema-card">
+                    <h4>🍹 Products Collection</h4>
+                    <p>Almacena información de las tizanas y productos disponibles.</p>
+                    
+                    <table class="field-table">
+                        <tr>
+                            <th>Campo</th>
+                            <th>Tipo</th>
+                            <th>Requerido</th>
+                            <th>Descripción</th>
+                        </tr>
+                        <tr>
+                            <td>_id</td>
+                            <td><span class="type">ObjectId</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Identificador único del producto</td>
+                        </tr>
+                        <tr>
+                            <td>name</td>
+                            <td><span class="type">String</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Nombre del producto</td>
+                        </tr>
+                        <tr>
+                            <td>description</td>
+                            <td><span class="type">String</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Descripción detallada</td>
+                        </tr>
+                        <tr>
+                            <td>price</td>
+                            <td><span class="type">Number</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Precio del producto</td>
+                        </tr>
+                        <tr>
+                            <td>category</td>
+                            <td><span class="type">ObjectId</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Referencia a Categories</td>
+                        </tr>
+                        <tr>
+                            <td>image</td>
+                            <td><span class="type">String</span></td>
+                            <td><span class="optional">No</span></td>
+                            <td>URL de la imagen</td>
+                        </tr>
+                        <tr>
+                            <td>available</td>
+                            <td><span class="type">Boolean</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Disponibilidad del producto</td>
+                        </tr>
+                        <tr>
+                            <td>ingredients</td>
+                            <td><span class="type">[String]</span></td>
+                            <td><span class="optional">No</span></td>
+                            <td>Lista de ingredientes</td>
+                        </tr>
+                        <tr>
+                            <td>nutritionalInfo</td>
+                            <td><span class="type">Object</span></td>
+                            <td><span class="optional">No</span></td>
+                            <td>Información nutricional</td>
+                        </tr>
+                        <tr>
+                            <td>createdAt</td>
+                            <td><span class="type">Date</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Fecha de creación</td>
+                        </tr>
+                        <tr>
+                            <td>updatedAt</td>
+                            <td><span class="type">Date</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Fecha de última actualización</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="index-info">
+                        <strong>Índices:</strong>
+                        <ul>
+                            <li>name (texto)</li>
+                            <li>category</li>
+                            <li>available</li>
+                            <li>price</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="schema-card">
+                    <h4>📦 Orders Collection</h4>
+                    <p>Almacena información de los pedidos realizados por los usuarios.</p>
+                    
+                    <table class="field-table">
+                        <tr>
+                            <th>Campo</th>
+                            <th>Tipo</th>
+                            <th>Requerido</th>
+                            <th>Descripción</th>
+                        </tr>
+                        <tr>
+                            <td>_id</td>
+                            <td><span class="type">ObjectId</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Identificador único del pedido</td>
+                        </tr>
+                        <tr>
+                            <td>userId</td>
+                            <td><span class="type">ObjectId</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Referencia a Users</td>
+                        </tr>
+                        <tr>
+                            <td>items</td>
+                            <td><span class="type">[Object]</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Array de productos del pedido</td>
+                        </tr>
+                        <tr>
+                            <td>total</td>
+                            <td><span class="type">Number</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Total del pedido</td>
+                        </tr>
+                        <tr>
+                            <td>discount</td>
+                            <td><span class="type">Number</span></td>
+                            <td><span class="optional">No</span></td>
+                            <td>Descuento aplicado</td>
+                        </tr>
+                        <tr>
+                            <td>finalTotal</td>
+                            <td><span class="type">Number</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Total final después de descuentos</td>
+                        </tr>
+                        <tr>
+                            <td>status</td>
+                            <td><span class="type">String</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Estado del pedido (PENDING, CONFIRMED, PREPARING, READY, DELIVERED, CANCELLED)</td>
+                        </tr>
+                        <tr>
+                            <td>couponId</td>
+                            <td><span class="type">ObjectId</span></td>
+                            <td><span class="optional">No</span></td>
+                            <td>Referencia a Coupons</td>
+                        </tr>
+                        <tr>
+                            <td>deliveryAddress</td>
+                            <td><span class="type">Object</span></td>
+                            <td><span class="optional">No</span></td>
+                            <td>Dirección de entrega</td>
+                        </tr>
+                        <tr>
+                            <td>createdAt</td>
+                            <td><span class="type">Date</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Fecha de creación</td>
+                        </tr>
+                        <tr>
+                            <td>updatedAt</td>
+                            <td><span class="type">Date</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Fecha de última actualización</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="code-block">
+// Estructura del campo items
+items: [{
+  productId: ObjectId,
+  name: String,
+  quantity: Number,
+  price: Number,
+  notes: String
+}]
+
+// Estructura del campo deliveryAddress
+deliveryAddress: {
+  street: String,
+  city: String,
+  zipCode: String,
+  instructions: String
+}
+                    </div>
+                    
+                    <div class="index-info">
+                        <strong>Índices:</strong>
+                        <ul>
+                            <li>userId</li>
+                            <li>status</li>
+                            <li>createdAt</li>
+                            <li>couponId</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="schema-card">
+                    <h4>🎫 Coupons Collection</h4>
+                    <p>Almacena información de cupones de descuento.</p>
+                    
+                    <table class="field-table">
+                        <tr>
+                            <th>Campo</th>
+                            <th>Tipo</th>
+                            <th>Requerido</th>
+                            <th>Descripción</th>
+                        </tr>
+                        <tr>
+                            <td>_id</td>
+                            <td><span class="type">ObjectId</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Identificador único del cupón</td>
+                        </tr>
+                        <tr>
+                            <td>code</td>
+                            <td><span class="type">String</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Código único del cupón</td>
+                        </tr>
+                        <tr>
+                            <td>qrCode</td>
+                            <td><span class="type">String</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Código QR del cupón</td>
+                        </tr>
+                        <tr>
+                            <td>discount</td>
+                            <td><span class="type">Number</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Valor del descuento</td>
+                        </tr>
+                        <tr>
+                            <td>type</td>
+                            <td><span class="type">String</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Tipo de descuento (PERCENTAGE, FIXED)</td>
+                        </tr>
+                        <tr>
+                            <td>minAmount</td>
+                            <td><span class="type">Number</span></td>
+                            <td><span class="optional">No</span></td>
+                            <td>Monto mínimo para aplicar</td>
+                        </tr>
+                        <tr>
+                            <td>maxUses</td>
+                            <td><span class="type">Number</span></td>
+                            <td><span class="optional">No</span></td>
+                            <td>Número máximo de usos</td>
+                        </tr>
+                        <tr>
+                            <td>usedCount</td>
+                            <td><span class="type">Number</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Número de veces usado</td>
+                        </tr>
+                        <tr>
+                            <td>expiresAt</td>
+                            <td><span class="type">Date</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Fecha de expiración</td>
+                        </tr>
+                        <tr>
+                            <td>active</td>
+                            <td><span class="type">Boolean</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Estado activo del cupón</td>
+                        </tr>
+                        <tr>
+                            <td>createdAt</td>
+                            <td><span class="type">Date</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Fecha de creación</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="index-info">
+                        <strong>Índices:</strong>
+                        <ul>
+                            <li>code (único)</li>
+                            <li>qrCode (único)</li>
+                            <li>expiresAt</li>
+                            <li>active</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="schema-card">
+                    <h4>🔔 Notifications Collection</h4>
+                    <p>Almacena notificaciones enviadas a los usuarios.</p>
+                    
+                    <table class="field-table">
+                        <tr>
+                            <th>Campo</th>
+                            <th>Tipo</th>
+                            <th>Requerido</th>
+                            <th>Descripción</th>
+                        </tr>
+                        <tr>
+                            <td>_id</td>
+                            <td><span class="type">ObjectId</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Identificador único de la notificación</td>
+                        </tr>
+                        <tr>
+                            <td>userId</td>
+                            <td><span class="type">ObjectId</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Referencia a Users</td>
+                        </tr>
+                        <tr>
+                            <td>title</td>
+                            <td><span class="type">String</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Título de la notificación</td>
+                        </tr>
+                        <tr>
+                            <td>message</td>
+                            <td><span class="type">String</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Mensaje de la notificación</td>
+                        </tr>
+                        <tr>
+                            <td>type</td>
+                            <td><span class="type">String</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Tipo (ORDER, PROMOTION, SYSTEM)</td>
+                        </tr>
+                        <tr>
+                            <td>read</td>
+                            <td><span class="type">Boolean</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Estado de lectura</td>
+                        </tr>
+                        <tr>
+                            <td>data</td>
+                            <td><span class="type">Object</span></td>
+                            <td><span class="optional">No</span></td>
+                            <td>Datos adicionales</td>
+                        </tr>
+                        <tr>
+                            <td>createdAt</td>
+                            <td><span class="type">Date</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Fecha de creación</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="index-info">
+                        <strong>Índices:</strong>
+                        <ul>
+                            <li>userId</li>
+                            <li>read</li>
+                            <li>type</li>
+                            <li>createdAt</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="schema-card">
+                    <h4>⭐ LoyaltyHistory Collection</h4>
+                    <p>Almacena el historial de puntos de fidelización.</p>
+                    
+                    <table class="field-table">
+                        <tr>
+                            <th>Campo</th>
+                            <th>Tipo</th>
+                            <th>Requerido</th>
+                            <th>Descripción</th>
+                        </tr>
+                        <tr>
+                            <td>_id</td>
+                            <td><span class="type">ObjectId</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Identificador único del registro</td>
+                        </tr>
+                        <tr>
+                            <td>userId</td>
+                            <td><span class="type">ObjectId</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Referencia a Users</td>
+                        </tr>
+                        <tr>
+                            <td>type</td>
+                            <td><span class="type">String</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Tipo (EARNED, SPENT, BONUS)</td>
+                        </tr>
+                        <tr>
+                            <td>points</td>
+                            <td><span class="type">Number</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Cantidad de puntos</td>
+                        </tr>
+                        <tr>
+                            <td>description</td>
+                            <td><span class="type">String</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Descripción de la transacción</td>
+                        </tr>
+                        <tr>
+                            <td>orderId</td>
+                            <td><span class="type">ObjectId</span></td>
+                            <td><span class="optional">No</span></td>
+                            <td>Referencia a Orders (si aplica)</td>
+                        </tr>
+                        <tr>
+                            <td>createdAt</td>
+                            <td><span class="type">Date</span></td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Fecha de creación</td>
+                        </tr>
+                    </table>
+                    
+                    <div class="index-info">
+                        <strong>Índices:</strong>
+                        <ul>
+                            <li>userId</li>
+                            <li>type</li>
+                            <li>createdAt</li>
+                            <li>orderId</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔗 Relaciones entre Colecciones</h2>
+                
+                <div class="relationship">
+                    <h4>Relaciones Principales:</h4>
+                    <ul>
+                        <li><strong>Users → Orders:</strong> Un usuario puede tener múltiples pedidos (1:N)</li>
+                        <li><strong>Users → Notifications:</strong> Un usuario puede tener múltiples notificaciones (1:N)</li>
+                        <li><strong>Users → LoyaltyHistory:</strong> Un usuario puede tener múltiples registros de puntos (1:N)</li>
+                        <li><strong>Products → Orders:</strong> Un producto puede estar en múltiples pedidos (1:N)</li>
+                        <li><strong>Coupons → Orders:</strong> Un cupón puede ser usado en múltiples pedidos (1:N)</li>
+                        <li><strong>Categories → Products:</strong> Una categoría puede tener múltiples productos (1:N)</li>
+                    </ul>
+                </div>
+                
+                <div class="relationship">
+                    <h4>Documentos Embebidos:</h4>
+                    <ul>
+                        <li><strong>Orders.items:</strong> Array de productos con cantidad y precio</li>
+                        <li><strong>Orders.deliveryAddress:</strong> Objeto con información de entrega</li>
+                        <li><strong>Products.nutritionalInfo:</strong> Objeto con información nutricional</li>
+                        <li><strong>Notifications.data:</strong> Objeto con datos adicionales</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📈 Estrategias de Optimización</h2>
+                
+                <div class="index-info">
+                    <h4>Índices Compuestos:</h4>
+                    <ul>
+                        <li><strong>Orders:</strong> {userId: 1, createdAt: -1} - Para consultas de historial</li>
+                        <li><strong>Products:</strong> {category: 1, available: 1} - Para filtros de catálogo</li>
+                        <li><strong>Notifications:</strong> {userId: 1, read: 1} - Para notificaciones no leídas</li>
+                        <li><strong>LoyaltyHistory:</strong> {userId: 1, type: 1, createdAt: -1} - Para historial de puntos</li>
+                    </ul>
+                </div>
+                
+                <div class="index-info">
+                    <h4>Índices de Texto:</h4>
+                    <ul>
+                        <li><strong>Products:</strong> name, description - Para búsquedas de productos</li>
+                        <li><strong>Users:</strong> name, email - Para búsquedas de usuarios</li>
+                    </ul>
+                </div>
+                
+                <div class="index-info">
+                    <h4>TTL Indexes:</h4>
+                    <ul>
+                        <li><strong>Coupons:</strong> expiresAt - Para limpiar cupones expirados</li>
+                        <li><strong>Notifications:</strong> createdAt - Para limpiar notificaciones antiguas</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

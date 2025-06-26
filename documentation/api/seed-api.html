@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API de Seeding - Tizanas Fresh</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 40px;
+        }
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            border-left: 5px solid #27ae60;
+        }
+        .section h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            font-size: 1.8em;
+        }
+        .endpoint {
+            background: white;
+            margin: 20px 0;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #3498db;
+        }
+        .endpoint h3 {
+            color: #2c3e50;
+            margin-top: 0;
+            font-size: 1.4em;
+        }
+        .method {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-right: 10px;
+            color: white;
+        }
+        .post { background: #27ae60; }
+        .get { background: #3498db; }
+        .url {
+            font-family: 'Courier New', monospace;
+            background: #f1f2f6;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 1em;
+            margin: 10px 0;
+            display: block;
+        }
+        .description {
+            color: #7f8c8d;
+            margin: 15px 0;
+        }
+        .overview {
+            background: #e8f4fd;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .use-case {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .warning {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .response-example {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .error-example {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        .table th {
+            background: #34495e;
+            color: white;
+        }
+        .table tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+        .required {
+            background: #e74c3c;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.8em;
+        }
+        .optional {
+            background: #f39c12;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.8em;
+        }
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .data-summary {
+            background: #e8f5e8;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌱 API de Seeding</h1>
+            <p>Tizanas Fresh - Documentación de Endpoints de Población de Datos</p>
+            <p>Módulo para poblar la base de datos con datos de prueba</p>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2>📋 Descripción General</h2>
+                <p>El módulo de seeding de Tizanas Fresh proporciona endpoints para poblar la base de datos con datos de prueba completos y realistas. Este módulo es esencial para el desarrollo, testing y demostración del sistema, creando un entorno de datos consistente y funcional.</p>
+                
+                <div class="overview">
+                    <strong>🎯 Funcionalidades Principales:</strong>
+                    <ul>
+                        <li><strong>Población Completa:</strong> Crea todos los datos necesarios para el funcionamiento del sistema</li>
+                        <li><strong>Datos Realistas:</strong> Información coherente y realista para testing</li>
+                        <li><strong>Limpieza Automática:</strong> Elimina datos existentes antes de crear nuevos</li>
+                        <li><strong>Estado de Proceso:</strong> Monitoreo del estado de la operación de seeding</li>
+                        <li><strong>Relaciones Inteligentes:</strong> Mantiene referencias correctas entre entidades</li>
+                    </ul>
+                </div>
+
+                <div class="warning">
+                    <strong>⚠️ Advertencia Importante:</strong>
+                    <ul>
+                        <li>Este módulo está diseñado SOLO para desarrollo y testing</li>
+                        <li>NO usar en producción bajo ninguna circunstancia</li>
+                        <li>Elimina TODOS los datos existentes antes de crear nuevos</li>
+                        <li>Requiere permisos de administrador para funcionar correctamente</li>
+                    </ul>
+                </div>
+
+                <div class="data-summary">
+                    <strong>📊 Datos que se Crean:</strong>
+                    <ul>
+                        <li><strong>5 Categorías:</strong> Frutas, Detox, Energética, Relajante, Especiales</li>
+                        <li><strong>5 Productos:</strong> Tizanas con ingredientes y información nutricional</li>
+                        <li><strong>4 Usuarios:</strong> Admin, María, Carlos, Ana con diferentes niveles</li>
+                        <li><strong>3 Cupones:</strong> WELCOME10, FREESHIP, LOYALTY20</li>
+                        <li><strong>2 Pedidos:</strong> Con items, direcciones y estados</li>
+                        <li><strong>4 Notificaciones:</strong> Diferentes tipos y estados</li>
+                        <li><strong>4 Registros de Fidelización:</strong> Historial de puntos</li>
+                        <li><strong>3 Tokens de Dispositivos:</strong> Para notificaciones push</li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <strong>📝 Nota:</strong> Todos los endpoints de seeding están disponibles en el prefijo <code>/seed</code> y el servidor corre en <code>http://localhost:5001</code>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🌱 Endpoints de Seeding</h2>
+
+                <div class="endpoint">
+                    <h3>
+                        <span class="method post">POST</span>
+                        Ejecutar Seeding Completo
+                    </h3>
+                    <div class="url">/seed</div>
+                    
+                    <div class="overview">
+                        <strong>📖 Descripción General:</strong>
+                        <p>Este endpoint ejecuta el proceso completo de seeding, eliminando todos los datos existentes y creando nuevos datos de prueba. El proceso es secuencial y crea las entidades en el orden correcto para mantener las referencias entre ellas.</p>
+                    </div>
+
+                    <div class="use-case">
+                        <strong>🎯 Casos de Uso:</strong>
+                        <ul>
+                            <li><strong>Configuración inicial:</strong> Poblar base de datos vacía al iniciar desarrollo</li>
+                            <li><strong>Reset de datos:</strong> Limpiar y recrear datos para testing limpio</li>
+                            <li><strong>Demostración:</strong> Preparar datos para presentaciones o demos</li>
+                            <li><strong>Testing de integración:</strong> Crear entorno consistente para pruebas</li>
+                            <li><strong>Desarrollo de frontend:</strong> Proporcionar datos realistas para desarrollo de UI</li>
+                        </ul>
+                    </div>
+
+                    <h4>📥 Request Body</h4>
+                    <div class="note">
+                        <strong>📝 Nota:</strong> Este endpoint no requiere body. Solo envía una petición POST vacía.
+                    </div>
+
+                    <h4>📤 Response (200 OK)</h4>
+                    <div class="response-example">
+                        <strong>Seeding completado exitosamente:</strong>
+                        <div class="code-block">
+{
+  "message": "Seeding completado exitosamente",
+  "summary": {
+    "categories": 5,
+    "users": 4,
+    "products": 5,
+    "coupons": 3,
+    "orders": 2,
+    "notifications": 4,
+    "loyaltyHistory": 4,
+    "deviceTokens": 3
+  },
+  "details": {
+    "categories": ["Frutas", "Detox", "Energética", "Relajante", "Especiales"],
+    "users": ["Admin Tizanas", "María González", "Carlos Rodríguez", "Ana Martínez"],
+    "products": ["Tizana de Frutos Rojos", "Tizana Tropical", "Tizana Detox Verde", "Tizana Energética", "Tizana Relajante"]
+  },
+  "timestamp": "2024-01-15T10:30:00.000Z",
+  "duration": "2.5s"
+}
+                        </div>
+                    </div>
+
+                    <h4>❌ Response (500 Internal Server Error)</h4>
+                    <div class="error-example">
+                        <strong>Error durante el seeding:</strong>
+                        <div class="code-block">
+{
+  "statusCode": 500,
+  "message": "Error durante el seeding: No se pudo conectar a la base de datos",
+  "error": "Internal Server Error"
+}
+                        </div>
+                    </div>
+
+                    <h4>🧪 Ejemplo de Uso con cURL</h4>
+                    <div class="code-block">
+curl -X POST http://localhost:5001/seed \
+  -H "Content-Type: application/json"
+                    </div>
+
+                    <h4>🧪 Ejemplo de Uso con JavaScript</h4>
+                    <div class="code-block">
+const response = await fetch('http://localhost:5001/seed', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
+
+const result = await response.json();
+console.log('Seeding completado:', result.message);
+console.log('Datos creados:', result.summary);
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <h3>
+                        <span class="method get">GET</span>
+                        Verificar Estado del Seeding
+                    </h3>
+                    <div class="url">/seed/status</div>
+                    
+                    <div class="overview">
+                        <strong>📖 Descripción General:</strong>
+                        <p>Este endpoint verifica el estado actual de la base de datos, mostrando cuántos registros existen en cada colección. Es útil para verificar si el seeding se ejecutó correctamente o para diagnosticar problemas.</p>
+                    </div>
+
+                    <div class="use-case">
+                        <strong>🎯 Casos de Uso:</strong>
+                        <ul>
+                            <li><strong>Verificación post-seeding:</strong> Confirmar que todos los datos se crearon correctamente</li>
+                            <li><strong>Diagnóstico:</strong> Verificar el estado actual de la base de datos</li>
+                            <li><strong>Monitoreo:</strong> Revisar qué datos están disponibles</li>
+                            <li><strong>Debugging:</strong> Identificar problemas en el proceso de seeding</li>
+                            <li><strong>Validación:</strong> Asegurar que las relaciones entre entidades son correctas</li>
+                        </ul>
+                    </div>
+
+                    <h4>📤 Response (200 OK)</h4>
+                    <div class="response-example">
+                        <strong>Estado actual de la base de datos:</strong>
+                        <div class="code-block">
+{
+  "status": "populated",
+  "collections": {
+    "categories": {
+      "count": 5,
+      "names": ["Frutas", "Detox", "Energética", "Relajante", "Especiales"]
+    },
+    "users": {
+      "count": 4,
+      "emails": ["admin@tizanafresh.com", "maria@example.com", "carlos@example.com", "ana@example.com"]
+    },
+    "products": {
+      "count": 5,
+      "names": ["Tizana de Frutos Rojos", "Tizana Tropical", "Tizana Detox Verde", "Tizana Energética", "Tizana Relajante"]
+    },
+    "coupons": {
+      "count": 3,
+      "codes": ["WELCOME10", "FREESHIP", "LOYALTY20"]
+    },
+    "orders": {
+      "count": 2,
+      "statuses": ["DELIVERED", "PREPARING"]
+    },
+    "notifications": {
+      "count": 4,
+      "types": ["ORDER", "PROMOTION", "SYSTEM"]
+    },
+    "loyaltyHistory": {
+      "count": 4,
+      "types": ["EARNED", "BONUS", "PROMOTION"]
+    },
+    "deviceTokens": {
+      "count": 3,
+      "platforms": ["ANDROID", "IOS"]
+    }
+  },
+  "lastSeeding": "2024-01-15T10:30:00.000Z",
+  "database": "tizanafresh"
+}
+                        </div>
+                    </div>
+
+                    <h4>📤 Response (200 OK) - Base de datos vacía</h4>
+                    <div class="response-example">
+                        <strong>Base de datos sin datos:</strong>
+                        <div class="code-block">
+{
+  "status": "empty",
+  "collections": {
+    "categories": { "count": 0, "names": [] },
+    "users": { "count": 0, "emails": [] },
+    "products": { "count": 0, "names": [] },
+    "coupons": { "count": 0, "codes": [] },
+    "orders": { "count": 0, "statuses": [] },
+    "notifications": { "count": 0, "types": [] },
+    "loyaltyHistory": { "count": 0, "types": [] },
+    "deviceTokens": { "count": 0, "platforms": [] }
+  },
+  "lastSeeding": null,
+  "database": "tizanafresh"
+}
+                        </div>
+                    </div>
+
+                    <h4>🧪 Ejemplo de Uso con cURL</h4>
+                    <div class="code-block">
+curl -X GET http://localhost:5001/seed/status
+                    </div>
+
+                    <h4>🧪 Ejemplo de Uso con JavaScript</h4>
+                    <div class="code-block">
+const response = await fetch('http://localhost:5001/seed/status');
+const status = await response.json();
+
+if (status.status === 'populated') {
+  console.log('✅ Base de datos poblada correctamente');
+  console.log('Usuarios:', status.collections.users.count);
+  console.log('Productos:', status.collections.products.count);
+} else {
+  console.log('❌ Base de datos vacía, ejecutar seeding');
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📊 Detalle de Datos Creados</h2>
+                
+                <div class="data-summary">
+                    <h3>👥 Usuarios de Prueba</h3>
+                    <table class="table">
+                        <tr>
+                            <th>Email</th>
+                            <th>Nombre</th>
+                            <th>Nivel</th>
+                            <th>Puntos</th>
+                            <th>Descripción</th>
+                        </tr>
+                        <tr>
+                            <td>admin@tizanafresh.com</td>
+                            <td>Admin Tizanas</td>
+                            <td>PLATINUM</td>
+                            <td>1000</td>
+                            <td>Administrador del sistema</td>
+                        </tr>
+                        <tr>
+                            <td>maria@example.com</td>
+                            <td>María González</td>
+                            <td>GOLD</td>
+                            <td>750</td>
+                            <td>Cliente frecuente</td>
+                        </tr>
+                        <tr>
+                            <td>carlos@example.com</td>
+                            <td>Carlos Rodríguez</td>
+                            <td>SILVER</td>
+                            <td>300</td>
+                            <td>Cliente regular</td>
+                        </tr>
+                        <tr>
+                            <td>ana@example.com</td>
+                            <td>Ana Martínez</td>
+                            <td>BRONZE</td>
+                            <td>150</td>
+                            <td>Cliente nuevo</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="data-summary">
+                    <h3>🥤 Productos Creados</h3>
+                    <table class="table">
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Categoría</th>
+                            <th>Precio</th>
+                            <th>Ingredientes</th>
+                        </tr>
+                        <tr>
+                            <td>Tizana de Frutos Rojos</td>
+                            <td>Frutas</td>
+                            <td>$8.50</td>
+                            <td>fresas, frambuesas, moras, hierbabuena, limón</td>
+                        </tr>
+                        <tr>
+                            <td>Tizana Tropical</td>
+                            <td>Frutas</td>
+                            <td>$9.00</td>
+                            <td>piña, mango, coco, jengibre, lima</td>
+                        </tr>
+                        <tr>
+                            <td>Tizana Detox Verde</td>
+                            <td>Detox</td>
+                            <td>$7.50</td>
+                            <td>espinaca, pepino, manzana verde, limón, jengibre</td>
+                        </tr>
+                        <tr>
+                            <td>Tizana Energética</td>
+                            <td>Energética</td>
+                            <td>$10.00</td>
+                            <td>guaraná, ginseng, naranja, limón, miel</td>
+                        </tr>
+                        <tr>
+                            <td>Tizana Relajante</td>
+                            <td>Relajante</td>
+                            <td>$6.50</td>
+                            <td>manzanilla, lavanda, miel, limón, canela</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="data-summary">
+                    <h3>🎫 Cupones Disponibles</h3>
+                    <table class="table">
+                        <tr>
+                            <th>Código</th>
+                            <th>Tipo</th>
+                            <th>Descuento</th>
+                            <th>Monto Mínimo</th>
+                            <th>Usos Máximos</th>
+                        </tr>
+                        <tr>
+                            <td>WELCOME10</td>
+                            <td>PERCENTAGE</td>
+                            <td>10%</td>
+                            <td>$20</td>
+                            <td>100</td>
+                        </tr>
+                        <tr>
+                            <td>FREESHIP</td>
+                            <td>FIXED</td>
+                            <td>$5</td>
+                            <td>$30</td>
+                            <td>50</td>
+                        </tr>
+                        <tr>
+                            <td>LOYALTY20</td>
+                            <td>PERCENTAGE</td>
+                            <td>20%</td>
+                            <td>$50</td>
+                            <td>25</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔧 Proceso de Seeding</h2>
+                
+                <div class="overview">
+                    <strong>📋 Orden de Creación:</strong>
+                    <ol>
+                        <li><strong>Categorías:</strong> Se crean primero para referenciar en productos</li>
+                        <li><strong>Usuarios:</strong> Se crean con contraseñas hasheadas</li>
+                        <li><strong>Productos:</strong> Se asocian a categorías existentes</li>
+                        <li><strong>Cupones:</strong> Algunos se asocian a usuarios específicos</li>
+                        <li><strong>Pedidos:</strong> Se crean con items de productos existentes</li>
+                        <li><strong>Notificaciones:</strong> Se asocian a usuarios específicos</li>
+                        <li><strong>Historial de Fidelización:</strong> Se vincula a usuarios y pedidos</li>
+                        <li><strong>Tokens de Dispositivos:</strong> Se asocian a usuarios</li>
+                    </ol>
+                </div>
+
+                <div class="note">
+                    <strong>⚡ Características del Proceso:</strong>
+                    <ul>
+                        <li><strong>Transaccional:</strong> Si falla un paso, se revierte todo</li>
+                        <li><strong>Limpieza previa:</strong> Elimina todos los datos existentes</li>
+                        <li><strong>Logging detallado:</strong> Muestra progreso en consola</li>
+                        <li><strong>Validación:</strong> Verifica que las relaciones sean correctas</li>
+                        <li><strong>Performance:</strong> Optimizado para crear datos rápidamente</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🚀 Flujo de Uso Completo</h2>
+                
+                <div class="overview">
+                    <strong>1. Verificar Estado Inicial:</strong>
+                    <div class="code-block">
+GET /seed/status
+
+Response:
+{
+  "status": "empty",
+  "collections": { ... }
+}
+                    </div>
+                </div>
+
+                <div class="overview">
+                    <strong>2. Ejecutar Seeding:</strong>
+                    <div class="code-block">
+POST /seed
+
+Response:
+{
+  "message": "Seeding completado exitosamente",
+  "summary": {
+    "categories": 5,
+    "users": 4,
+    "products": 5,
+    ...
+  }
+}
+                    </div>
+                </div>
+
+                <div class="overview">
+                    <strong>3. Verificar Resultado:</strong>
+                    <div class="code-block">
+GET /seed/status
+
+Response:
+{
+  "status": "populated",
+  "collections": {
+    "users": {
+      "count": 4,
+      "emails": ["admin@tizanafresh.com", ...]
+    },
+    ...
+  }
+}
+                    </div>
+                </div>
+
+                <div class="overview">
+                    <strong>4. Probar Autenticación:</strong>
+                    <div class="code-block">
+POST /auth/login
+{
+  "email": "admin@tizanafresh.com",
+  "password": "password123"
+}
+
+Response:
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": { ... }
+}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

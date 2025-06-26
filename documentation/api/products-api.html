@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API de Productos - Tizanas Fresh</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 40px;
+        }
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            border-left: 5px solid #f39c12;
+        }
+        .section h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            font-size: 1.8em;
+        }
+        .endpoint {
+            background: white;
+            margin: 20px 0;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #3498db;
+        }
+        .endpoint h3 {
+            color: #2c3e50;
+            margin-top: 0;
+            font-size: 1.4em;
+        }
+        .method {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-right: 10px;
+            color: white;
+        }
+        .post { background: #27ae60; }
+        .get { background: #3498db; }
+        .put { background: #f39c12; }
+        .delete { background: #e74c3c; }
+        .url {
+            font-family: 'Courier New', monospace;
+            background: #f1f2f6;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 1em;
+            margin: 10px 0;
+            display: block;
+        }
+        .description {
+            color: #7f8c8d;
+            margin: 15px 0;
+        }
+        .overview {
+            background: #e8f4fd;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .use-case {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .response-example {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .error-example {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        .table th {
+            background: #34495e;
+            color: white;
+        }
+        .table tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+        .required {
+            background: #e74c3c;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.8em;
+        }
+        .optional {
+            background: #f39c12;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.8em;
+        }
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .security {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .product-example {
+            background: #e8f5e8;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🥤 API de Productos</h1>
+            <p>Tizanas Fresh - Documentación de Endpoints de Gestión de Productos</p>
+            <p>Módulo para gestionar el catálogo de tizanas y bebidas</p>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2>📋 Descripción General</h2>
+                <p>El módulo de productos de Tizanas Fresh proporciona endpoints para gestionar el catálogo completo de tizanas y bebidas. Este módulo permite crear, consultar, actualizar y eliminar productos, así como gestionar categorías y obtener información nutricional detallada.</p>
+                
+                <div class="overview">
+                    <strong>🎯 Funcionalidades Principales:</strong>
+                    <ul>
+                        <li><strong>Gestión de Productos:</strong> CRUD completo para tizanas y bebidas</li>
+                        <li><strong>Categorización:</strong> Organización por tipos (Frutas, Detox, Energética, etc.)</li>
+                        <li><strong>Información Nutricional:</strong> Detalles de calorías, proteínas, carbohidratos</li>
+                        <li><strong>Gestión de Inventario:</strong> Control de disponibilidad de productos</li>
+                        <li><strong>Búsqueda y Filtrado:</strong> Consultas avanzadas por categoría, precio, etc.</li>
+                        <li><strong>Imágenes de Productos:</strong> URLs para mostrar imágenes de las tizanas</li>
+                    </ul>
+                </div>
+
+                <div class="product-example">
+                    <strong>📊 Tipos de Productos Disponibles:</strong>
+                    <ul>
+                        <li><strong>Tizanas de Frutas:</strong> Combinaciones refrescantes de frutas naturales</li>
+                        <li><strong>Tizanas Detox:</strong> Bebidas purificantes con ingredientes detox</li>
+                        <li><strong>Tizanas Energéticas:</strong> Bebidas con ingredientes energizantes</li>
+                        <li><strong>Tizanas Relajantes:</strong> Bebidas calmantes con hierbas relajantes</li>
+                        <li><strong>Tizanas Especiales:</strong> Combinaciones únicas y de temporada</li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <strong>📝 Nota:</strong> Todos los endpoints de productos están disponibles en el prefijo <code>/products</code> y el servidor corre en <code>http://localhost:5001</code>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🥤 Endpoints de Productos</h2>
+
+                <div class="endpoint">
+                    <h3>
+                        <span class="method get">GET</span>
+                        Obtener Todos los Productos
+                    </h3>
+                    <div class="url">/products</div>
+                    
+                    <div class="overview">
+                        <strong>📖 Descripción General:</strong>
+                        <p>Este endpoint devuelve una lista paginada de todos los productos disponibles en el catálogo. Permite filtrado por categoría, disponibilidad y ordenamiento por precio o nombre. Es ideal para mostrar el catálogo completo en la aplicación.</p>
+                    </div>
+
+                    <div class="use-case">
+                        <strong>🎯 Casos de Uso:</strong>
+                        <ul>
+                            <li><strong>Catálogo principal:</strong> Mostrar todos los productos en la página principal</li>
+                            <li><strong>Filtrado por categoría:</strong> Mostrar solo tizanas de frutas o detox</li>
+                            <li><strong>Búsqueda de productos:</strong> Filtrar por disponibilidad o precio</li>
+                            <li><strong>Ordenamiento:</strong> Mostrar productos por precio ascendente/descendente</li>
+                            <li><strong>Paginación:</strong> Cargar productos en lotes para mejor performance</li>
+                        </ul>
+                    </div>
+
+                    <h4>📥 Query Parameters</h4>
+                    <table class="table">
+                        <tr>
+                            <th>Parámetro</th>
+                            <th>Tipo</th>
+                            <th>Requerido</th>
+                            <th>Descripción</th>
+                            <th>Ejemplo</th>
+                        </tr>
+                        <tr>
+                            <td>page</td>
+                            <td>number</td>
+                            <td><span class="optional">No</span></td>
+                            <td>Número de página (default: 1)</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>limit</td>
+                            <td>number</td>
+                            <td><span class="optional">No</span></td>
+                            <td>Productos por página (default: 10)</td>
+                            <td>20</td>
+                        </tr>
+                        <tr>
+                            <td>category</td>
+                            <td>string</td>
+                            <td><span class="optional">No</span></td>
+                            <td>Filtrar por ID de categoría</td>
+                            <td>507f1f77bcf86cd799439011</td>
+                        </tr>
+                        <tr>
+                            <td>available</td>
+                            <td>boolean</td>
+                            <td><span class="optional">No</span></td>
+                            <td>Filtrar por disponibilidad</td>
+                            <td>true</td>
+                        </tr>
+                        <tr>
+                            <td>sort</td>
+                            <td>string</td>
+                            <td><span class="optional">No</span></td>
+                            <td>Ordenar por campo (price, name)</td>
+                            <td>price</td>
+                        </tr>
+                        <tr>
+                            <td>order</td>
+                            <td>string</td>
+                            <td><span class="optional">No</span></td>
+                            <td>Orden (asc, desc)</td>
+                            <td>asc</td>
+                        </tr>
+                    </table>
+
+                    <h4>📤 Response (200 OK)</h4>
+                    <div class="response-example">
+                        <strong>Lista de productos paginada:</strong>
+                        <div class="code-block">
+{
+  "products": [
+    {
+      "id": "507f1f77bcf86cd799439011",
+      "name": "Tizana de Frutos Rojos",
+      "description": "Refrescante mezcla de fresas, frambuesas y moras con hierbas naturales",
+      "price": 8.50,
+      "category": {
+        "id": "507f1f77bcf86cd799439012",
+        "name": "Frutas"
+      },
+      "image": "https://example.com/tizana-frutos-rojos.jpg",
+      "available": true,
+      "ingredients": ["fresas", "frambuesas", "moras", "hierbabuena", "limón"],
+      "nutritionalInfo": {
+        "calories": 45,
+        "protein": 1.2,
+        "carbs": 10.5,
+        "fat": 0.3,
+        "fiber": 3.2
+      },
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-15T10:30:00.000Z"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "total": 5,
+    "pages": 1
+  },
+  "filters": {
+    "category": null,
+    "available": null,
+    "sort": "name",
+    "order": "asc"
+  }
+}
+                        </div>
+                    </div>
+
+                    <h4>🧪 Ejemplo de Uso con cURL</h4>
+                    <div class="code-block">
+# Obtener todos los productos
+curl -X GET "http://localhost:5001/products"
+
+# Filtrar por categoría
+curl -X GET "http://localhost:5001/products?category=507f1f77bcf86cd799439012"
+
+# Ordenar por precio descendente
+curl -X GET "http://localhost:5001/products?sort=price&order=desc"
+
+# Solo productos disponibles
+curl -X GET "http://localhost:5001/products?available=true"
+                    </div>
+
+                    <h4>🧪 Ejemplo de Uso con JavaScript</h4>
+                    <div class="code-block">
+// Obtener todos los productos
+const response = await fetch('http://localhost:5001/products');
+const data = await response.json();
+
+console.log('Productos:', data.products);
+console.log('Total:', data.pagination.total);
+
+// Filtrar por categoría
+const categoryResponse = await fetch('http://localhost:5001/products?category=507f1f77bcf86cd799439012');
+const categoryData = await categoryResponse.json();
+
+console.log('Productos de frutas:', categoryData.products);
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <h3>
+                        <span class="method get">GET</span>
+                        Obtener Producto por ID
+                    </h3>
+                    <div class="url">/products/:id</div>
+                    
+                    <div class="overview">
+                        <strong>📖 Descripción General:</strong>
+                        <p>Este endpoint devuelve la información detallada de un producto específico por su ID. Incluye toda la información del producto, su categoría, ingredientes, información nutricional y estado de disponibilidad.</p>
+                    </div>
+
+                    <div class="use-case">
+                        <strong>🎯 Casos de Uso:</strong>
+                        <ul>
+                            <li><strong>Página de producto:</strong> Mostrar detalles completos de una tizana</li>
+                            <li><strong>Carrito de compras:</strong> Obtener información para agregar al carrito</li>
+                            <li><strong>Comparación de productos:</strong> Obtener datos para comparar tizanas</li>
+                            <li><strong>Información nutricional:</strong> Mostrar detalles nutricionales</li>
+                            <li><strong>Gestión de inventario:</strong> Verificar disponibilidad de producto</li>
+                        </ul>
+                    </div>
+
+                    <h4>📥 Path Parameters</h4>
+                    <table class="table">
+                        <tr>
+                            <th>Parámetro</th>
+                            <th>Tipo</th>
+                            <th>Requerido</th>
+                            <th>Descripción</th>
+                            <th>Ejemplo</th>
+                        </tr>
+                        <tr>
+                            <td>id</td>
+                            <td>string</td>
+                            <td><span class="required">Sí</span></td>
+                            <td>ID único del producto</td>
+                            <td>507f1f77bcf86cd799439011</td>
+                        </tr>
+                    </table>
+
+                    <h4>📤 Response (200 OK)</h4>
+                    <div class="response-example">
+                        <strong>Detalles completos del producto:</strong>
+                        <div class="code-block">
+{
+  "id": "507f1f77bcf86cd799439011",
+  "name": "Tizana de Frutos Rojos",
+  "description": "Refrescante mezcla de fresas, frambuesas y moras con hierbas naturales. Perfecta para refrescarse en días calurosos y llenarse de antioxidantes naturales.",
+  "price": 8.50,
+  "category": {
+    "id": "507f1f77bcf86cd799439012",
+    "name": "Frutas",
+    "description": "Tizanas refrescantes con frutas naturales"
+  },
+  "image": "https://example.com/tizana-frutos-rojos.jpg",
+  "available": true,
+  "ingredients": [
+    "fresas",
+    "frambuesas", 
+    "moras",
+    "hierbabuena",
+    "limón"
+  ],
+  "nutritionalInfo": {
+    "calories": 45,
+    "protein": 1.2,
+    "carbs": 10.5,
+    "fat": 0.3,
+    "fiber": 3.2,
+    "sugar": 8.1,
+    "sodium": 5
+  },
+  "allergens": ["ninguno"],
+  "preparationTime": "5 minutos",
+  "servingSize": "350ml",
+  "createdAt": "2024-01-01T00:00:00.000Z",
+  "updatedAt": "2024-01-15T10:30:00.000Z"
+}
+                        </div>
+                    </div>
+
+                    <h4>❌ Response (404 Not Found)</h4>
+                    <div class="error-example">
+                        <strong>Producto no encontrado:</strong>
+                        <div class="code-block">
+{
+  "statusCode": 404,
+  "message": "Producto no encontrado",
+  "error": "Not Found"
+}
+                        </div>
+                    </div>
+
+                    <h4>🧪 Ejemplo de Uso con cURL</h4>
+                    <div class="code-block">
+curl -X GET "http://localhost:5001/products/507f1f77bcf86cd799439011"
+                    </div>
+
+                    <h4>🧪 Ejemplo de Uso con JavaScript</h4>
+                    <div class="code-block">
+const productId = '507f1f77bcf86cd799439011';
+
+const response = await fetch(`http://localhost:5001/products/${productId}`);
+const product = await response.json();
+
+console.log('Nombre:', product.name);
+console.log('Precio:', product.price);
+console.log('Ingredientes:', product.ingredients);
+console.log('Calorías:', product.nutritionalInfo.calories);
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <h3>
+                        <span class="method post">POST</span>
+                        Crear Nuevo Producto
+                    </h3>
+                    <div class="url">/products</div>
+                    
+                    <div class="overview">
+                        <strong>📖 Descripción General:</strong>
+                        <p>Este endpoint permite crear un nuevo producto en el catálogo. Requiere autenticación de administrador y valida todos los campos obligatorios. El producto se crea con información completa incluyendo ingredientes, información nutricional y categoría.</p>
+                    </div>
+
+                    <div class="use-case">
+                        <strong>🎯 Casos de Uso:</strong>
+                        <ul>
+                            <li><strong>Nuevo producto:</strong> Agregar una nueva tizana al catálogo</li>
+                            <li><strong>Producto de temporada:</strong> Crear tizanas especiales de temporada</li>
+                            <li><strong>Expansión de menú:</strong> Agregar nuevas variedades de bebidas</li>
+                            <li><strong>Gestación de inventario:</strong> Preparar productos antes del lanzamiento</li>
+                        </ul>
+                    </div>
+
+                    <div class="security">
+                        <strong>🔒 Autenticación:</strong> Requiere token JWT de administrador
+                    </div>
+
+                    <h4>📥 Request Body</h4>
+                    <table class="table">
+                        <tr>
+                            <th>Campo</th>
+                            <th>Tipo</th>
+                            <th>Requerido</th>
+                            <th>Descripción</th>
+                            <th>Ejemplo</th>
+                        </tr>
+                        <tr>
+                            <td>name</td>
+                            <td>string</td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Nombre del producto</td>
+                            <td>Tizana de Mango y Piña</td>
+                        </tr>
+                        <tr>
+                            <td>description</td>
+                            <td>string</td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Descripción detallada</td>
+                            <td>Exótica combinación de mango dulce y piña refrescante</td>
+                        </tr>
+                        <tr>
+                            <td>price</td>
+                            <td>number</td>
+                            <td><span class="required">Sí</span></td>
+                            <td>Precio en dólares</td>
+                            <td>9.50</td>
+                        </tr>
+                        <tr>
+                            <td>category</td>
+                            <td>string</td>
+                            <td><span class="required">Sí</span></td>
+                            <td>ID de la categoría</td>
+                            <td>507f1f77bcf86cd799439012</td>
+                        </tr>
+                        <tr>
+                            <td>image</td>
+                            <td>string</td>
+                            <td><span class="optional">No</span></td>
+                            <td>URL de la imagen</td>
+                            <td>https://example.com/tizana-mango-pina.jpg</td>
+                        </tr>
+                        <tr>
+                            <td>available</td>
+                            <td>boolean</td>
+                            <td><span class="optional">No</span></td>
+                            <td>Disponibilidad (default: true)</td>
+                            <td>true</td>
+                        </tr>
+                        <tr>
+                            <td>ingredients</td>
+                            <td>string[]</td>
+                            <td><span class="optional">No</span></td>
+                            <td>Lista de ingredientes</td>
+                            <td>["mango", "piña", "jengibre", "lima"]</td>
+                        </tr>
+                        <tr>
+                            <td>nutritionalInfo</td>
+                            <td>object</td>
+                            <td><span class="optional">No</span></td>
+                            <td>Información nutricional</td>
+                            <td>{"calories": 52, "protein": 0.8}</td>
+                        </tr>
+                    </table>
+
+                    <h4>📤 Response (201 Created)</h4>
+                    <div class="response-example">
+                        <strong>Producto creado exitosamente:</strong>
+                        <div class="code-block">
+{
+  "id": "507f1f77bcf86cd799439013",
+  "name": "Tizana de Mango y Piña",
+  "description": "Exótica combinación de mango dulce y piña refrescante",
+  "price": 9.50,
+  "category": {
+    "id": "507f1f77bcf86cd799439012",
+    "name": "Frutas"
+  },
+  "image": "https://example.com/tizana-mango-pina.jpg",
+  "available": true,
+  "ingredients": ["mango", "piña", "jengibre", "lima"],
+  "nutritionalInfo": {
+    "calories": 52,
+    "protein": 0.8,
+    "carbs": 12.1,
+    "fat": 0.5,
+    "fiber": 2.8
+  },
+  "createdAt": "2024-01-15T10:30:00.000Z",
+  "updatedAt": "2024-01-15T10:30:00.000Z"
+}
+                        </div>
+                    </div>
+
+                    <h4>❌ Response (400 Bad Request)</h4>
+                    <div class="error-example">
+                        <strong>Datos inválidos:</strong>
+                        <div class="code-block">
+{
+  "statusCode": 400,
+  "message": ["name should not be empty", "price must be a positive number"],
+  "error": "Bad Request"
+}
+                        </div>
+                    </div>
+
+                    <h4>❌ Response (401 Unauthorized)</h4>
+                    <div class="error-example">
+                        <strong>Sin autenticación:</strong>
+                        <div class="code-block">
+{
+  "statusCode": 401,
+  "message": "Unauthorized",
+  "error": "Unauthorized"
+}
+                        </div>
+                    </div>
+
+                    <h4>🧪 Ejemplo de Uso con cURL</h4>
+                    <div class="code-block">
+curl -X POST "http://localhost:5001/products" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -d '{
+    "name": "Tizana de Mango y Piña",
+    "description": "Exótica combinación de mango dulce y piña refrescante",
+    "price": 9.50,
+    "category": "507f1f77bcf86cd799439012",
+    "ingredients": ["mango", "piña", "jengibre", "lima"],
+    "nutritionalInfo": {
+      "calories": 52,
+      "protein": 0.8,
+      "carbs": 12.1,
+      "fat": 0.5
+    }
+  }'
+                    </div>
+
+                    <h4>🧪 Ejemplo de Uso con JavaScript</h4>
+                    <div class="code-block">
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...';
+
+const newProduct = {
+  name: 'Tizana de Mango y Piña',
+  description: 'Exótica combinación de mango dulce y piña refrescante',
+  price: 9.50,
+  category: '507f1f77bcf86cd799439012',
+  ingredients: ['mango', 'piña', 'jengibre', 'lima'],
+  nutritionalInfo: {
+    calories: 52,
+    protein: 0.8,
+    carbs: 12.1,
+    fat: 0.5
+  }
+};
+
+const response = await fetch('http://localhost:5001/products', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  },
+  body: JSON.stringify(newProduct)
+});
+
+const createdProduct = await response.json();
+console.log('Producto creado:', createdProduct.name);
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <h3>
+                        <span class="method put">PUT</span>
+                        Actualizar Producto
+                    </h3>
+                    <div class="url">/products/:id</div>
+                    
+                    <div class="overview">
+                        <strong>📖 Descripción General:</strong>
+                        <p>Este endpoint permite actualizar la información de un producto existente. Solo se actualizan los campos proporcionados, manteniendo los valores existentes para los campos no incluidos. Requiere autenticación de administrador.</p>
+                    </div>
+
+                    <div class="use-case">
+                        <strong>🎯 Casos de Uso:</strong>
+                        <ul>
+                            <li><strong>Actualizar precio:</strong> Modificar precios de productos</li>
+                            <li><strong>Cambiar disponibilidad:</strong> Marcar productos como no disponibles</li>
+                            <li><strong>Actualizar descripción:</strong> Mejorar descripciones de productos</li>
+                            <li><strong>Agregar ingredientes:</strong> Actualizar lista de ingredientes</li>
+                            <li><strong>Cambiar imagen:</strong> Actualizar foto del producto</li>
+                        </ul>
+                    </div>
+
+                    <div class="security">
+                        <strong>🔒 Autenticación:</strong> Requiere token JWT de administrador
+                    </div>
+
+                    <h4>📥 Path Parameters</h4>
+                    <table class="table">
+                        <tr>
+                            <th>Parámetro</th>
+                            <th>Tipo</th>
+                            <th>Requerido</th>
+                            <th>Descripción</th>
+                            <th>Ejemplo</th>
+                        </tr>
+                        <tr>
+                            <td>id</td>
+                            <td>string</td>
+                            <td><span class="required">Sí</span></td>
+                            <td>ID único del producto</td>
+                            <td>507f1f77bcf86cd799439011</td>
+                        </tr>
+                    </table>
+
+                    <h4>📥 Request Body</h4>
+                    <div class="note">
+                        <strong>📝 Nota:</strong> Todos los campos son opcionales. Solo se actualizan los campos proporcionados.
+                    </div>
+
+                    <h4>📤 Response (200 OK)</h4>
+                    <div class="response-example">
+                        <strong>Producto actualizado:</strong>
+                        <div class="code-block">
+{
+  "id": "507f1f77bcf86cd799439011",
+  "name": "Tizana de Frutos Rojos Premium",
+  "description": "Refrescante mezcla de fresas, frambuesas y moras con hierbas naturales",
+  "price": 9.50,
+  "category": {
+    "id": "507f1f77bcf86cd799439012",
+    "name": "Frutas"
+  },
+  "image": "https://example.com/tizana-frutos-rojos-premium.jpg",
+  "available": true,
+  "ingredients": ["fresas", "frambuesas", "moras", "hierbabuena", "limón", "jengibre"],
+  "nutritionalInfo": {
+    "calories": 45,
+    "protein": 1.2,
+    "carbs": 10.5,
+    "fat": 0.3,
+    "fiber": 3.2
+  },
+  "updatedAt": "2024-01-15T11:00:00.000Z"
+}
+                        </div>
+                    </div>
+
+                    <h4>🧪 Ejemplo de Uso con cURL</h4>
+                    <div class="code-block">
+curl -X PUT "http://localhost:5001/products/507f1f77bcf86cd799439011" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -d '{
+    "price": 9.50,
+    "name": "Tizana de Frutos Rojos Premium"
+  }'
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <h3>
+                        <span class="method delete">DELETE</span>
+                        Eliminar Producto
+                    </h3>
+                    <div class="url">/products/:id</div>
+                    
+                    <div class="overview">
+                        <strong>📖 Descripción General:</strong>
+                        <p>Este endpoint elimina permanentemente un producto del catálogo. La eliminación es irreversible y también elimina todas las referencias al producto en pedidos y otros módulos. Requiere autenticación de administrador.</p>
+                    </div>
+
+                    <div class="use-case">
+                        <strong>🎯 Casos de Uso:</strong>
+                        <ul>
+                            <li><strong>Producto discontinuado:</strong> Eliminar productos que ya no se venden</li>
+                            <li><strong>Limpieza de catálogo:</strong> Remover productos obsoletos</li>
+                            <li><strong>Corrección de errores:</strong> Eliminar productos creados por error</li>
+                            <li><strong>Gestión de inventario:</strong> Remover productos sin stock</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning">
+                        <strong>⚠️ Advertencia:</strong> Esta operación es irreversible y elimina permanentemente el producto y todas sus referencias.
+                    </div>
+
+                    <div class="security">
+                        <strong>🔒 Autenticación:</strong> Requiere token JWT de administrador
+                    </div>
+
+                    <h4>📤 Response (200 OK)</h4>
+                    <div class="response-example">
+                        <strong>Producto eliminado:</strong>
+                        <div class="code-block">
+{
+  "message": "Producto eliminado exitosamente",
+  "deletedProduct": {
+    "id": "507f1f77bcf86cd799439011",
+    "name": "Tizana de Frutos Rojos"
+  }
+}
+                        </div>
+                    </div>
+
+                    <h4>🧪 Ejemplo de Uso con cURL</h4>
+                    <div class="code-block">
+curl -X DELETE "http://localhost:5001/products/507f1f77bcf86cd799439011" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📊 Modelo de Producto</h2>
+                
+                <table class="table">
+                    <tr>
+                        <th>Campo</th>
+                        <th>Tipo</th>
+                        <th>Requerido</th>
+                        <th>Descripción</th>
+                        <th>Ejemplo</th>
+                    </tr>
+                    <tr>
+                        <td>_id</td>
+                        <td>ObjectId</td>
+                        <td><span class="required">Sí</span></td>
+                        <td>ID único del producto</td>
+                        <td>507f1f77bcf86cd799439011</td>
+                    </tr>
+                    <tr>
+                        <td>name</td>
+                        <td>string</td>
+                        <td><span class="required">Sí</span></td>
+                        <td>Nombre del producto</td>
+                        <td>Tizana de Frutos Rojos</td>
+                    </tr>
+                    <tr>
+                        <td>description</td>
+                        <td>string</td>
+                        <td><span class="required">Sí</span></td>
+                        <td>Descripción detallada</td>
+                        <td>Refrescante mezcla de fresas...</td>
+                    </tr>
+                    <tr>
+                        <td>price</td>
+                        <td>number</td>
+                        <td><span class="required">Sí</span></td>
+                        <td>Precio en dólares</td>
+                        <td>8.50</td>
+                    </tr>
+                    <tr>
+                        <td>category</td>
+                        <td>ObjectId</td>
+                        <td><span class="required">Sí</span></td>
+                        <td>Referencia a categoría</td>
+                        <td>507f1f77bcf86cd799439012</td>
+                    </tr>
+                    <tr>
+                        <td>image</td>
+                        <td>string</td>
+                        <td><span class="optional">No</span></td>
+                        <td>URL de la imagen</td>
+                        <td>https://example.com/tizana.jpg</td>
+                    </tr>
+                    <tr>
+                        <td>available</td>
+                        <td>boolean</td>
+                        <td><span class="optional">No</span></td>
+                        <td>Disponibilidad</td>
+                        <td>true</td>
+                    </tr>
+                    <tr>
+                        <td>ingredients</td>
+                        <td>string[]</td>
+                        <td><span class="optional">No</span></td>
+                        <td>Lista de ingredientes</td>
+                        <td>["fresas", "frambuesas"]</td>
+                    </tr>
+                    <tr>
+                        <td>nutritionalInfo</td>
+                        <td>object</td>
+                        <td><span class="optional">No</span></td>
+                        <td>Información nutricional</td>
+                        <td>{"calories": 45}</td>
+                    </tr>
+                    <tr>
+                        <td>createdAt</td>
+                        <td>Date</td>
+                        <td><span class="optional">No</span></td>
+                        <td>Fecha de creación</td>
+                        <td>2024-01-01T00:00:00.000Z</td>
+                    </tr>
+                    <tr>
+                        <td>updatedAt</td>
+                        <td>Date</td>
+                        <td><span class="optional">No</span></td>
+                        <td>Fecha de actualización</td>
+                        <td>2024-01-15T10:30:00.000Z</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="section">
+                <h2>🚀 Flujo de Gestión de Productos</h2>
+                
+                <div class="overview">
+                    <strong>1. Crear Nuevo Producto:</strong>
+                    <div class="code-block">
+POST /products
+{
+  "name": "Nueva Tizana",
+  "description": "Descripción del producto",
+  "price": 8.50,
+  "category": "507f1f77bcf86cd799439012"
+}
+
+Response: 201 Created
+{
+  "id": "507f1f77bcf86cd799439013",
+  "name": "Nueva Tizana",
+  ...
+}
+                    </div>
+                </div>
+
+                <div class="overview">
+                    <strong>2. Obtener Producto:</strong>
+                    <div class="code-block">
+GET /products/507f1f77bcf86cd799439013
+
+Response: 200 OK
+{
+  "id": "507f1f77bcf86cd799439013",
+  "name": "Nueva Tizana",
+  ...
+}
+                    </div>
+                </div>
+
+                <div class="overview">
+                    <strong>3. Actualizar Producto:</strong>
+                    <div class="code-block">
+PUT /products/507f1f77bcf86cd799439013
+{
+  "price": 9.00
+}
+
+Response: 200 OK
+{
+  "id": "507f1f77bcf86cd799439013",
+  "price": 9.00,
+  ...
+}
+                    </div>
+                </div>
+
+                <div class="overview">
+                    <strong>4. Eliminar Producto:</strong>
+                    <div class="code-block">
+DELETE /products/507f1f77bcf86cd799439013
+
+Response: 200 OK
+{
+  "message": "Producto eliminado exitosamente"
+}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

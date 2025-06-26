@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Índice de APIs - Tizanas Fresh</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 40px;
+        }
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            border-left: 5px solid #2c3e50;
+        }
+        .section h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            font-size: 1.8em;
+        }
+        .api-card {
+            background: white;
+            margin: 20px 0;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #3498db;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .api-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        .api-card h3 {
+            color: #2c3e50;
+            margin-top: 0;
+            font-size: 1.4em;
+        }
+        .api-card a {
+            text-decoration: none;
+            color: inherit;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .implemented { background: #27ae60; }
+        .planned { background: #f39c12; }
+        .development { background: #3498db; }
+        .description {
+            color: #7f8c8d;
+            margin: 15px 0;
+        }
+        .endpoints {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .endpoint-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .endpoint-list li {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .endpoint-list li:last-child {
+            border-bottom: none;
+        }
+        .method {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: bold;
+            margin-right: 8px;
+            color: white;
+            min-width: 40px;
+            text-align: center;
+        }
+        .post { background: #27ae60; }
+        .get { background: #3498db; }
+        .put { background: #f39c12; }
+        .delete { background: #e74c3c; }
+        .url {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #2c3e50;
+        }
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .stat-label {
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Índice de APIs</h1>
+            <p>Tizanas Fresh - Documentación Completa de APIs</p>
+            <p>NestJS + MongoDB - Backend API Reference</p>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2>📊 Resumen de APIs</h2>
+                
+                <div class="summary-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">4</div>
+                        <div class="stat-label">Módulos Documentados</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">1</div>
+                        <div class="stat-label">Implementado</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">3</div>
+                        <div class="stat-label">Planificados</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">25+</div>
+                        <div class="stat-label">Endpoints Totales</div>
+                    </div>
+                </div>
+
+                <div class="note">
+                    <strong>📝 Nota:</strong> Esta documentación se actualiza automáticamente conforme se implementan nuevos módulos. Los endpoints planificados están basados en la documentación técnica del proyecto.
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔐 Módulo de Autenticación</h2>
+                
+                <div class="api-card">
+                    <a href="auth-api.html">
+                        <h3>
+                            🔐 API de Autenticación
+                            <span class="status-badge implemented">IMPLEMENTADO</span>
+                        </h3>
+                    </a>
+                    <div class="description">
+                        Sistema completo de autenticación JWT con gestión de usuarios, login, registro y verificación de tokens.
+                    </div>
+                    
+                    <div class="endpoints">
+                        <strong>Endpoints disponibles:</strong>
+                        <ul class="endpoint-list">
+                            <li>
+                                <span class="method post">POST</span>
+                                <span class="url">/auth/login</span>
+                                <span>Login de usuario</span>
+                            </li>
+                            <li>
+                                <span class="method post">POST</span>
+                                <span class="url">/auth/login-local</span>
+                                <span>Login con guard local</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/auth/profile</span>
+                                <span>Obtener perfil de usuario</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/auth/verify</span>
+                                <span>Verificar token JWT</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="note">
+                        <strong>✅ Características implementadas:</strong>
+                        <ul>
+                            <li>Autenticación JWT con bcrypt</li>
+                            <li>Validación de usuarios contra base de datos</li>
+                            <li>Guards de autenticación</li>
+                            <li>Usuarios de prueba incluidos</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🌱 Módulo de Seeding</h2>
+                
+                <div class="api-card">
+                    <a href="seed-api.html">
+                        <h3>
+                            🌱 API de Seeding
+                            <span class="status-badge implemented">IMPLEMENTADO</span>
+                        </h3>
+                    </a>
+                    <div class="description">
+                        Sistema de población de base de datos con datos de prueba para desarrollo y testing.
+                    </div>
+                    
+                    <div class="endpoints">
+                        <strong>Endpoints disponibles:</strong>
+                        <ul class="endpoint-list">
+                            <li>
+                                <span class="method post">POST</span>
+                                <span class="url">/seed</span>
+                                <span>Poblar base de datos</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/seed/status</span>
+                                <span>Estado del endpoint</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="note">
+                        <strong>✅ Datos creados:</strong>
+                        <ul>
+                            <li>5 usuarios con diferentes niveles de fidelización</li>
+                            <li>5 categorías de productos</li>
+                            <li>5 productos con información nutricional</li>
+                            <li>3 cupones de diferentes tipos</li>
+                            <li>2 pedidos de ejemplo</li>
+                            <li>4 notificaciones</li>
+                            <li>4 registros de fidelización</li>
+                            <li>3 tokens de dispositivos</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🍹 Módulo de Productos</h2>
+                
+                <div class="api-card">
+                    <a href="products-api.html">
+                        <h3>
+                            🍹 API de Productos
+                            <span class="status-badge planned">PLANIFICADO</span>
+                        </h3>
+                    </a>
+                    <div class="description">
+                        Gestión completa de productos, categorías, búsqueda y filtrado con información nutricional.
+                    </div>
+                    
+                    <div class="endpoints">
+                        <strong>Endpoints planificados:</strong>
+                        <ul class="endpoint-list">
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/categories</span>
+                                <span>Listar categorías</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/categories/:id</span>
+                                <span>Obtener categoría</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/products</span>
+                                <span>Listar productos</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/products/:id</span>
+                                <span>Obtener producto</span>
+                            </li>
+                            <li>
+                                <span class="method post">POST</span>
+                                <span class="url">/products</span>
+                                <span>Crear producto (Admin)</span>
+                            </li>
+                            <li>
+                                <span class="method put">PUT</span>
+                                <span class="url">/products/:id</span>
+                                <span>Actualizar producto (Admin)</span>
+                            </li>
+                            <li>
+                                <span class="method delete">DELETE</span>
+                                <span class="url">/products/:id</span>
+                                <span>Eliminar producto (Admin)</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/products/search</span>
+                                <span>Búsqueda avanzada</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="note">
+                        <strong>🚧 Características planificadas:</strong>
+                        <ul>
+                            <li>CRUD completo de productos y categorías</li>
+                            <li>Búsqueda por texto y filtros avanzados</li>
+                            <li>Información nutricional detallada</li>
+                            <li>Paginación y ordenamiento</li>
+                            <li>Gestión de disponibilidad</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📦 Módulo de Pedidos</h2>
+                
+                <div class="api-card">
+                    <a href="orders-api.html">
+                        <h3>
+                            📦 API de Pedidos
+                            <span class="status-badge planned">PLANIFICADO</span>
+                        </h3>
+                    </a>
+                    <div class="description">
+                        Gestión completa del ciclo de vida de pedidos, tracking de estados, cupones y cálculo de totales.
+                    </div>
+                    
+                    <div class="endpoints">
+                        <strong>Endpoints planificados:</strong>
+                        <ul class="endpoint-list">
+                            <li>
+                                <span class="method post">POST</span>
+                                <span class="url">/orders</span>
+                                <span>Crear pedido</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/orders</span>
+                                <span>Listar pedidos del usuario</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/orders/:id</span>
+                                <span>Obtener pedido</span>
+                            </li>
+                            <li>
+                                <span class="method put">PUT</span>
+                                <span class="url">/orders/:id/status</span>
+                                <span>Actualizar estado (Admin)</span>
+                            </li>
+                            <li>
+                                <span class="method delete">DELETE</span>
+                                <span class="url">/orders/:id/cancel</span>
+                                <span>Cancelar pedido</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/orders/admin/all</span>
+                                <span>Listar todos los pedidos (Admin)</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/orders/admin/stats</span>
+                                <span>Estadísticas (Admin)</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="note">
+                        <strong>🚧 Características planificadas:</strong>
+                        <ul>
+                            <li>Estados de pedido: PENDING → CONFIRMED → PREPARING → READY → DELIVERED</li>
+                            <li>Integración con cupones y descuentos</li>
+                            <li>Tracking completo de pedidos</li>
+                            <li>Estadísticas para administradores</li>
+                            <li>Notificaciones automáticas</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🚧 Módulos Futuros</h2>
+                
+                <div class="api-card">
+                    <h3>
+                        🎫 API de Cupones
+                        <span class="status-badge planned">PLANIFICADO</span>
+                    </h3>
+                    <div class="description">
+                        Sistema de cupones de descuento con códigos QR, validación y gestión de usos.
+                    </div>
+                    
+                    <div class="note">
+                        <strong>📋 Endpoints planificados:</strong>
+                        <ul>
+                            <li>GET /coupons - Listar cupones disponibles</li>
+                            <li>POST /coupons/validate - Validar cupón</li>
+                            <li>POST /coupons - Crear cupón (Admin)</li>
+                            <li>GET /coupons/admin/all - Gestión de cupones (Admin)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="api-card">
+                    <h3>
+                        🏆 API de Fidelización
+                        <span class="status-badge planned">PLANIFICADO</span>
+                    </h3>
+                    <div class="description">
+                        Sistema de puntos de fidelización, niveles de usuario y historial de transacciones.
+                    </div>
+                    
+                    <div class="note">
+                        <strong>📋 Endpoints planificados:</strong>
+                        <ul>
+                            <li>GET /loyalty/points - Obtener puntos del usuario</li>
+                            <li>GET /loyalty/history - Historial de puntos</li>
+                            <li>POST /loyalty/redeem - Canjear puntos</li>
+                            <li>GET /loyalty/levels - Información de niveles</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="api-card">
+                    <h3>
+                        🔔 API de Notificaciones
+                        <span class="status-badge planned">PLANIFICADO</span>
+                    </h3>
+                    <div class="description">
+                        Sistema de notificaciones push, emails y gestión de tokens de dispositivos.
+                    </div>
+                    
+                    <div class="note">
+                        <strong>📋 Endpoints planificados:</strong>
+                        <ul>
+                            <li>GET /notifications - Listar notificaciones</li>
+                            <li>PUT /notifications/:id/read - Marcar como leída</li>
+                            <li>POST /notifications/tokens - Registrar token de dispositivo</li>
+                            <li>POST /notifications/send - Enviar notificación (Admin)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📋 Información Técnica</h2>
+                
+                <div class="note">
+                    <strong>🔧 Stack Tecnológico:</strong>
+                    <ul>
+                        <li><strong>Framework:</strong> NestJS (Node.js)</li>
+                        <li><strong>Base de Datos:</strong> MongoDB con Mongoose</li>
+                        <li><strong>Autenticación:</strong> JWT + Passport</li>
+                        <li><strong>Validación:</strong> class-validator + class-transformer</li>
+                        <li><strong>Documentación:</strong> HTML personalizado</li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <strong>🔒 Seguridad:</strong>
+                    <ul>
+                        <li>Autenticación JWT con expiración configurable</li>
+                        <li>Hash de contraseñas con bcrypt</li>
+                        <li>Guards de autenticación y autorización</li>
+                        <li>Validación de entrada en todos los endpoints</li>
+                        <li>Rate limiting (planificado)</li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <strong>📊 Base de Datos:</strong>
+                    <ul>
+                        <li><strong>Colecciones:</strong> Users, Categories, Products, Orders, Coupons, Notifications, LoyaltyHistory, DeviceTokens</li>
+                        <li><strong>Relaciones:</strong> Referencias ObjectId entre colecciones</li>
+                        <li><strong>Índices:</strong> Optimizados para búsquedas y consultas frecuentes</li>
+                        <li><strong>Validación:</strong> Esquemas Mongoose con validación de datos</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

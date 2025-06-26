@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Requerimientos de APIs para Backend - Tizanas Fresh</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 40px;
+        }
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            border-left: 5px solid #2c3e50;
+        }
+        .section h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            font-size: 1.8em;
+        }
+        .module {
+            margin-bottom: 30px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .module-header {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 20px;
+        }
+        .module-header h3 {
+            margin: 0;
+            font-size: 1.4em;
+        }
+        .api-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .api-table th, .api-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        .api-table th {
+            background: #34495e;
+            color: white;
+            font-weight: bold;
+        }
+        .api-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        .method {
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            color: white;
+        }
+        .get { background: #27ae60; }
+        .post { background: #3498db; }
+        .put { background: #f39c12; }
+        .delete { background: #e74c3c; }
+        .patch { background: #9b59b6; }
+        .priority {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: bold;
+            color: white;
+        }
+        .high { background: #e74c3c; }
+        .medium { background: #f39c12; }
+        .low { background: #27ae60; }
+        .endpoint {
+            font-family: 'Courier New', monospace;
+            background: #f1f2f6;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .flowchart {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .flowchart svg {
+            max-width: 100%;
+            height: auto;
+        }
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        @media print {
+            body { background: white; }
+            .container { box-shadow: none; }
+            .header { background: #333 !important; color: white !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔌 Tizanas Fresh</h1>
+            <p>Requerimientos de APIs para Backend</p>
+            <p>Especificaciones para el Proyecto NestJS - Versión 1.0</p>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2>📋 Introducción</h2>
+                <p>Este documento especifica todas las APIs necesarias para el backend que soportará la aplicación móvil React Native de Tizanas Fresh. Las APIs están organizadas por módulos funcionales y incluyen detalles completos de endpoints, parámetros, respuestas y prioridades de implementación.</p>
+                
+                <div class="note">
+                    <strong>Nota:</strong> Todas las APIs deben implementar autenticación JWT excepto las marcadas como públicas. Los códigos de respuesta HTTP estándar deben ser utilizados (200, 201, 400, 401, 403, 404, 500).
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔐 Módulo 1: Autenticación y Usuarios</h2>
+                
+                <div class="module">
+                    <div class="module-header">
+                        <h3>📝 Gestión de Usuarios y Autenticación</h3>
+                    </div>
+                    <table class="api-table">
+                        <tr>
+                            <th>Método</th>
+                            <th>Endpoint</th>
+                            <th>Descripción</th>
+                            <th>Parámetros</th>
+                            <th>Respuesta</th>
+                            <th>Prioridad</th>
+                        </tr>
+                        <tr>
+                            <td><span class="method post">POST</span></td>
+                            <td><span class="endpoint">/api/auth/register</span></td>
+                            <td>Registrar nuevo usuario</td>
+                            <td>
+                                <div class="code-block">
+{
+  "name": "string",
+  "email": "string",
+  "password": "string",
+  "phone": "string"
+}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="code-block">
+{
+  "success": true,
+  "user": {
+    "id": "string",
+    "name": "string",
+    "email": "string",
+    "phone": "string",
+    "qrCode": "string",
+    "points": 0,
+    "level": "BRONZE"
+  },
+  "token": "string"
+}
+                                </div>
+                            </td>
+                            <td><span class="priority high">ALTA</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method post">POST</span></td>
+                            <td><span class="endpoint">/api/auth/login</span></td>
+                            <td>Iniciar sesión</td>
+                            <td>
+                                <div class="code-block">
+{
+  "email": "string",
+  "password": "string"
+}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="code-block">
+{
+  "success": true,
+  "user": {
+    "id": "string",
+    "name": "string",
+    "email": "string",
+    "phone": "string",
+    "qrCode": "string",
+    "points": 0,
+    "level": "BRONZE"
+  },
+  "token": "string",
+  "refreshToken": "string"
+}
+                                </div>
+                            </td>
+                            <td><span class="priority high">ALTA</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method post">POST</span></td>
+                            <td><span class="endpoint">/api/auth/refresh</span></td>
+                            <td>Renovar token de acceso</td>
+                            <td>
+                                <div class="code-block">
+{
+  "refreshToken": "string"
+}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="code-block">
+{
+  "success": true,
+  "token": "string",
+  "refreshToken": "string"
+}
+                                </div>
+                            </td>
+                            <td><span class="priority high">ALTA</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method post">POST</span></td>
+                            <td><span class="endpoint">/api/auth/forgot-password</span></td>
+                            <td>Solicitar recuperación de contraseña</td>
+                            <td>
+                                <div class="code-block">
+{
+  "email": "string"
+}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="code-block">
+{
+  "success": true,
+  "message": "Email de recuperación enviado"
+}
+                                </div>
+                            </td>
+                            <td><span class="priority medium">MEDIA</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method post">POST</span></td>
+                            <td><span class="endpoint">/api/auth/reset-password</span></td>
+                            <td>Restablecer contraseña</td>
+                            <td>
+                                <div class="code-block">
+{
+  "token": "string",
+  "password": "string"
+}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="code-block">
+{
+  "success": true,
+  "message": "Contraseña actualizada"
+}
+                                </div>
+                            </td>
+                            <td><span class="priority medium">MEDIA</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method get">GET</span></td>
+                            <td><span class="endpoint">/api/users/profile</span></td>
+                            <td>Obtener perfil del usuario</td>
+                            <td>Headers: Authorization</td>
+                            <td>
+                                <div class="code-block">
+{
+  "success": true,
+  "user": {
+    "id": "string",
+    "name": "string",
+    "email": "string",
+    "phone": "string",
+    "qrCode": "string",
+    "points": 0,
+    "level": "BRONZE",
+    "createdAt": "date"
+  }
+}
+                                </div>
+                            </td>
+                            <td><span class="priority high">ALTA</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method put">PUT</span></td>
+                            <td><span class="endpoint">/api/users/profile</span></td>
+                            <td>Actualizar perfil del usuario</td>
+                            <td>
+                                <div class="code-block">
+{
+  "name": "string",
+  "phone": "string"
+}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="code-block">
+{
+  "success": true,
+  "user": {
+    "id": "string",
+    "name": "string",
+    "email": "string",
+    "phone": "string"
+  }
+}
+                                </div>
+                            </td>
+                            <td><span class="priority medium">MEDIA</span></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🛍️ Módulo 2: Catálogo de Productos</h2>
+                
+                <div class="module">
+                    <div class="module-header">
+                        <h3>🍹 Gestión de Tizanas y Productos</h3>
+                    </div>
+                    <table class="api-table">
+                        <tr>
+                            <th>Método</th>
+                            <th>Endpoint</th>
+                            <th>Descripción</th>
+                            <th>Parámetros</th>
+                            <th>Respuesta</th>
+                            <th>Prioridad</th>
+                        </tr>
+                        <tr>
+                            <td><span class="method get">GET</span></td>
+                            <td><span class="endpoint">/api/products</span></td>
+                            <td>Obtener lista de productos</td>
+                            <td>
+                                Query params:<br>
+                                page: number<br>
+                                limit: number<br>
+                                category: string<br>
+                                search: string<br>
+                                sort: string
+                            </td>
+                            <td>
+                                <div class="code-block">
+{
+  "success": true,
+  "products": [{
+    "id": "string",
+    "name": "string",
+    "description": "string",
+    "price": number,
+    "image": "string",
+    "category": "string",
+    "available": boolean,
+    "ingredients": ["string"]
+  }],
+  "pagination": {
+    "page": number,
+    "limit": number,
+    "total": number,
+    "pages": number
+  }
+}
+                                </div>
+                            </td>
+                            <td><span class="priority high">ALTA</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method get">GET</span></td>
+                            <td><span class="endpoint">/api/products/:id</span></td>
+                            <td>Obtener detalle de producto</td>
+                            <td>Path: id</td>
+                            <td>
+                                <div class="code-block">
+{
+  "success": true,
+  "product": {
+    "id": "string",
+    "name": "string",
+    "description": "string",
+    "price": number,
+    "image": "string",
+    "category": "string",
+    "available": boolean,
+    "ingredients": ["string"],
+    "nutritionalInfo": {
+      "calories": number,
+      "protein": number,
+      "carbs": number,
+      "fat": number
+    }
+  }
+}
+                                </div>
+                            </td>
+                            <td><span class="priority high">ALTA</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method get">GET</span></td>
+                            <td><span class="endpoint">/api/products/categories</span></td>
+                            <td>Obtener categorías de productos</td>
+                            <td>Ninguno</td>
+                            <td>
+                                <div class="code-block">
+{
+  "success": true,
+  "categories": [{
+    "id": "string",
+    "name": "string",
+    "description": "string",
+    "image": "string"
+  }]
+}
+                                </div>
+                            </td>
+                            <td><span class="priority medium">MEDIA</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method post">POST</span></td>
+                            <td><span class="endpoint">/api/users/favorites</span></td>
+                            <td>Agregar producto a favoritos</td>
+                            <td>
+                                <div class="code-block">
+{
+  "productId": "string"
+}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="code-block">
+{
+  "success": true,
+  "message": "Producto agregado a favoritos"
+}
+                                </div>
+                            </td>
+                            <td><span class="priority low">BAJA</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method delete">DELETE</span></td>
+                            <td><span class="endpoint">/api/users/favorites/:productId</span></td>
+                            <td>Eliminar producto de favoritos</td>
+                            <td>Path: productId</td>
+                            <td>
+                                <div class="code-block">
+{
+  "success": true,
+  "message": "Producto eliminado de favoritos"
+}
+                                </div>
+                            </td>
+                            <td><span class="priority low">BAJA</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method get">GET</span></td>
+                            <td><span class="endpoint">/api/users/favorites</span></td>
+                            <td>Obtener productos favoritos</td>
+                            <td>Headers: Authorization</td>
+                            <td>
+                                <div class="code-block">
+{
+  "success": true,
+  "favorites": [{
+    "id": "string",
+    "name": "string",
+    "price": number,
+    "image": "string"
+  }]
+}
+                                </div>
+                            </td>
+                            <td><span class="priority low">BAJA</span></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📦 Módulo 3: Sistema de Pedidos</h2>
+                
+                <div class="module">
+                    <div class="module-header">
+                        <h3>🛒 Gestión de Pedidos y Carrito</h3>
+                    </div>
+                    <table class="api-table">
+                        <tr>
+                            <th>Método</th>
+                            <th>Endpoint</th>
+                            <th>Descripción</th>
+                            <th>Parámetros</th>
+                            <th>Respuesta</th>
+                            <th>Prioridad</th>
+                        </tr>
+                        <tr>
+                            <td><span class="method post">POST</span></td>
+                            <td><span class="endpoint">/api/orders</span></td>
+                            <td>Crear nuevo pedido</td>
+                            <td>
+                                <div class="code-block">
+{
+  "items": [{
+    "productId": "string",
+    "quantity": number,
+    "notes": "string"
+  }],
+  "couponCode": "string",
+  "deliveryAddress": {
+    "street": "string",
+    "city": "string",
+    "zipCode": "string"
+  }
+}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="code-block">
+{
+  "success": true,
+  "order": {
+    "id": "string",
+    "status": "PENDING",
+    "total": number,
+    "discount": number,
+    "finalTotal": number,
+    "items": [{
+      "productId": "string",
+      "name": "string",
+      "quantity": number,
+      "price": number
+    }],
+    "createdAt": "date"
+  }
+}
+                                </div>
+                            </td>
+                            <td><span class="priority high">ALTA</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method get">GET</span></td>
+                            <td><span class="endpoint">/api/orders</span></td>
+                            <td>Obtener historial de pedidos</td>
+                            <td>
+                                Query params:<br>
+                                page: number<br>
+                                limit: number<br>
+                                status: string
+                            </td>
+                            <td>
+                                <div class="code-block">
+{
+  "success": true,
+  "orders": [{
+    "id": "string",
+    "status": "string",
+    "total": number,
+    "items": [{
+      "productId": "string",
+      "name": "string",
+      "quantity": number,
+      "price": number
+    }],
+    "createdAt": "date"
+  }],
+  "pagination": {
+    "page": number,
+    "limit": number,
+    "total": number
+  }
+}
+                                </div>
+                            </td>
+                            <td><span class="priority high">ALTA</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method get">GET</span></td>
+                            <td><span class="endpoint">/api/orders/:id</span></td>
+                            <td>Obtener detalle de pedido</td>
+                            <td>Path: id</td>
+                            <td>
+                                <div class="code-block">
+{
+  "success": true,
+  "order": {
+    "id": "string",
+    "status": "string",
+    "total": number,
+    "discount": number,
+    "finalTotal": number,
+    "items": [{
+      "productId": "string",
+      "name": "string",
+      "quantity": number,
+      "price": number,
+      "notes": "string"
+    }],
+    "deliveryAddress": {
+      "street": "string",
+      "city": "string",
+      "zipCode": "string"
+    },
+    "createdAt": "date",
+    "updatedAt": "date"
+  }
+}
+                                </div>
+                            </td>
+                            <td><span class="priority high">ALTA</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method post">POST</span></td>
+                            <td><span class="endpoint">/api/orders/:id/cancel</span></td>
+                            <td>Cancelar pedido</td>
+                            <td>Path: id</td>
+                            <td>
+                                <div class="code-block">
+{
+  "success": true,
+  "message": "Pedido cancelado exitosamente"
+}
+                                </div>
+                            </td>
+                            <td><span class="priority medium">MEDIA</span></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🎁 Módulo 4: Sistema de Fidelización</h2>
+                
+                <div class="module">
+                    <div class="module-header">
+                        <h3>⭐ Gestión de Puntos y Recompensas</h3>
+                    </div>
+                    <table class="api-table">
+                        <tr>
+                            <th>Método</th>
+                            <th>Endpoint</th>
+                            <th>Descripción</th>
+                            <th>Parámetros</th>
+                            <th>Respuesta</th>
+                            <th>Prioridad</th>
+                        </tr>
+                        <tr>
+                            <td><span class="method get">GET</span></td>
+                            <td><span class="endpoint">/api/users/loyalty</span></td>
+                            <td>Obtener información de fidelización</td>
+                            <td>Headers: Authorization</td>
+                            <td>
+                                <div class="code-block">
+{
+  "success": true,
+  "loyalty": {
+    "points": number,
+    "level": "string",
+    "qrCode": "string",
+    "nextLevel": {
+      "name": "string",
+      "pointsNeeded": number
+    },
+    "rewards": [{
+      "id": "string",
+      "name": "string",
+      "pointsCost": number,
+      "description": "string"
+    }]
+  }
+}
+                                </div>
+                            </td>
+                            <td><span class="priority high">ALTA</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method get">GET</span></td>
+                            <td><span class="endpoint">/api/users/loyalty/history</span></td>
+                            <td>Obtener historial de puntos</td>
+                            <td>
+                                Query params:<br>
+                                page: number<br>
+                                limit: number
+                            </td>
+                            <td>
+                                <div class="code-block">
+{
+  "success": true,
+  "history": [{
+    "id": "string",
+    "type": "EARNED|SPENT",
+    "points": number,
+    "description": "string",
+    "createdAt": "date"
+  }],
+  "pagination": {
+    "page": number,
+    "limit": number,
+    "total": number
+  }
+}
+                                </div>
+                            </td>
+                            <td><span class="priority medium">MEDIA</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method post">POST</span></td>
+                            <td><span class="endpoint">/api/users/loyalty/redeem</span></td>
+                            <td>Canjear puntos por recompensa</td>
+                            <td>
+                                <div class="code-block">
+{
+  "rewardId": "string"
+}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="code-block">
+{
+  "success": true,
+  "message": "Recompensa canjeada exitosamente",
+  "remainingPoints": number
+}
+                                </div>
+                            </td>
+                            <td><span class="priority medium">MEDIA</span></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🎫 Módulo 5: Sistema de Cupones</h2>
+                
+                <div class="module">
+                    <div class="module-header">
+                        <h3>🏷️ Gestión de Cupones y Descuentos</h3>
+                    </div>
+                    <table class="api-table">
+                        <tr>
+                            <th>Método</th>
+                            <th>Endpoint</th>
+                            <th>Descripción</th>
+                            <th>Parámetros</th>
+                            <th>Respuesta</th>
+                            <th>Prioridad</th>
+                        </tr>
+                        <tr>
+                            <td><span class="method post">POST</span></td>
+                            <td><span class="endpoint">/api/coupons/validate</span></td>
+                            <td>Validar cupón QR</td>
+                            <td>
+                                <div class="code-block">
+{
+  "qrCode": "string"
+}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="code-block">
+{
+  "success": true,
+  "coupon": {
+    "id": "string",
+    "code": "string",
+    "discount": number,
+    "type": "PERCENTAGE|FIXED",
+    "minAmount": number,
+    "expiresAt": "date"
+  }
+}
+                                </div>
+                            </td>
+                            <td><span class="priority high">ALTA</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method get">GET</span></td>
+                            <td><span class="endpoint">/api/users/coupons</span></td>
+                            <td>Obtener cupones del usuario</td>
+                            <td>
+                                Query params:<br>
+                                status: "ACTIVE|USED|EXPIRED"
+                            </td>
+                            <td>
+                                <div class="code-block">
+{
+  "success": true,
+  "coupons": [{
+    "id": "string",
+    "code": "string",
+    "discount": number,
+    "type": "string",
+    "status": "string",
+    "expiresAt": "date",
+    "usedAt": "date"
+  }]
+}
+                                </div>
+                            </td>
+                            <td><span class="priority medium">MEDIA</span></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔔 Módulo 6: Sistema de Notificaciones</h2>
+                
+                <div class="module">
+                    <div class="module-header">
+                        <h3>📱 Gestión de Notificaciones Push</h3>
+                    </div>
+                    <table class="api-table">
+                        <tr>
+                            <th>Método</th>
+                            <th>Endpoint</th>
+                            <th>Descripción</th>
+                            <th>Parámetros</th>
+                            <th>Respuesta</th>
+                            <th>Prioridad</th>
+                        </tr>
+                        <tr>
+                            <td><span class="method post">POST</span></td>
+                            <td><span class="endpoint">/api/notifications/register</span></td>
+                            <td>Registrar token de notificación</td>
+                            <td>
+                                <div class="code-block">
+{
+  "deviceToken": "string",
+  "platform": "ios|android"
+}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="code-block">
+{
+  "success": true,
+  "message": "Token registrado exitosamente"
+}
+                                </div>
+                            </td>
+                            <td><span class="priority high">ALTA</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method get">GET</span></td>
+                            <td><span class="endpoint">/api/notifications</span></td>
+                            <td>Obtener notificaciones del usuario</td>
+                            <td>
+                                Query params:<br>
+                                page: number<br>
+                                limit: number
+                            </td>
+                            <td>
+                                <div class="code-block">
+{
+  "success": true,
+  "notifications": [{
+    "id": "string",
+    "title": "string",
+    "message": "string",
+    "type": "ORDER|PROMOTION|SYSTEM",
+    "read": boolean,
+    "createdAt": "date"
+  }],
+  "pagination": {
+    "page": number,
+    "limit": number,
+    "total": number
+  }
+}
+                                </div>
+                            </td>
+                            <td><span class="priority medium">MEDIA</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method patch">PATCH</span></td>
+                            <td><span class="endpoint">/api/notifications/:id/read</span></td>
+                            <td>Marcar notificación como leída</td>
+                            <td>Path: id</td>
+                            <td>
+                                <div class="code-block">
+{
+  "success": true,
+  "message": "Notificación marcada como leída"
+}
+                                </div>
+                            </td>
+                            <td><span class="priority medium">MEDIA</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="method get">GET</span></td>
+                            <td><span class="endpoint">/api/notifications/unread-count</span></td>
+                            <td>Obtener contador de notificaciones no leídas</td>
+                            <td>Headers: Authorization</td>
+                            <td>
+                                <div class="code-block">
+{
+  "success": true,
+  "count": number
+}
+                                </div>
+                            </td>
+                            <td><span class="priority medium">MEDIA</span></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔄 Diagrama de Arquitectura de APIs</h2>
+                <div class="flowchart">
+                    <svg width="1000" height="600" viewBox="0 0 1000 600">
+                        <defs>
+                            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="#333" />
+                            </marker>
+                        </defs>
+                        
+                        <!-- React Native App -->
+                        <rect x="50" y="50" width="150" height="80" rx="10" fill="#61dafb" stroke="#21a1cb" stroke-width="3"/>
+                        <text x="125" y="95" text-anchor="middle" fill="white" font-weight="bold">React Native App</text>
+                        
+                        <!-- API Gateway -->
+                        <rect x="300" y="50" width="150" height="80" rx="10" fill="#ff6b6b" stroke="#ee5a24" stroke-width="3"/>
+                        <text x="375" y="95" text-anchor="middle" fill="white" font-weight="bold">API Gateway</text>
+                        <text x="375" y="110" text-anchor="middle" fill="white" font-size="12">NestJS</text>
+                        
+                        <!-- Auth Module -->
+                        <rect x="550" y="50" width="120" height="60" rx="10" fill="#9b59b6" stroke="#8e44ad" stroke-width="3"/>
+                        <text x="610" y="85" text-anchor="middle" fill="white" font-weight="bold">Auth</text>
+                        
+                        <!-- Users Module -->
+                        <rect x="700" y="50" width="120" height="60" rx="10" fill="#3498db" stroke="#2980b9" stroke-width="3"/>
+                        <text x="760" y="85" text-anchor="middle" fill="white" font-weight="bold">Users</text>
+                        
+                        <!-- Products Module -->
+                        <rect x="550" y="150" width="120" height="60" rx="10" fill="#2ecc71" stroke="#27ae60" stroke-width="3"/>
+                        <text x="610" y="185" text-anchor="middle" fill="white" font-weight="bold">Products</text>
+                        
+                        <!-- Orders Module -->
+                        <rect x="700" y="150" width="120" height="60" rx="10" fill="#f39c12" stroke="#e67e22" stroke-width="3"/>
+                        <text x="760" y="185" text-anchor="middle" fill="white" font-weight="bold">Orders</text>
+                        
+                        <!-- Loyalty Module -->
+                        <rect x="550" y="250" width="120" height="60" rx="10" fill="#e74c3c" stroke="#c0392b" stroke-width="3"/>
+                        <text x="610" y="285" text-anchor="middle" fill="white" font-weight="bold">Loyalty</text>
+                        
+                        <!-- Coupons Module -->
+                        <rect x="700" y="250" width="120" height="60" rx="10" fill="#1abc9c" stroke="#16a085" stroke-width="3"/>
+                        <text x="760" y="285" text-anchor="middle" fill="white" font-weight="bold">Coupons</text>
+                        
+                        <!-- Notifications Module -->
+                        <rect x="550" y="350" width="120" height="60" rx="10" fill="#34495e" stroke="#2c3e50" stroke-width="3"/>
+                        <text x="610" y="385" text-anchor="middle" fill="white" font-weight="bold">Notifications</text>
+                        
+                        <!-- Database -->
+                        <rect x="50" y="450" width="150" height="80" rx="10" fill="#f39c12" stroke="#e67e22" stroke-width="3"/>
+                        <text x="125" y="495" text-anchor="middle" fill="white" font-weight="bold">Database</text>
+                        <text x="125" y="510" text-anchor="middle" fill="white" font-size="12">MongoDB</text>
+                        
+                        <!-- External Services -->
+                        <rect x="300" y="450" width="150" height="80" rx="10" fill="#95a5a6" stroke="#7f8c8d" stroke-width="3"/>
+                        <text x="375" y="495" text-anchor="middle" fill="white" font-weight="bold">External Services</text>
+                        <text x="375" y="510" text-anchor="middle" fill="white" font-size="12">Firebase, OneSignal</text>
+                        
+                        <!-- Admin System -->
+                        <rect x="550" y="450" width="150" height="80" rx="10" fill="#e67e22" stroke="#d35400" stroke-width="3"/>
+                        <text x="625" y="495" text-anchor="middle" fill="white" font-weight="bold">Admin System</text>
+                        <text x="625" y="510" text-anchor="middle" fill="white" font-size="12">Integration</text>
+                        
+                        <!-- Flechas -->
+                        <line x1="200" y1="90" x2="300" y2="90" stroke="#333" stroke-width="3" marker-end="url(#arrowhead)"/>
+                        <line x1="450" y1="90" x2="550" y2="90" stroke="#333" stroke-width="3" marker-end="url(#arrowhead)"/>
+                        <line x1="450" y1="90" x2="700" y2="90" stroke="#333" stroke-width="3" marker-end="url(#arrowhead)"/>
+                        <line x1="450" y1="90" x2="610" y2="150" stroke="#333" stroke-width="3" marker-end="url(#arrowhead)"/>
+                        <line x1="450" y1="90" x2="760" y2="150" stroke="#333" stroke-width="3" marker-end="url(#arrowhead)"/>
+                        <line x1="450" y1="90" x2="610" y2="250" stroke="#333" stroke-width="3" marker-end="url(#arrowhead)"/>
+                        <line x1="450" y1="90" x2="760" y2="250" stroke="#333" stroke-width="3" marker-end="url(#arrowhead)"/>
+                        <line x1="450" y1="90" x2="610" y2="350" stroke="#333" stroke-width="3" marker-end="url(#arrowhead)"/>
+                        <line x1="125" y1="530" x2="125" y2="450" stroke="#333" stroke-width="3" marker-end="url(#arrowhead)"/>
+                        <line x1="375" y1="530" x2="375" y2="450" stroke="#333" stroke-width="3" marker-end="url(#arrowhead)"/>
+                        <line x1="625" y1="530" x2="625" y2="450" stroke="#333" stroke-width="3" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Texto en flechas -->
+                        <text x="250" y="85" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">HTTP/HTTPS</text>
+                        <text x="500" y="85" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">Routes</text>
+                        <text x="500" y="135" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">CRUD</text>
+                        <text x="500" y="235" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">Business Logic</text>
+                        <text x="500" y="335" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">Services</text>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📋 Resumen de Prioridades</h2>
+                
+                <div class="note">
+                    <strong>Orden de Implementación Recomendado:</strong>
+                </div>
+                
+                <table class="api-table">
+                    <tr>
+                        <th>Prioridad</th>
+                        <th>Módulos</th>
+                        <th>APIs Críticas</th>
+                        <th>Tiempo Estimado</th>
+                    </tr>
+                    <tr>
+                        <td><span class="priority high">ALTA</span></td>
+                        <td>Auth, Products, Orders</td>
+                        <td>Login, Register, Products List, Create Order</td>
+                        <td>2-3 semanas</td>
+                    </tr>
+                    <tr>
+                        <td><span class="priority medium">MEDIA</span></td>
+                        <td>Loyalty, Coupons, Notifications</td>
+                        <td>Loyalty Info, Validate Coupon, Register Notifications</td>
+                        <td>2-3 semanas</td>
+                    </tr>
+                    <tr>
+                        <td><span class="priority low">BAJA</span></td>
+                        <td>Favorites, Profile Updates</td>
+                        <td>Favorites Management, Profile Updates</td>
+                        <td>1 semana</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

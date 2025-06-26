@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documento de Tareas - Tizanas Fresh Backend</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 40px;
+        }
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            border-left: 5px solid #e74c3c;
+        }
+        .section h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            font-size: 1.8em;
+        }
+        .module {
+            margin-bottom: 30px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .module-header {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 20px;
+        }
+        .module-header h3 {
+            margin: 0;
+            font-size: 1.4em;
+        }
+        .priority-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+        }
+        .high { background: #e74c3c; }
+        .medium { background: #f39c12; }
+        .low { background: #27ae60; }
+        .task-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .task-table th, .task-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        .task-table th {
+            background: #34495e;
+            color: white;
+            font-weight: bold;
+        }
+        .task-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        .status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+        }
+        .pending { background: #95a5a6; }
+        .current { background: #3498db; }
+        .done { background: #27ae60; }
+        .task-id {
+            font-family: 'Courier New', monospace;
+            background: #f1f2f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        .estimated-time {
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        .dependencies {
+            font-size: 0.8em;
+            color: #e74c3c;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #ecf0f1;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+            transition: width 0.3s ease;
+        }
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .stat-label {
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        .timeline {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 15px;
+            border-left: 4px solid #3498db;
+            background: #f8f9fa;
+            border-radius: 0 10px 10px 0;
+        }
+        .timeline-week {
+            font-weight: bold;
+            color: #2c3e50;
+            min-width: 120px;
+        }
+        .timeline-content {
+            margin-left: 20px;
+        }
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .recent-updates {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Tizanas Fresh Backend</h1>
+            <p>Documento de Tareas y Plan de Implementación</p>
+            <p>NestJS + MongoDB - Versión 1.0</p>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2>📊 Resumen del Proyecto</h2>
+                
+                <div class="summary-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">54</div>
+                        <div class="stat-label">Tareas Totales</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">8</div>
+                        <div class="stat-label">Fases de Desarrollo</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">8-10</div>
+                        <div class="stat-label">Semanas Estimadas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">28%</div>
+                        <div class="stat-label">Progreso Actual</div>
+                    </div>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 28%"></div>
+                </div>
+
+                <div class="recent-updates">
+                    <strong>🔄 Actualizaciones Recientes:</strong>
+                    <ul>
+                        <li><strong>✅ APIs Funcionando Perfectamente:</strong> Las APIs de autenticación y seeding están completamente operativas y probadas</li>
+                        <li><strong>🔧 Errores de TypeScript Resueltos:</strong> Se corrigieron todos los errores de tipos de ObjectId en el servicio de seeding</li>
+                        <li><strong>📚 Documentación Mejorada:</strong> Se actualizó la documentación de APIs con descripción general, casos de uso y ejemplos detallados</li>
+                        <li><strong>⚙️ Configuración del Puerto:</strong> Sistema configurado para ejecutarse en el puerto 5001 según variables de entorno</li>
+                        <li><strong>🔐 Autenticación JWT Operativa:</strong> Sistema de autenticación completamente funcional con tokens JWT</li>
+                        <li><strong>🌱 Sistema de Seeding Funcional:</strong> Endpoints de seeding probados y funcionando correctamente</li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <strong>Nota:</strong> Las tareas están organizadas por prioridad y dependencias. Se recomienda seguir el orden establecido para evitar bloqueos en el desarrollo.
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📊 Resumen de Progreso Actual</h2>
+                
+                <div class="summary-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">15</div>
+                        <div class="stat-label">Tareas Completadas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">39</div>
+                        <div class="stat-label">Tareas Pendientes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">28%</div>
+                        <div class="stat-label">Progreso General</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Fase 1 Completada</div>
+                    </div>
+                </div>
+
+                <div class="note">
+                    <strong>Estado Actual:</strong> Se ha completado la configuración inicial del proyecto (Fase 1 - 100% completada), se han creado todos los esquemas de base de datos y se ha implementado el sistema de seeding. Las APIs de autenticación y seeding están funcionando perfectamente. Se ha creado documentación completa de APIs con mejoras significativas. Las siguientes tareas prioritarias son TASK-017 (Crear DTOs de Productos) y TASK-019 (Implementar ProductService).
+                </div>
+
+                <table class="task-table">
+                    <tr>
+                        <th>Fase</th>
+                        <th>Tareas Completadas</th>
+                        <th>Tareas Pendientes</th>
+                        <th>Progreso</th>
+                        <th>Estado</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Fase 1: Configuración Inicial</strong></td>
+                        <td>7/7</td>
+                        <td>0/7</td>
+                        <td>100%</td>
+                        <td><span class="status done">COMPLETADA</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fase 2: Autenticación y Usuarios</strong></td>
+                        <td>5/9</td>
+                        <td>4/9</td>
+                        <td>56%</td>
+                        <td><span class="status current">EN PROGRESO</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fase 3: Módulo de Productos</strong></td>
+                        <td>2/9</td>
+                        <td>7/9</td>
+                        <td>22%</td>
+                        <td><span class="status current">EN PROGRESO</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fase 4: Módulo de Pedidos</strong></td>
+                        <td>0/6</td>
+                        <td>6/6</td>
+                        <td>0%</td>
+                        <td><span class="status pending">PENDING</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fase 5: Sistema de Fidelización</strong></td>
+                        <td>0/5</td>
+                        <td>5/5</td>
+                        <td>0%</td>
+                        <td><span class="status pending">PENDING</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fase 6: Sistema de Cupones</strong></td>
+                        <td>0/5</td>
+                        <td>5/5</td>
+                        <td>0%</td>
+                        <td><span class="status pending">PENDING</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fase 7: Sistema de Notificaciones</strong></td>
+                        <td>0/5</td>
+                        <td>5/5</td>
+                        <td>0%</td>
+                        <td><span class="status pending">PENDING</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fase 8: Testing y Documentación</strong></td>
+                        <td>1/4</td>
+                        <td>3/4</td>
+                        <td>25%</td>
+                        <td><span class="status current">EN PROGRESO</span></td>
+                    </tr>
+                </table>
+
+                <div class="note">
+                    <strong>Próximas Tareas Prioritarias:</strong>
+                    <ul>
+                        <li><strong>TASK-017:</strong> Crear DTOs de Productos (2 horas)</li>
+                        <li><strong>TASK-019:</strong> Implementar ProductService (4 horas)</li>
+                        <li><strong>TASK-020:</strong> Implementar ProductController (3 horas)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🏆 Logros Recientes y Éxitos del Proyecto</h2>
+                
+                <div class="recent-updates">
+                    <strong>🎉 Éxitos Destacados:</strong>
+                    <ul>
+                        <li><strong>✅ Sistema de Autenticación JWT:</strong> Completamente funcional con tokens seguros, validación de usuarios y protección de rutas</li>
+                        <li><strong>✅ Sistema de Seeding:</strong> Endpoints probados y funcionando perfectamente para poblar la base de datos con datos realistas</li>
+                        <li><strong>✅ Documentación de APIs Mejorada:</strong> Documentación completa con descripción general, casos de uso, ejemplos de entrada/salida y datos válidos</li>
+                        <li><strong>✅ Configuración del Puerto:</strong> Sistema configurado para ejecutarse en el puerto 5001 según las especificaciones del proyecto</li>
+                        <li><strong>✅ Errores de TypeScript Resueltos:</strong> Todos los problemas de tipos de ObjectId corregidos en el servicio de seeding</li>
+                        <li><strong>✅ Esquemas de Base de Datos:</strong> Todos los esquemas de Mongoose creados y funcionando correctamente</li>
+                    </ul>
+                </div>
+
+                <div class="summary-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Fase 1 Completada</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">56%</div>
+                        <div class="stat-label">Fase 2 Progreso</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">22%</div>
+                        <div class="stat-label">Fase 3 Progreso</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">25%</div>
+                        <div class="stat-label">Fase 8 Progreso</div>
+                    </div>
+                </div>
+
+                <div class="note">
+                    <strong>🚀 Estado Actual del Proyecto:</strong> El proyecto está en excelente estado con las bases sólidas establecidas. Las APIs de autenticación y seeding están completamente operativas y probadas. La documentación ha sido significativamente mejorada siguiendo las mejores prácticas. El sistema está listo para continuar con el desarrollo de los módulos de productos y pedidos.
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🏗️ Fase 1: Configuración Inicial y Base del Proyecto</h2>
+                <span class="priority-badge high">ALTA PRIORIDAD</span>
+                
+                <div class="module">
+                    <div class="module-header">
+                        <h3>⚙️ Configuración del Proyecto</h3>
+                    </div>
+                    <table class="task-table">
+                        <tr>
+                            <th>ID</th>
+                            <th>Tarea</th>
+                            <th>Descripción</th>
+                            <th>Estado</th>
+                            <th>Tiempo</th>
+                            <th>Dependencias</th>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-001</span></td>
+                            <td>Inicializar proyecto NestJS</td>
+                            <td>Crear proyecto base con NestJS CLI, configurar TypeScript y estructura de carpetas</td>
+                            <td><span class="status done">DONE</span></td>
+                            <td class="estimated-time">2 horas</td>
+                            <td class="dependencies">Ninguna</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-002</span></td>
+                            <td>Configurar MongoDB y Mongoose</td>
+                            <td>Instalar dependencias, configurar conexión a MongoDB y esquemas base</td>
+                            <td><span class="status done">DONE</span></td>
+                            <td class="estimated-time">3 horas</td>
+                            <td class="dependencies">TASK-001</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-003</span></td>
+                            <td>Configurar variables de entorno</td>
+                            <td>Crear archivos .env, .env.example y configuración de ConfigModule</td>
+                            <td><span class="status done">DONE</span></td>
+                            <td class="estimated-time">1 hora</td>
+                            <td class="dependencies">TASK-001</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-007</span></td>
+                            <td>Configurar logging y manejo de errores</td>
+                            <td>Implementar sistema de logging y interceptores de manejo de errores globales</td>
+                            <td><span class="status done">DONE</span></td>
+                            <td class="estimated-time">2 horas</td>
+                            <td class="dependencies">TASK-001</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-007.1</span></td>
+                            <td>Mejorar configuración centralizada</td>
+                            <td>Implementar ConfigService y configuración centralizada en app.config.ts</td>
+                            <td><span class="status done">DONE</span></td>
+                            <td class="estimated-time">1 hora</td>
+                            <td class="dependencies">TASK-003</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-004</span></td>
+                            <td>Configurar autenticación JWT</td>
+                            <td>Instalar y configurar @nestjs/jwt, @nestjs/passport, passport-jwt</td>
+                            <td><span class="status done">DONE</span></td>
+                            <td class="estimated-time">4 horas</td>
+                            <td class="dependencies">TASK-001, TASK-003</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-005</span></td>
+                            <td>Configurar validación y transformación</td>
+                            <td>Instalar class-validator, class-transformer y configurar pipes globales</td>
+                            <td><span class="status done">DONE</span></td>
+                            <td class="estimated-time">2 horas</td>
+                            <td class="dependencies">TASK-001</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-006</span></td>
+                            <td>Configurar seguridad y middleware</td>
+                            <td>Configurar Helmet, CORS, rate limiting y otros middlewares de seguridad</td>
+                            <td><span class="status done">DONE</span></td>
+                            <td class="estimated-time">3 horas</td>
+                            <td class="dependencies">TASK-001</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-008.3</span></td>
+                            <td>Crear documentación de APIs</td>
+                            <td>Crear documentación HTML completa para todas las APIs del sistema</td>
+                            <td><span class="status done">DONE</span></td>
+                            <td class="estimated-time">6 horas</td>
+                            <td class="dependencies">TASK-008.2</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔐 Fase 2: Módulo de Autenticación y Usuarios</h2>
+                <span class="priority-badge high">ALTA PRIORIDAD</span>
+                
+                <div class="module">
+                    <div class="module-header">
+                        <h3>👤 Gestión de Usuarios</h3>
+                    </div>
+                    <table class="task-table">
+                        <tr>
+                            <th>ID</th>
+                            <th>Tarea</th>
+                            <th>Descripción</th>
+                            <th>Estado</th>
+                            <th>Tiempo</th>
+                            <th>Dependencias</th>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-008</span></td>
+                            <td>Crear esquema de Usuario</td>
+                            <td>Definir UserSchema con Mongoose, incluyendo todos los campos requeridos</td>
+                            <td><span class="status done">DONE</span></td>
+                            <td class="estimated-time">2 horas</td>
+                            <td class="dependencies">TASK-002</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-008.1</span></td>
+                            <td>Crear esquemas de base de datos</td>
+                            <td>Crear todos los esquemas de Mongoose: Category, Product, Coupon, Order, Notification, LoyaltyHistory, DeviceToken</td>
+                            <td><span class="status done">DONE</span></td>
+                            <td class="estimated-time">3 horas</td>
+                            <td class="dependencies">TASK-002</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-008.2</span></td>
+                            <td>Implementar sistema de seeding</td>
+                            <td>Crear SeedService y SeedController para poblar la base de datos con datos de prueba</td>
+                            <td><span class="status done">DONE</span></td>
+                            <td class="estimated-time">4 horas</td>
+                            <td class="dependencies">TASK-008.1</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-009</span></td>
+                            <td>Crear DTOs de Usuario</td>
+                            <td>Crear DTOs para registro, login, actualización de perfil con validaciones</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">2 horas</td>
+                            <td class="dependencies">TASK-005</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-010</span></td>
+                            <td>Implementar UserService</td>
+                            <td>Crear servicio con métodos CRUD, encriptación de contraseñas, generación de QR</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">4 horas</td>
+                            <td class="dependencies">TASK-008, TASK-009</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-011</span></td>
+                            <td>Implementar UserController</td>
+                            <td>Crear endpoints para registro, login, perfil, actualización de datos</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">3 horas</td>
+                            <td class="dependencies">TASK-010</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-012</span></td>
+                            <td>Implementar estrategias de autenticación</td>
+                            <td>Crear JWTStrategy y LocalStrategy para Passport</td>
+                            <td><span class="status done">DONE</span></td>
+                            <td class="estimated-time">3 horas</td>
+                            <td class="dependencies">TASK-004, TASK-010</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-013</span></td>
+                            <td>Implementar guards de autenticación</td>
+                            <td>Crear JwtAuthGuard y RolesGuard para proteger rutas</td>
+                            <td><span class="status done">DONE</span></td>
+                            <td class="estimated-time">2 horas</td>
+                            <td class="dependencies">TASK-012</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-014</span></td>
+                            <td>Implementar recuperación de contraseña</td>
+                            <td>Crear endpoints para forgot-password y reset-password con emails</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">4 horas</td>
+                            <td class="dependencies">TASK-011</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🛍️ Fase 3: Módulo de Productos</h2>
+                <span class="priority-badge high">ALTA PRIORIDAD</span>
+                
+                <div class="module">
+                    <div class="module-header">
+                        <h3>🍹 Gestión de Productos</h3>
+                    </div>
+                    <table class="task-table">
+                        <tr>
+                            <th>ID</th>
+                            <th>Tarea</th>
+                            <th>Descripción</th>
+                            <th>Estado</th>
+                            <th>Tiempo</th>
+                            <th>Dependencias</th>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-015</span></td>
+                            <td>Crear esquema de Categorías</td>
+                            <td>Definir CategorySchema para organizar productos</td>
+                            <td><span class="status done">DONE</span></td>
+                            <td class="estimated-time">1 hora</td>
+                            <td class="dependencies">TASK-002</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-016</span></td>
+                            <td>Crear esquema de Productos</td>
+                            <td>Definir ProductSchema con relación a categorías e información nutricional</td>
+                            <td><span class="status done">DONE</span></td>
+                            <td class="estimated-time">2 horas</td>
+                            <td class="dependencies">TASK-015</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-017</span></td>
+                            <td>Crear DTOs de Productos</td>
+                            <td>Crear DTOs para creación, actualización y respuesta de productos</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">2 horas</td>
+                            <td class="dependencies">TASK-005</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-018</span></td>
+                            <td>Implementar CategoryService</td>
+                            <td>Crear servicio para gestión de categorías con métodos CRUD</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">2 horas</td>
+                            <td class="dependencies">TASK-015</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-019</span></td>
+                            <td>Implementar ProductService</td>
+                            <td>Crear servicio con métodos CRUD, búsqueda, filtrado y paginación</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">4 horas</td>
+                            <td class="dependencies">TASK-016, TASK-017</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-020</span></td>
+                            <td>Implementar CategoryController</td>
+                            <td>Crear endpoints para listar y obtener categorías</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">1 hora</td>
+                            <td class="dependencies">TASK-018</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-021</span></td>
+                            <td>Implementar ProductController</td>
+                            <td>Crear endpoints para listar, obtener, crear, actualizar productos</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">3 horas</td>
+                            <td class="dependencies">TASK-019</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-022</span></td>
+                            <td>Implementar búsqueda y filtros</td>
+                            <td>Agregar funcionalidad de búsqueda por texto, filtros por categoría y precio</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">3 horas</td>
+                            <td class="dependencies">TASK-021</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-023</span></td>
+                            <td>Implementar gestión de favoritos</td>
+                            <td>Crear endpoints para agregar/eliminar productos de favoritos</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">2 horas</td>
+                            <td class="dependencies">TASK-021, TASK-013</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📦 Fase 4: Módulo de Pedidos</h2>
+                <span class="priority-badge high">ALTA PRIORIDAD</span>
+                
+                <div class="module">
+                    <div class="module-header">
+                        <h3>🛒 Gestión de Pedidos</h3>
+                    </div>
+                    <table class="task-table">
+                        <tr>
+                            <th>ID</th>
+                            <th>Tarea</th>
+                            <th>Descripción</th>
+                            <th>Estado</th>
+                            <th>Tiempo</th>
+                            <th>Dependencias</th>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-024</span></td>
+                            <td>Crear esquema de Pedidos</td>
+                            <td>Definir OrderSchema con items embebidos y referencias a usuarios y cupones</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">3 horas</td>
+                            <td class="dependencies">TASK-016, TASK-008</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-025</span></td>
+                            <td>Crear DTOs de Pedidos</td>
+                            <td>Crear DTOs para creación de pedidos, items y respuestas</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">2 horas</td>
+                            <td class="dependencies">TASK-005</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-026</span></td>
+                            <td>Implementar OrderService</td>
+                            <td>Crear servicio con métodos para crear, obtener, actualizar y cancelar pedidos</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">5 horas</td>
+                            <td class="dependencies">TASK-024, TASK-025</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-027</span></td>
+                            <td>Implementar OrderController</td>
+                            <td>Crear endpoints para gestión completa de pedidos</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">3 horas</td>
+                            <td class="dependencies">TASK-026</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-028</span></td>
+                            <td>Implementar cálculo de totales</td>
+                            <td>Agregar lógica para calcular subtotales, descuentos y totales finales</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">2 horas</td>
+                            <td class="dependencies">TASK-026</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-029</span></td>
+                            <td>Implementar estados de pedido</td>
+                            <td>Crear sistema de estados (PENDING, CONFIRMED, PREPARING, READY, DELIVERED, CANCELLED)</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">2 horas</td>
+                            <td class="dependencies">TASK-026</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🎁 Fase 5: Módulo de Fidelización</h2>
+                <span class="priority-badge medium">MEDIA PRIORIDAD</span>
+                
+                <div class="module">
+                    <div class="module-header">
+                        <h3>⭐ Sistema de Puntos y Recompensas</h3>
+                    </div>
+                    <table class="task-table">
+                        <tr>
+                            <th>ID</th>
+                            <th>Tarea</th>
+                            <th>Descripción</th>
+                            <th>Estado</th>
+                            <th>Tiempo</th>
+                            <th>Dependencias</th>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-030</span></td>
+                            <td>Crear esquema de LoyaltyHistory</td>
+                            <td>Definir esquema para historial de transacciones de puntos</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">2 horas</td>
+                            <td class="dependencies">TASK-008</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-031</span></td>
+                            <td>Implementar LoyaltyService</td>
+                            <td>Crear servicio para gestión de puntos, niveles y recompensas</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">4 horas</td>
+                            <td class="dependencies">TASK-030</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-032</span></td>
+                            <td>Implementar LoyaltyController</td>
+                            <td>Crear endpoints para información de fidelización e historial</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">2 horas</td>
+                            <td class="dependencies">TASK-031</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-033</span></td>
+                            <td>Integrar puntos con pedidos</td>
+                            <td>Conectar sistema de puntos con creación y finalización de pedidos</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">3 horas</td>
+                            <td class="dependencies">TASK-031, TASK-026</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-034</span></td>
+                            <td>Implementar sistema de niveles</td>
+                            <td>Crear lógica para niveles BRONZE, SILVER, GOLD, PLATINUM</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">2 horas</td>
+                            <td class="dependencies">TASK-031</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🎫 Fase 6: Módulo de Cupones</h2>
+                <span class="priority-badge medium">MEDIA PRIORIDAD</span>
+                
+                <div class="module">
+                    <div class="module-header">
+                        <h3>🏷️ Gestión de Cupones y Descuentos</h3>
+                    </div>
+                    <table class="task-table">
+                        <tr>
+                            <th>ID</th>
+                            <th>Tarea</th>
+                            <th>Descripción</th>
+                            <th>Estado</th>
+                            <th>Tiempo</th>
+                            <th>Dependencias</th>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-035</span></td>
+                            <td>Crear esquema de Cupones</td>
+                            <td>Definir CouponSchema con códigos únicos y QR codes</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">2 horas</td>
+                            <td class="dependencies">TASK-002</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-036</span></td>
+                            <td>Implementar CouponService</td>
+                            <td>Crear servicio para validación, creación y gestión de cupones</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">4 horas</td>
+                            <td class="dependencies">TASK-035</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-037</span></td>
+                            <td>Implementar CouponController</td>
+                            <td>Crear endpoints para validación y gestión de cupones</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">2 horas</td>
+                            <td class="dependencies">TASK-036</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-038</span></td>
+                            <td>Integrar cupones con pedidos</td>
+                            <td>Conectar sistema de cupones con creación de pedidos</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">3 horas</td>
+                            <td class="dependencies">TASK-036, TASK-026</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-039</span></td>
+                            <td>Implementar generación de QR codes</td>
+                            <td>Agregar funcionalidad para generar QR codes para cupones</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">2 horas</td>
+                            <td class="dependencies">TASK-036</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔔 Fase 7: Módulo de Notificaciones</h2>
+                <span class="priority-badge medium">MEDIA PRIORIDAD</span>
+                
+                <div class="module">
+                    <div class="module-header">
+                        <h3>📱 Sistema de Notificaciones Push</h3>
+                    </div>
+                    <table class="task-table">
+                        <tr>
+                            <th>ID</th>
+                            <th>Tarea</th>
+                            <th>Descripción</th>
+                            <th>Estado</th>
+                            <th>Tiempo</th>
+                            <th>Dependencias</th>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-040</span></td>
+                            <td>Crear esquemas de Notificaciones</td>
+                            <td>Definir NotificationSchema y DeviceTokenSchema</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">2 horas</td>
+                            <td class="dependencies">TASK-008</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-041</span></td>
+                            <td>Implementar NotificationService</td>
+                            <td>Crear servicio para gestión de notificaciones y tokens de dispositivos</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">4 horas</td>
+                            <td class="dependencies">TASK-040</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-042</span></td>
+                            <td>Implementar NotificationController</td>
+                            <td>Crear endpoints para gestión de notificaciones</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">2 horas</td>
+                            <td class="dependencies">TASK-041</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-043</span></td>
+                            <td>Integrar con Firebase/OneSignal</td>
+                            <td>Configurar envío de notificaciones push a dispositivos</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">3 horas</td>
+                            <td class="dependencies">TASK-041</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-044</span></td>
+                            <td>Implementar notificaciones automáticas</td>
+                            <td>Crear sistema de notificaciones automáticas para cambios de estado de pedidos</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">2 horas</td>
+                            <td class="dependencies">TASK-043, TASK-026</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🧪 Fase 8: Testing y Documentación</h2>
+                <span class="priority-badge medium">MEDIA PRIORIDAD</span>
+                
+                <div class="module">
+                    <div class="module-header">
+                        <h3>✅ Testing y Documentación Final</h3>
+                    </div>
+                    <table class="task-table">
+                        <tr>
+                            <th>ID</th>
+                            <th>Tarea</th>
+                            <th>Descripción</th>
+                            <th>Estado</th>
+                            <th>Tiempo</th>
+                            <th>Dependencias</th>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-045</span></td>
+                            <td>Implementar tests unitarios</td>
+                            <td>Crear tests para todos los servicios y controladores</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">8 horas</td>
+                            <td class="dependencies">Todas las tareas anteriores</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-046</span></td>
+                            <td>Implementar tests de integración</td>
+                            <td>Crear tests end-to-end para flujos completos</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">6 horas</td>
+                            <td class="dependencies">TASK-045</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-047</span></td>
+                            <td>Configurar Swagger/OpenAPI</td>
+                            <td>Documentar todas las APIs con Swagger</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">4 horas</td>
+                            <td class="dependencies">Todas las tareas de controladores</td>
+                        </tr>
+                        <tr>
+                            <td><span class="task-id">TASK-048</span></td>
+                            <td>Optimizar rendimiento</td>
+                            <td>Implementar índices de base de datos y optimizaciones</td>
+                            <td><span class="status pending">PENDING</span></td>
+                            <td class="estimated-time">3 horas</td>
+                            <td class="dependencies">Todas las tareas de esquemas</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📅 Cronograma de Implementación</h2>
+                
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-week">Semana 1-2</div>
+                        <div class="timeline-content">
+                            <strong>Fase 1:</strong> Configuración inicial y base del proyecto<br>
+                            <strong>Fase 2:</strong> Módulo de autenticación y usuarios
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-week">Semana 3-4</div>
+                        <div class="timeline-content">
+                            <strong>Fase 3:</strong> Módulo de productos<br>
+                            <strong>Fase 4:</strong> Módulo de pedidos
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-week">Semana 5-6</div>
+                        <div class="timeline-content">
+                            <strong>Fase 5:</strong> Módulo de fidelización<br>
+                            <strong>Fase 6:</strong> Módulo de cupones
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-week">Semana 7-8</div>
+                        <div class="timeline-content">
+                            <strong>Fase 7:</strong> Módulo de notificaciones<br>
+                            <strong>Fase 8:</strong> Testing y documentación
+                        </div>
+                    </div>
+                </div>
+
+                <div class="note">
+                    <strong>Nota:</strong> Este cronograma es estimativo y puede ajustarse según la disponibilidad de recursos y la complejidad encontrada durante el desarrollo.
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
