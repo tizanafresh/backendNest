@@ -11,13 +11,15 @@ import { CouponsModule } from './coupons/coupons.module';
 import { LoyaltyModule } from './loyalty/loyalty.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { databaseConfig } from './config/database.config';
-import { appConfig } from './config/app.config';
+import { ConfigService } from './config/config.service';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [() => appConfig],
+      envFilePath: '.env',
+      cache: true,
+      expandVariables: true,
     }),
     MongooseModule.forRootAsync({
       useFactory: () => databaseConfig,
@@ -31,6 +33,7 @@ import { appConfig } from './config/app.config';
     NotificationsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ConfigService],
+  exports: [ConfigService],
 })
 export class AppModule {}

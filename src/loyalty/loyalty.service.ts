@@ -558,7 +558,7 @@ export class LoyaltyService {
     const nextLevelBenefits = levelBenefits[nextLevel];
 
     return {
-      userId: user._id.toString(),
+      userId: (user._id as Types.ObjectId).toString(),
       currentLevel: user.level,
       availableBenefits: currentBenefits.benefits,
       nextLevelBenefits: nextLevelBenefits.benefits,

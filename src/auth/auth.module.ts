@@ -24,9 +24,9 @@ import { PasswordReset, PasswordResetSchema } from '../schemas/password-reset.sc
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('jwt.secret'),
+        secret: configService.get<string>('JWT_SECRET'),
         signOptions: {
-          expiresIn: configService.get<string>('jwt.expiresIn'),
+          expiresIn: configService.get<string>('JWT_EXPIRES_IN', '24h'),
         },
       }),
       inject: [ConfigService],

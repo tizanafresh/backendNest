@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, BadRequestException, ConflictException }
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Coupon, CouponDocument } from '../schemas/coupon.schema';
-import { CreateCouponDto, UpdateCouponDto, ValidateCouponDto } from './dto';
+import { CreateCouponDto, UpdateCouponDto, ValidateCouponDto, CouponResponseDto } from './dto';
 import * as QRCode from 'qrcode';
 
 @Injectable()
@@ -11,7 +11,7 @@ export class CouponsService {
     @InjectModel(Coupon.name) private couponModel: Model<CouponDocument>,
   ) {}
 
-  async create(createCouponDto: CreateCouponDto): Promise<Coupon> {
+  async create(createCouponDto: CreateCouponDto): Promise<CouponResponseDto> {
     // Verificar si el código ya existe
     const existingCoupon = await this.couponModel.findOne({ 
       code: createCouponDto.code.toUpperCase() 
@@ -21,45 +21,91 @@ export class CouponsService {
       throw new ConflictException('El código del cupón ya existe');
     }
 
-    // Generar QR code si no se proporciona
-    let qrCode = createCouponDto.qrCode;
-    if (!qrCode) {
-      qrCode = await this.generateQRCode(createCouponDto.code);
-    }
+    // Generar QR code
+    const qrCode = await this.generateQRCode(createCouponDto.code);
 
     const coupon = new this.couponModel({
       ...createCouponDto,
       code: createCouponDto.code.toUpperCase(),
       qrCode,
+      currentUses: 0,
+      isActive: createCouponDto.isActive ?? true,
     });
 
-    return coupon.save();
+    const savedCoupon = await coupon.save();
+    return this.transformToCouponResponse(savedCoupon);
   }
 
-  async findAll(query: any = {}): Promise<Coupon[]> {
+  async findAll(query: any = {}): Promise<{
+    coupons: CouponResponseDto[];
+    total: number;
+    page: number;
+    totalPages: number;
+  }> {
     const { page = 1, limit = 10, active, type } = query;
     
     const filter: any = {};
     
     if (active !== undefined) {
-      filter.active = active === 'true';
+      filter.isActive = active === 'true';
     }
     
     if (type) {
-      filter.type = type;
+      filter.discountType = type;
     }
 
     const skip = (page - 1) * limit;
     
-    return this.couponModel
-      .find(filter)
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(parseInt(limit))
-      .exec();
+    const [coupons, total] = await Promise.all([
+      this.couponModel
+        .find(filter)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(parseInt(limit))
+        .exec(),
+      this.couponModel.countDocuments(filter).exec(),
+    ]);
+
+    return {
+      coupons: coupons.map(coupon => this.transformToCouponResponse(coupon)),
+      total,
+      page: parseInt(page),
+      totalPages: Math.ceil(total / parseInt(limit)),
+    };
   }
 
-  async findOne(id: string): Promise<Coupon> {
+  async findActive(): Promise<CouponResponseDto[]> {
+    const coupons = await this.couponModel
+      .find({ 
+        isActive: true,
+        validFrom: { $lte: new Date() },
+        validTo: { $gte: new Date() }
+      })
+      .sort({ createdAt: -1 })
+      .exec();
+    
+    return coupons.map(coupon => this.transformToCouponResponse(coupon));
+  }
+
+  async findByCategory(category: string): Promise<CouponResponseDto[]> {
+    const coupons = await this.couponModel
+      .find({ category, isActive: true })
+      .sort({ createdAt: -1 })
+      .exec();
+    
+    return coupons.map(coupon => this.transformToCouponResponse(coupon));
+  }
+
+  async findByType(type: string): Promise<CouponResponseDto[]> {
+    const coupons = await this.couponModel
+      .find({ discountType: type, isActive: true })
+      .sort({ createdAt: -1 })
+      .exec();
+    
+    return coupons.map(coupon => this.transformToCouponResponse(coupon));
+  }
+
+  async findOne(id: string): Promise<CouponResponseDto> {
     if (!Types.ObjectId.isValid(id)) {
       throw new BadRequestException('ID de cupón inválido');
     }
@@ -70,10 +116,10 @@ export class CouponsService {
       throw new NotFoundException('Cupón no encontrado');
     }
 
-    return coupon;
+    return this.transformToCouponResponse(coupon);
   }
 
-  async findByCode(code: string): Promise<Coupon> {
+  async findByCode(code: string): Promise<CouponResponseDto> {
     const coupon = await this.couponModel.findOne({ 
       code: code.toUpperCase() 
     }).exec();
@@ -82,10 +128,10 @@ export class CouponsService {
       throw new NotFoundException('Cupón no encontrado');
     }
 
-    return coupon;
+    return this.transformToCouponResponse(coupon);
   }
 
-  async update(id: string, updateCouponDto: UpdateCouponDto): Promise<Coupon> {
+  async update(id: string, updateCouponDto: UpdateCouponDto): Promise<CouponResponseDto> {
     if (!Types.ObjectId.isValid(id)) {
       throw new BadRequestException('ID de cupón inválido');
     }
@@ -112,10 +158,10 @@ export class CouponsService {
       throw new NotFoundException('Cupón no encontrado');
     }
 
-    return coupon;
+    return this.transformToCouponResponse(coupon);
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: string): Promise<{ message: string }> {
     if (!Types.ObjectId.isValid(id)) {
       throw new BadRequestException('ID de cupón inválido');
     }
@@ -125,57 +171,49 @@ export class CouponsService {
     if (!result) {
       throw new NotFoundException('Cupón no encontrado');
     }
+
+    return { message: 'Cupón eliminado exitosamente' };
   }
 
   async validateCoupon(validateCouponDto: ValidateCouponDto): Promise<{
-    valid: boolean;
-    coupon?: Coupon;
+    isValid: boolean;
+    coupon?: CouponResponseDto;
+    message: string;
     discount?: number;
-    message?: string;
   }> {
     try {
       const coupon = await this.findByCode(validateCouponDto.code);
       
       // Verificar si está activo
-      if (!coupon.active) {
+      if (!coupon.isActive) {
         return {
-          valid: false,
+          isValid: false,
           message: 'El cupón no está activo'
         };
       }
 
       // Verificar si ha expirado
-      if (coupon.expiresAt && new Date() > coupon.expiresAt) {
+      if (coupon.validTo && new Date() > new Date(coupon.validTo)) {
         return {
-          valid: false,
+          isValid: false,
           message: 'El cupón ha expirado'
         };
       }
 
       // Verificar límite de usos
-      if (coupon.maxUses && coupon.usedCount >= coupon.maxUses) {
+      if (coupon.maxUses && coupon.currentUses >= coupon.maxUses) {
         return {
-          valid: false,
+          isValid: false,
           message: 'El cupón ha alcanzado su límite de usos'
         };
       }
 
-      // Verificar si es específico para un usuario
-      if (coupon.userId && validateCouponDto.userId) {
-        if (coupon.userId.toString() !== validateCouponDto.userId) {
-          return {
-            valid: false,
-            message: 'Este cupón no es válido para este usuario'
-          };
-        }
-      }
-
       // Verificar monto mínimo
-      if (coupon.minAmount && validateCouponDto.orderAmount) {
-        if (validateCouponDto.orderAmount < coupon.minAmount) {
+      if (coupon.minOrderAmount && validateCouponDto.orderAmount) {
+        if (validateCouponDto.orderAmount < coupon.minOrderAmount) {
           return {
-            valid: false,
-            message: `El monto mínimo para usar este cupón es $${coupon.minAmount}`
+            isValid: false,
+            message: `El monto mínimo para usar este cupón es $${coupon.minOrderAmount}`
           };
         }
       }
@@ -183,34 +221,50 @@ export class CouponsService {
       // Calcular descuento
       let discount = 0;
       if (validateCouponDto.orderAmount) {
-        if (coupon.type === 'PERCENTAGE') {
-          discount = (validateCouponDto.orderAmount * coupon.discount) / 100;
+        if (coupon.discountType === 'PERCENTAGE') {
+          discount = (validateCouponDto.orderAmount * coupon.discountValue) / 100;
+          if (coupon.maxDiscount) {
+            discount = Math.min(discount, coupon.maxDiscount);
+          }
         } else {
-          discount = coupon.discount;
+          discount = coupon.discountValue;
         }
       }
 
       return {
-        valid: true,
+        isValid: true,
         coupon,
-        discount
+        discount,
+        message: 'Cupón válido'
       };
 
     } catch (error) {
       return {
-        valid: false,
-        message: 'Cupón no válido'
+        isValid: false,
+        message: 'Cupón no encontrado'
       };
     }
   }
 
-  async useCoupon(code: string): Promise<Coupon> {
-    const coupon = await this.findByCode(code);
+  async useCoupon(code: string): Promise<CouponResponseDto> {
+    const coupon = await this.couponModel.findOne({ 
+      code: code.toUpperCase() 
+    }).exec();
     
-    // Incrementar contador de usos
-    coupon.usedCount += 1;
+    if (!coupon) {
+      throw new NotFoundException('Cupón no encontrado');
+    }
+
+    coupon.currentUses += 1;
+    const updatedCoupon = await coupon.save();
     
-    return coupon.save();
+    return this.transformToCouponResponse(updatedCoupon);
+  }
+
+  async generateQR(id: string): Promise<{ qrCode: string }> {
+    const coupon = await this.findOne(id);
+    const qrCode = await this.generateQRCode(coupon.code);
+    return { qrCode };
   }
 
   async generateQRCode(data: string): Promise<string> {
@@ -221,34 +275,25 @@ export class CouponsService {
     }
   }
 
-  async getCouponStats(): Promise<{
-    total: number;
-    active: number;
-    expired: number;
-    totalUses: number;
-  }> {
-    const stats = await this.couponModel.aggregate([
-      {
-        $group: {
-          _id: null,
-          total: { $sum: 1 },
-          active: {
-            $sum: { $cond: ['$active', 1, 0] }
-          },
-          expired: {
-            $sum: {
-              $cond: [
-                { $and: ['$expiresAt', { $lt: ['$expiresAt', new Date()] }] },
-                1,
-                0
-              ]
-            }
-          },
-          totalUses: { $sum: '$usedCount' }
-        }
-      }
-    ]);
-
-    return stats[0] || { total: 0, active: 0, expired: 0, totalUses: 0 };
+  private transformToCouponResponse(coupon: CouponDocument): CouponResponseDto {
+    const couponObject = coupon.toObject();
+    return {
+      _id: couponObject._id?.toString() || '',
+      code: couponObject.code || '',
+      description: couponObject.description || '',
+      discountType: couponObject.discountType || 'PERCENTAGE',
+      discountValue: couponObject.discountValue || 0,
+      minOrderAmount: couponObject.minOrderAmount,
+      maxDiscount: couponObject.maxDiscount,
+      validFrom: couponObject.validFrom,
+      validTo: couponObject.validTo,
+      maxUses: couponObject.maxUses,
+      currentUses: couponObject.currentUses || 0,
+      isActive: couponObject.isActive ?? true,
+      category: couponObject.category,
+      qrCode: couponObject.qrCode,
+      createdAt: couponObject.createdAt,
+      updatedAt: couponObject.updatedAt,
+    };
   }
 } 

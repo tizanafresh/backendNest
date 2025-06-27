@@ -64,33 +64,36 @@ export class OrdersService {
         throw new NotFoundException('Cupón no encontrado');
       }
 
-      if (!coupon.active) {
+      if (!coupon.isActive) {
         throw new BadRequestException('Cupón inactivo');
       }
 
-      if (coupon.expiresAt && coupon.expiresAt < new Date()) {
+      if (coupon.validTo && new Date(coupon.validTo) < new Date()) {
         throw new BadRequestException('Cupón expirado');
       }
 
-      if (coupon.maxUses && coupon.usedCount >= coupon.maxUses) {
+      if (coupon.maxUses && coupon.currentUses >= coupon.maxUses) {
         throw new BadRequestException('Cupón agotado');
       }
 
-      if (coupon.minAmount && total < coupon.minAmount) {
-        throw new BadRequestException(`Monto mínimo requerido: $${coupon.minAmount}`);
+      if (coupon.minOrderAmount && total < coupon.minOrderAmount) {
+        throw new BadRequestException(`Monto mínimo requerido: $${coupon.minOrderAmount}`);
       }
 
       // Calcular descuento del cupón
-      if (coupon.type === 'PERCENTAGE') {
-        couponDiscount = (total * coupon.discount) / 100;
+      if (coupon.discountType === 'PERCENTAGE') {
+        couponDiscount = (total * coupon.discountValue) / 100;
+        if (coupon.maxDiscount) {
+          couponDiscount = Math.min(couponDiscount, coupon.maxDiscount);
+        }
       } else {
-        couponDiscount = coupon.discount;
+        couponDiscount = coupon.discountValue;
       }
 
       // Incrementar contador de uso del cupón
       await this.couponModel.findByIdAndUpdate(
         createOrderDto.couponId,
-        { $inc: { usedCount: 1 } }
+        { $inc: { currentUses: 1 } }
       );
     }
 

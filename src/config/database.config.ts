@@ -1,8 +1,7 @@
 import { MongooseModuleOptions } from '@nestjs/mongoose';
-import { appConfig } from './app.config';
 
 export const databaseConfig: MongooseModuleOptions = {
-  uri: appConfig.database.uri,
+  uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/tizanafresh',
   connectionFactory: (connection) => {
     connection.on('connected', () => {
       console.log('✅ MongoDB conectado exitosamente');

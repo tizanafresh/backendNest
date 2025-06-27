@@ -8,114 +8,124 @@ import {
   Delete,
   Query,
   UseGuards,
-  HttpStatus,
-  HttpCode,
+  DefaultValuePipe,
+  ParseIntPipe,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
-import { NotificationsService } from './notifications.service';
-import { CreateNotificationDto, UpdateNotificationDto, DeviceTokenDto, NotificationResponseDto } from './dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { NotificationsService } from './notifications.service';
+import { CreateNotificationDto, UpdateNotificationDto, NotificationResponseDto, DeviceTokenDto } from './dto';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 
-@ApiTags('Notificaciones')
 @Controller('notifications')
-@UseGuards(JwtAuthGuard)
-@ApiBearerAuth()
 export class NotificationsController {
   constructor(private readonly notificationsService: NotificationsService) {}
 
+  /**
+   * Crear una nueva notificación
+   */
   @Post()
-  @ApiOperation({ summary: 'Crear una nueva notificación' })
-  @ApiResponse({ 
-    status: 201, 
-    description: 'Notificación creada exitosamente',
-    type: NotificationResponseDto 
-  })
-  @ApiResponse({ status: 400, description: 'Datos inválidos' })
+  @UseGuards(JwtAuthGuard)
   async createNotification(@Body() createNotificationDto: CreateNotificationDto): Promise<NotificationResponseDto> {
     return this.notificationsService.createNotification(createNotificationDto);
   }
 
+  /**
+   * Obtener todas las notificaciones con paginación
+   */
   @Get()
-  @ApiOperation({ summary: 'Obtener notificaciones del usuario' })
-  @ApiQuery({ name: 'page', required: false, description: 'Número de página' })
-  @ApiQuery({ name: 'limit', required: false, description: 'Límite de resultados por página' })
-  @ApiQuery({ name: 'read', required: false, description: 'Filtrar por estado leído' })
-  @ApiQuery({ name: 'type', required: false, description: 'Filtrar por tipo de notificación' })
-  @ApiResponse({ 
-    status: 200, 
-    description: 'Lista de notificaciones',
-    schema: {
-      type: 'object',
-      properties: {
-        notifications: { type: 'array', items: { $ref: '#/components/schemas/NotificationResponseDto' } },
-        total: { type: 'number' },
-        page: { type: 'number' },
-        totalPages: { type: 'number' }
-      }
-    }
-  })
-  async getNotifications(
+  @UseGuards(JwtAuthGuard)
+  async getAllNotifications(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('read') read?: string,
+  ): Promise<{
+    notifications: NotificationResponseDto[];
+    total: number;
+    page: number;
+    totalPages: number;
+  }> {
+    return this.notificationsService.getAllNotifications(page, limit, read);
+  }
+
+  /**
+   * Obtener notificaciones del usuario actual
+   */
+  @Get('my-notifications')
+  @UseGuards(JwtAuthGuard)
+  async getMyNotifications(
     @CurrentUser() user: any,
-    @Query() query: any
-  ) {
-    return this.notificationsService.findAllNotifications(user._id, query);
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('read') read?: string,
+  ): Promise<{
+    notifications: NotificationResponseDto[];
+    total: number;
+    page: number;
+    totalPages: number;
+  }> {
+    return this.notificationsService.getUserNotifications(user.userId, page, limit, read);
   }
 
-  @Get('unread-count')
-  @ApiOperation({ summary: 'Obtener cantidad de notificaciones no leídas' })
-  @ApiResponse({ 
-    status: 200, 
-    description: 'Cantidad de notificaciones no leídas',
-    schema: {
-      type: 'object',
-      properties: {
-        count: { type: 'number' }
-      }
-    }
-  })
-  async getUnreadCount(@CurrentUser() user: any) {
-    return this.notificationsService.getUnreadCount(user._id);
+  /**
+   * Obtener notificaciones no leídas del usuario
+   */
+  @Get('unread')
+  @UseGuards(JwtAuthGuard)
+  async getUnreadNotifications(@CurrentUser() user: any): Promise<NotificationResponseDto[]> {
+    return this.notificationsService.getUnreadNotifications(user.userId);
   }
 
+  /**
+   * Obtener estadísticas de notificaciones
+   */
   @Get('stats')
-  @ApiOperation({ summary: 'Obtener estadísticas de notificaciones' })
-  @ApiResponse({ 
-    status: 200, 
-    description: 'Estadísticas de notificaciones',
-    schema: {
-      type: 'object',
-      properties: {
-        total: { type: 'number' },
-        unread: { type: 'number' },
-        byType: { type: 'object' }
-      }
-    }
-  })
-  async getNotificationStats(@CurrentUser() user: any) {
-    return this.notificationsService.getNotificationStats(user._id);
+  @UseGuards(JwtAuthGuard)
+  async getNotificationStats(@CurrentUser() user: any): Promise<{
+    total: number;
+    read: number;
+    unread: number;
+  }> {
+    return this.notificationsService.getNotificationStats(user.userId);
   }
 
+  /**
+   * Registrar token de dispositivo
+   */
+  @Post('device-token')
+  @UseGuards(JwtAuthGuard)
+  async registerDeviceToken(
+    @CurrentUser() user: any,
+    @Body() deviceTokenDto: DeviceTokenDto,
+  ): Promise<{ message: string }> {
+    return this.notificationsService.registerDeviceToken(user.userId, deviceTokenDto);
+  }
+
+  /**
+   * Eliminar token de dispositivo
+   */
+  @Delete('device-token/:token')
+  @UseGuards(JwtAuthGuard)
+  async removeDeviceToken(
+    @CurrentUser() user: any,
+    @Param('token') token: string,
+  ): Promise<{ message: string }> {
+    return this.notificationsService.removeDeviceToken(user.userId, token);
+  }
+
+  /**
+   * Obtener una notificación por ID
+   */
   @Get(':id')
-  @ApiOperation({ summary: 'Obtener una notificación por ID' })
-  @ApiResponse({ 
-    status: 200, 
-    description: 'Notificación encontrada',
-    type: NotificationResponseDto 
-  })
-  @ApiResponse({ status: 404, description: 'Notificación no encontrada' })
-  async getNotificationById(@Param('id') id: string): Promise<NotificationResponseDto> {
+  @UseGuards(JwtAuthGuard)
+  async findNotificationById(@Param('id') id: string): Promise<NotificationResponseDto> {
     return this.notificationsService.findNotificationById(id);
   }
 
+  /**
+   * Actualizar una notificación
+   */
   @Patch(':id')
-  @ApiOperation({ summary: 'Actualizar una notificación' })
-  @ApiResponse({ 
-    status: 200, 
-    description: 'Notificación actualizada exitosamente',
-    type: NotificationResponseDto 
-  })
-  @ApiResponse({ status: 404, description: 'Notificación no encontrada' })
+  @UseGuards(JwtAuthGuard)
   async updateNotification(
     @Param('id') id: string,
     @Body() updateNotificationDto: UpdateNotificationDto,
@@ -123,146 +133,52 @@ export class NotificationsController {
     return this.notificationsService.updateNotification(id, updateNotificationDto);
   }
 
+  /**
+   * Marcar notificación como leída
+   */
   @Patch(':id/read')
-  @ApiOperation({ summary: 'Marcar notificación como leída' })
-  @ApiResponse({ 
-    status: 200, 
-    description: 'Notificación marcada como leída',
-    type: NotificationResponseDto 
-  })
+  @UseGuards(JwtAuthGuard)
   async markAsRead(@Param('id') id: string): Promise<NotificationResponseDto> {
     return this.notificationsService.markAsRead(id);
   }
 
-  @Patch('mark-all-read')
-  @ApiOperation({ summary: 'Marcar todas las notificaciones como leídas' })
-  @ApiResponse({ 
-    status: 200, 
-    description: 'Todas las notificaciones marcadas como leídas',
-    schema: {
-      type: 'object',
-      properties: {
-        message: { type: 'string' }
-      }
-    }
-  })
-  async markAllAsRead(@CurrentUser() user: any) {
-    return this.notificationsService.markAllAsRead(user._id);
+  /**
+   * Marcar todas las notificaciones como leídas
+   */
+  @Patch('read-all')
+  @UseGuards(JwtAuthGuard)
+  async markAllAsRead(@CurrentUser() user: any): Promise<{ message: string }> {
+    return this.notificationsService.markAllAsRead(user.userId);
   }
 
+  /**
+   * Eliminar una notificación
+   */
   @Delete(':id')
-  @ApiOperation({ summary: 'Eliminar una notificación' })
-  @ApiResponse({ status: 200, description: 'Notificación eliminada exitosamente' })
-  @ApiResponse({ status: 404, description: 'Notificación no encontrada' })
-  async deleteNotification(@Param('id') id: string): Promise<void> {
+  @UseGuards(JwtAuthGuard)
+  async deleteNotification(@Param('id') id: string): Promise<{ message: string }> {
     return this.notificationsService.deleteNotification(id);
   }
 
-  // Device Token Management
-  @Post('device-token')
-  @ApiOperation({ summary: 'Registrar token de dispositivo' })
-  @ApiResponse({ 
-    status: 201, 
-    description: 'Token de dispositivo registrado exitosamente',
-    schema: {
-      type: 'object',
-      properties: {
-        _id: { type: 'string' },
-        userId: { type: 'string' },
-        token: { type: 'string' },
-        platform: { type: 'string' },
-        active: { type: 'boolean' }
-      }
-    }
-  })
-  async registerDeviceToken(
-    @CurrentUser() user: any,
-    @Body() deviceTokenDto: DeviceTokenDto
-  ) {
-    return this.notificationsService.registerDeviceToken({
-      ...deviceTokenDto,
-      userId: user._id,
-    });
-  }
-
-  @Get('device-tokens')
-  @ApiOperation({ summary: 'Obtener tokens de dispositivos del usuario' })
-  @ApiResponse({ 
-    status: 200, 
-    description: 'Lista de tokens de dispositivos',
-    type: 'array',
-    items: {
-      type: 'object',
-      properties: {
-        _id: { type: 'string' },
-        userId: { type: 'string' },
-        token: { type: 'string' },
-        platform: { type: 'string' },
-        active: { type: 'boolean' }
-      }
-    }
-  })
-  async getDeviceTokens(@CurrentUser() user: any) {
-    return this.notificationsService.getDeviceTokens(user._id);
-  }
-
-  @Delete('device-token/:token')
-  @ApiOperation({ summary: 'Eliminar token de dispositivo' })
-  @ApiResponse({ status: 200, description: 'Token de dispositivo eliminado exitosamente' })
-  @ApiResponse({ status: 404, description: 'Token de dispositivo no encontrado' })
-  async removeDeviceToken(
-    @CurrentUser() user: any,
-    @Param('token') token: string
-  ): Promise<void> {
-    return this.notificationsService.removeDeviceToken(user._id, token);
-  }
-
-  // Push Notification Endpoints (Admin only)
-  @Post('push')
-  @ApiOperation({ summary: 'Enviar notificación push a un usuario' })
-  @ApiResponse({ 
-    status: 200, 
-    description: 'Notificación push enviada',
-    schema: {
-      type: 'object',
-      properties: {
-        success: { type: 'boolean' },
-        message: { type: 'string' }
-      }
-    }
-  })
+  /**
+   * Enviar notificación push
+   */
+  @Post('send-push')
+  @UseGuards(JwtAuthGuard)
   async sendPushNotification(
-    @Body() body: { userId: string; title: string; message: string; data?: any }
-  ) {
-    return this.notificationsService.sendPushNotification(
-      body.userId,
-      body.title,
-      body.message,
-      body.data
-    );
+    @Body() body: { userId: string; title: string; body: string; data?: any },
+  ): Promise<{ message: string }> {
+    return this.notificationsService.sendPushNotification(body.userId, body.title, body.body, body.data);
   }
 
-  @Post('push/bulk')
-  @ApiOperation({ summary: 'Enviar notificación push masiva' })
-  @ApiResponse({ 
-    status: 200, 
-    description: 'Notificaciones push enviadas',
-    schema: {
-      type: 'object',
-      properties: {
-        success: { type: 'boolean' },
-        message: { type: 'string' }
-      }
-    }
-  })
-  async sendBulkPushNotification(
-    @Body() body: { userIds: string[]; title: string; message: string; data?: any }
-  ) {
-    return this.notificationsService.sendBulkPushNotification(
-      body.userIds,
-      body.title,
-      body.message,
-      body.data
-    );
+  /**
+   * Enviar notificación push masiva
+   */
+  @Post('send-push-massive')
+  @UseGuards(JwtAuthGuard)
+  async sendMassivePushNotification(
+    @Body() body: { title: string; body: string; data?: any },
+  ): Promise<{ message: string }> {
+    return this.notificationsService.sendMassivePushNotification(body.title, body.body, body.data);
   }
 } 

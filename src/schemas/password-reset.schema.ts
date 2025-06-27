@@ -31,5 +31,5 @@ export const PasswordResetSchema = SchemaFactory.createForClass(PasswordReset);
 
 // Índices para optimizar consultas
 PasswordResetSchema.index({ email: 1 });
-PasswordResetSchema.index({ token: 1 });
+// El índice de token ya se crea automáticamente por unique: true
 PasswordResetSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 }); // TTL index 

@@ -1,3 +1,33 @@
+// Función para validar variables de entorno críticas
+const validateEnvVariables = () => {
+  console.log('🔍 Validando variables de entorno...');
+  console.log('MONGODB_URI:', process.env.MONGODB_URI ? '✅ Presente' : '❌ Faltante');
+  console.log('JWT_SECRET:', process.env.JWT_SECRET ? '✅ Presente' : '❌ Faltante');
+  console.log('MAIL_HOST:', process.env.MAIL_HOST ? '✅ Presente' : '❌ Faltante');
+  console.log('MAIL_USERNAME:', process.env.MAIL_USERNAME ? '✅ Presente' : '❌ Faltante');
+  console.log('MAIL_PASSWORD:', process.env.MAIL_PASSWORD ? '✅ Presente' : '❌ Faltante');
+  
+  const requiredVars = [
+    'MONGODB_URI',
+    'JWT_SECRET',
+    'MAIL_HOST',
+    'MAIL_USERNAME',
+    'MAIL_PASSWORD'
+  ];
+
+  const missingVars = requiredVars.filter(varName => !process.env[varName]);
+  
+  if (missingVars.length > 0) {
+    console.warn('⚠️ Variables de entorno faltantes:', missingVars);
+    console.warn('💡 Asegúrate de que el archivo .env esté configurado correctamente');
+  } else {
+    console.log('✅ Todas las variables de entorno críticas están configuradas');
+  }
+};
+
+// Validar variables al cargar la configuración
+validateEnvVariables();
+
 export const appConfig = {
   port: parseInt(process.env.PORT || '5001', 10),
   nodeEnv: process.env.NODE_ENV || 'development',
@@ -140,3 +170,14 @@ export const appConfig = {
     password: process.env.QUEUE_PASSWORD || 'your_queue_password',
   },
 };
+
+// Log de configuración cargada (solo en desarrollo)
+if (process.env.NODE_ENV === 'development') {
+  console.log('🔧 Configuración cargada:', {
+    port: appConfig.port,
+    nodeEnv: appConfig.nodeEnv,
+    database: appConfig.database.uri ? '✅ Configurada' : '❌ No configurada',
+    jwt: appConfig.jwt.secret !== 'your-super-secret-jwt-key-change-in-production' ? '✅ Configurada' : '⚠️ Usando valor por defecto',
+    email: appConfig.email.host ? '✅ Configurada' : '❌ No configurada',
+  });
+}
