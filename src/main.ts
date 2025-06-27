@@ -53,8 +53,8 @@ async function bootstrap() {
   // Configuración del prefijo global
   app.setGlobalPrefix('api');
 
-  const port = configService.port;
-  await app.listen(port);
+  const port = configService.port|| 3000;
+  await app.listen(port, "0.0.0.0");
 
   console.log('🚀 ========================================');
   console.log('🚀 TIZANAS FRESH BACKEND');
