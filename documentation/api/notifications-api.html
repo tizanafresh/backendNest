@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API de Notificaciones - Tizanas Fresh</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 40px;
+        }
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            border-left: 5px solid #9b59b6;
+        }
+        .section h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            font-size: 1.8em;
+        }
+        .endpoint {
+            background: white;
+            margin: 20px 0;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #9b59b6;
+        }
+        .method {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-right: 10px;
+            color: white;
+            min-width: 60px;
+            text-align: center;
+        }
+        .post { background: #27ae60; }
+        .get { background: #3498db; }
+        .patch { background: #f39c12; }
+        .delete { background: #e74c3c; }
+        .url {
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+        .description {
+            color: #7f8c8d;
+            margin: 15px 0;
+        }
+        .params {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .param {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            border-left: 3px solid #3498db;
+        }
+        .param-name {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .param-type {
+            color: #e74c3c;
+            font-size: 0.9em;
+        }
+        .param-required {
+            background: #e74c3c;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.7em;
+            margin-left: 10px;
+        }
+        .param-optional {
+            background: #95a5a6;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.7em;
+            margin-left: 10px;
+        }
+        .response {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 3px solid #27ae60;
+        }
+        .response-title {
+            font-weight: bold;
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .warning {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .nav {
+            background: #34495e;
+            padding: 20px;
+            text-align: center;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .nav a:hover {
+            background: #2c3e50;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+            background: #27ae60;
+        }
+        .notification-type {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-right: 8px;
+            color: white;
+        }
+        .info { background: #3498db; }
+        .success-notif { background: #27ae60; }
+        .warning-notif { background: #f39c12; }
+        .error { background: #e74c3c; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔔 API de Notificaciones</h1>
+            <p>Sistema completo de notificaciones push y gestión de mensajes</p>
+            <p>Tokens de dispositivos, notificaciones masivas y personalizadas</p>
+        </div>
+
+        <div class="nav">
+            <a href="index.html">🏠 Índice</a>
+            <a href="auth-api.html">🔐 Auth</a>
+            <a href="products-api.html">🍹 Productos</a>
+            <a href="orders-api.html">📦 Pedidos</a>
+            <a href="coupons-api.html">🎫 Cupones</a>
+            <a href="loyalty-api.html">🏆 Fidelización</a>
+            <a href="seed-api.html">🌱 Seed</a>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2>📋 Información General</h2>
+                <div class="success">
+                    <strong>✅ Estado:</strong> <span class="status-badge">IMPLEMENTADO</span>
+                    <p>El sistema de notificaciones está completamente implementado y funcional.</p>
+                </div>
+                
+                <div class="note">
+                    <strong>🎯 Características principales:</strong>
+                    <ul>
+                        <li>Gestión completa de notificaciones push</li>
+                        <li>Registro y gestión de tokens de dispositivos</li>
+                        <li>Notificaciones personalizadas y masivas</li>
+                        <li>Sistema de lectura/no lectura</li>
+                        <li>Estadísticas de notificaciones</li>
+                        <li>Diferentes tipos de notificaciones</li>
+                        <li>Autenticación JWT para operaciones sensibles</li>
+                        <li>Paginación en todas las consultas</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔐 Autenticación</h2>
+                <div class="warning">
+                    <strong>⚠️ Nota:</strong> La mayoría de endpoints requieren autenticación JWT. Solo algunos endpoints de registro de tokens pueden ser públicos dependiendo de la implementación.
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📝 Crear Notificación</h2>
+                <div class="endpoint">
+                    <div class="method post">POST</div>
+                    <span class="url">/notifications</span>
+                    <div class="description">
+                        Crear una nueva notificación. Puede ser personalizada o masiva.
+                    </div>
+                    
+                    <div class="params">
+                        <strong>Body Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">title</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>Título de la notificación</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">body</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>Contenido del mensaje</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">type</span>
+                            <span class="param-type">string</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Tipo: 'info', 'success', 'warning', 'error' (default: 'info')</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">userId</span>
+                            <span class="param-type">string</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>ID del usuario destinatario (si es personalizada)</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">isMassive</span>
+                            <span class="param-type">boolean</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Si es notificación masiva (default: false)</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">data</span>
+                            <span class="param-type">object</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Datos adicionales para la notificación</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">priority</span>
+                            <span class="param-type">string</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Prioridad: 'low', 'normal', 'high' (default: 'normal')</div>
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (201 Created):</div>
+                        <div class="code-block">
+{
+  "_id": "507f1f77bcf86cd799439011",
+  "title": "¡Tu pedido está listo!",
+  "body": "Tu pedido #12345 está preparado para recoger",
+  "type": "success",
+  "userId": "507f1f77bcf86cd799439012",
+  "isMassive": false,
+  "data": {
+    "orderId": "12345",
+    "action": "view_order"
+  },
+  "priority": "high",
+  "isRead": false,
+  "createdAt": "2024-01-15T10:30:00.000Z",
+  "updatedAt": "2024-01-15T10:30:00.000Z"
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📋 Listar Todas las Notificaciones</h2>
+                <div class="endpoint">
+                    <div class="method get">GET</div>
+                    <span class="url">/notifications</span>
+                    <div class="description">
+                        Obtener todas las notificaciones con paginación y filtros. Solo administradores.
+                    </div>
+                    
+                    <div class="params">
+                        <strong>Query Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">page</span>
+                            <span class="param-type">number</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Número de página (default: 1)</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">limit</span>
+                            <span class="param-type">number</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Elementos por página (default: 10)</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">read</span>
+                            <span class="param-type">string</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Filtrar por estado: 'true', 'false'</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">type</span>
+                            <span class="param-type">string</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Filtrar por tipo: 'info', 'success', 'warning', 'error'</div>
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+{
+  "notifications": [
+    {
+      "_id": "507f1f77bcf86cd799439011",
+      "title": "¡Tu pedido está listo!",
+      "body": "Tu pedido #12345 está preparado para recoger",
+      "type": "success",
+      "userId": "507f1f77bcf86cd799439012",
+      "isRead": false,
+      "createdAt": "2024-01-15T10:30:00.000Z"
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "totalPages": 1
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>👤 Mis Notificaciones</h2>
+                <div class="endpoint">
+                    <div class="method get">GET</div>
+                    <span class="url">/notifications/my-notifications</span>
+                    <div class="description">
+                        Obtener notificaciones del usuario autenticado con paginación y filtros.
+                    </div>
+                    
+                    <div class="params">
+                        <strong>Query Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">page</span>
+                            <span class="param-type">number</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Número de página (default: 1)</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">limit</span>
+                            <span class="param-type">number</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Elementos por página (default: 10)</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">read</span>
+                            <span class="param-type">string</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Filtrar por estado: 'true', 'false'</div>
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+{
+  "notifications": [
+    {
+      "_id": "507f1f77bcf86cd799439011",
+      "title": "¡Tu pedido está listo!",
+      "body": "Tu pedido #12345 está preparado para recoger",
+      "type": "success",
+      "isRead": false,
+      "createdAt": "2024-01-15T10:30:00.000Z"
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "totalPages": 1
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📬 Notificaciones No Leídas</h2>
+                <div class="endpoint">
+                    <div class="method get">GET</div>
+                    <span class="url">/notifications/unread</span>
+                    <div class="description">
+                        Obtener solo las notificaciones no leídas del usuario autenticado.
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+[
+  {
+    "_id": "507f1f77bcf86cd799439011",
+    "title": "¡Tu pedido está listo!",
+    "body": "Tu pedido #12345 está preparado para recoger",
+    "type": "success",
+    "isRead": false,
+    "createdAt": "2024-01-15T10:30:00.000Z"
+  },
+  {
+    "_id": "507f1f77bcf86cd799439012",
+    "title": "Nuevo cupón disponible",
+    "body": "Tienes un nuevo cupón de 10% de descuento",
+    "type": "info",
+    "isRead": false,
+    "createdAt": "2024-01-15T09:15:00.000Z"
+  }
+]
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📊 Estadísticas de Notificaciones</h2>
+                <div class="endpoint">
+                    <div class="method get">GET</div>
+                    <span class="url">/notifications/stats</span>
+                    <div class="description">
+                        Obtener estadísticas de notificaciones del usuario autenticado.
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+{
+  "total": 25,
+  "read": 18,
+  "unread": 7,
+  "byType": {
+    "info": 10,
+    "success": 8,
+    "warning": 5,
+    "error": 2
+  },
+  "lastWeek": 5,
+  "lastMonth": 15
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📱 Registrar Token de Dispositivo</h2>
+                <div class="endpoint">
+                    <div class="method post">POST</div>
+                    <span class="url">/notifications/device-token</span>
+                    <div class="description">
+                        Registrar un token de dispositivo para recibir notificaciones push.
+                    </div>
+                    
+                    <div class="params">
+                        <strong>Body Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">token</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>Token del dispositivo (FCM, APNS, etc.)</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">platform</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>Plataforma: 'android', 'ios', 'web'</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">deviceId</span>
+                            <span class="param-type">string</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>ID único del dispositivo</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">appVersion</span>
+                            <span class="param-type">string</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Versión de la aplicación</div>
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (201 Created):</div>
+                        <div class="code-block">
+{
+  "message": "Token de dispositivo registrado exitosamente"
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🗑️ Eliminar Token de Dispositivo</h2>
+                <div class="endpoint">
+                    <div class="method delete">DELETE</div>
+                    <span class="url">/notifications/device-token/:token</span>
+                    <div class="description">
+                        Eliminar un token de dispositivo específico.
+                    </div>
+                    
+                    <div class="params">
+                        <strong>Path Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">token</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>Token del dispositivo a eliminar</div>
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+{
+  "message": "Token de dispositivo eliminado exitosamente"
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔍 Obtener Notificación por ID</h2>
+                <div class="endpoint">
+                    <div class="method get">GET</div>
+                    <span class="url">/notifications/:id</span>
+                    <div class="description">
+                        Obtener una notificación específica por su ID.
+                    </div>
+                    
+                    <div class="params">
+                        <strong>Path Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">id</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>ID de la notificación</div>
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+{
+  "_id": "507f1f77bcf86cd799439011",
+  "title": "¡Tu pedido está listo!",
+  "body": "Tu pedido #12345 está preparado para recoger",
+  "type": "success",
+  "userId": "507f1f77bcf86cd799439012",
+  "isMassive": false,
+  "data": {
+    "orderId": "12345",
+    "action": "view_order"
+  },
+  "priority": "high",
+  "isRead": false,
+  "createdAt": "2024-01-15T10:30:00.000Z",
+  "updatedAt": "2024-01-15T10:30:00.000Z"
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>✏️ Actualizar Notificación</h2>
+                <div class="endpoint">
+                    <div class="method patch">PATCH</div>
+                    <span class="url">/notifications/:id</span>
+                    <div class="description">
+                        Actualizar una notificación existente.
+                    </div>
+                    
+                    <div class="params">
+                        <strong>Path Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">id</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>ID de la notificación a actualizar</div>
+                        </div>
+                    </div>
+
+                    <div class="params">
+                        <strong>Body Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">title</span>
+                            <span class="param-type">string</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Nuevo título</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">body</span>
+                            <span class="param-type">string</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Nuevo contenido</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">type</span>
+                            <span class="param-type">string</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Nuevo tipo</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">data</span>
+                            <span class="param-type">object</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Nuevos datos adicionales</div>
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+{
+  "_id": "507f1f77bcf86cd799439011",
+  "title": "¡Tu pedido está listo! (Actualizado)",
+  "body": "Tu pedido #12345 está preparado para recoger",
+  "type": "success",
+  "isRead": false,
+  "updatedAt": "2024-01-15T11:30:00.000Z"
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>✅ Marcar como Leída</h2>
+                <div class="endpoint">
+                    <div class="method patch">PATCH</div>
+                    <span class="url">/notifications/:id/read</span>
+                    <div class="description">
+                        Marcar una notificación específica como leída.
+                    </div>
+                    
+                    <div class="params">
+                        <strong>Path Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">id</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>ID de la notificación</div>
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+{
+  "_id": "507f1f77bcf86cd799439011",
+  "title": "¡Tu pedido está listo!",
+  "body": "Tu pedido #12345 está preparado para recoger",
+  "type": "success",
+  "isRead": true,
+  "readAt": "2024-01-15T11:30:00.000Z",
+  "updatedAt": "2024-01-15T11:30:00.000Z"
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>✅ Marcar Todas como Leídas</h2>
+                <div class="endpoint">
+                    <div class="method patch">PATCH</div>
+                    <span class="url">/notifications/read-all</span>
+                    <div class="description">
+                        Marcar todas las notificaciones del usuario autenticado como leídas.
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+{
+  "message": "Todas las notificaciones han sido marcadas como leídas",
+  "updatedCount": 7
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🗑️ Eliminar Notificación</h2>
+                <div class="endpoint">
+                    <div class="method delete">DELETE</div>
+                    <span class="url">/notifications/:id</span>
+                    <div class="description">
+                        Eliminar una notificación específica.
+                    </div>
+                    
+                    <div class="params">
+                        <strong>Path Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">id</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>ID de la notificación a eliminar</div>
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+{
+  "message": "Notificación eliminada exitosamente"
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📤 Enviar Notificación Push</h2>
+                <div class="endpoint">
+                    <div class="method post">POST</div>
+                    <span class="url">/notifications/send-push</span>
+                    <div class="description">
+                        Enviar una notificación push a un usuario específico.
+                    </div>
+                    
+                    <div class="params">
+                        <strong>Body Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">userId</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>ID del usuario destinatario</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">title</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>Título de la notificación push</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">body</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>Contenido del mensaje push</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">data</span>
+                            <span class="param-type">object</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Datos adicionales para la app</div>
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+{
+  "message": "Notificación push enviada exitosamente",
+  "sentTo": 2,
+  "failed": 0
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📢 Enviar Notificación Masiva</h2>
+                <div class="endpoint">
+                    <div class="method post">POST</div>
+                    <span class="url">/notifications/send-push-massive</span>
+                    <div class="description">
+                        Enviar una notificación push a todos los usuarios registrados.
+                    </div>
+                    
+                    <div class="params">
+                        <strong>Body Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">title</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>Título de la notificación push</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">body</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>Contenido del mensaje push</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">data</span>
+                            <span class="param-type">object</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Datos adicionales para la app</div>
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+{
+  "message": "Notificación masiva enviada exitosamente",
+  "sentTo": 150,
+  "failed": 3,
+  "totalDevices": 153
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📊 Tipos de Notificaciones</h2>
+                <div class="note">
+                    <strong>🎯 Tipos disponibles:</strong>
+                    <ul>
+                        <li><span class="notification-type info">info</span> Información general</li>
+                        <li><span class="notification-type success-notif">success</span> Éxito o confirmación</li>
+                        <li><span class="notification-type warning-notif">warning</span> Advertencia o recordatorio</li>
+                        <li><span class="notification-type error">error</span> Error o problema</li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <strong>📱 Plataformas soportadas:</strong>
+                    <ul>
+                        <li><strong>android:</strong> Firebase Cloud Messaging (FCM)</li>
+                        <li><strong>ios:</strong> Apple Push Notification Service (APNS)</li>
+                        <li><strong>web:</strong> Web Push API</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔒 Seguridad y Validaciones</h2>
+                <div class="warning">
+                    <strong>⚠️ Validaciones automáticas:</strong>
+                    <ul>
+                        <li>Verificación de tokens de dispositivo válidos</li>
+                        <li>Control de límites de notificaciones por usuario</li>
+                        <li>Validación de contenido de notificaciones</li>
+                        <li>Prevención de spam y notificaciones duplicadas</li>
+                        <li>Auditoría de envíos masivos</li>
+                    </ul>
+                </div>
+
+                <div class="success">
+                    <strong>✅ Características de seguridad:</strong>
+                    <ul>
+                        <li>Autenticación JWT para operaciones sensibles</li>
+                        <li>Autorización basada en roles</li>
+                        <li>Validación de entrada en todos los endpoints</li>
+                        <li>Logs de auditoría para envíos</li>
+                        <li>Protección contra envíos masivos no autorizados</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📈 Ejemplos de Uso</h2>
+                <div class="note">
+                    <strong>🛒 Flujo típico de notificaciones:</strong>
+                    <ol>
+                        <li>Usuario registra token: <code>POST /notifications/device-token</code></li>
+                        <li>Sistema envía notificación: <code>POST /notifications</code></li>
+                        <li>Usuario consulta notificaciones: <code>GET /notifications/my-notifications</code></li>
+                        <li>Usuario marca como leída: <code>PATCH /notifications/:id/read</code></li>
+                    </ol>
+                </div>
+
+                <div class="note">
+                    <strong>👨‍💼 Gestión administrativa:</strong>
+                    <ol>
+                        <li>Admin crea notificación: <code>POST /notifications</code></li>
+                        <li>Admin envía push individual: <code>POST /notifications/send-push</code></li>
+                        <li>Admin envía push masivo: <code>POST /notifications/send-push-massive</code></li>
+                        <li>Admin monitorea estadísticas: <code>GET /notifications/stats</code></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

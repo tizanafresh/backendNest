@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API de Cupones - Tizanas Fresh</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 40px;
+        }
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            border-left: 5px solid #e74c3c;
+        }
+        .section h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            font-size: 1.8em;
+        }
+        .endpoint {
+            background: white;
+            margin: 20px 0;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #e74c3c;
+        }
+        .method {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-right: 10px;
+            color: white;
+            min-width: 60px;
+            text-align: center;
+        }
+        .post { background: #27ae60; }
+        .get { background: #3498db; }
+        .patch { background: #f39c12; }
+        .delete { background: #e74c3c; }
+        .url {
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+        .description {
+            color: #7f8c8d;
+            margin: 15px 0;
+        }
+        .params {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .param {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            border-left: 3px solid #3498db;
+        }
+        .param-name {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .param-type {
+            color: #e74c3c;
+            font-size: 0.9em;
+        }
+        .param-required {
+            background: #e74c3c;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.7em;
+            margin-left: 10px;
+        }
+        .param-optional {
+            background: #95a5a6;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.7em;
+            margin-left: 10px;
+        }
+        .response {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 3px solid #27ae60;
+        }
+        .response-title {
+            font-weight: bold;
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .warning {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .nav {
+            background: #34495e;
+            padding: 20px;
+            text-align: center;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .nav a:hover {
+            background: #2c3e50;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+            background: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎫 API de Cupones</h1>
+            <p>Sistema completo de gestión de cupones de descuento</p>
+            <p>Validación, códigos QR y gestión de usos</p>
+        </div>
+
+        <div class="nav">
+            <a href="index.html">🏠 Índice</a>
+            <a href="auth-api.html">🔐 Auth</a>
+            <a href="products-api.html">🍹 Productos</a>
+            <a href="orders-api.html">📦 Pedidos</a>
+            <a href="seed-api.html">🌱 Seed</a>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2>📋 Información General</h2>
+                <div class="success">
+                    <strong>✅ Estado:</strong> <span class="status-badge">IMPLEMENTADO</span>
+                    <p>El sistema de cupones está completamente implementado y funcional.</p>
+                </div>
+                
+                <div class="note">
+                    <strong>🎯 Características principales:</strong>
+                    <ul>
+                        <li>Creación y gestión de cupones de descuento</li>
+                        <li>Validación automática de cupones</li>
+                        <li>Generación de códigos QR</li>
+                        <li>Control de usos y fechas de expiración</li>
+                        <li>Filtros por categoría y tipo de descuento</li>
+                        <li>Autenticación JWT para operaciones sensibles</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔐 Endpoints de Autenticación</h2>
+                <div class="warning">
+                    <strong>⚠️ Nota:</strong> La mayoría de endpoints requieren autenticación JWT. Solo los endpoints de validación y consulta de cupones activos son públicos.
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📝 Crear Cupón</h2>
+                <div class="endpoint">
+                    <div class="method post">POST</div>
+                    <span class="url">/coupons</span>
+                    <div class="description">
+                        Crear un nuevo cupón de descuento. Solo administradores pueden crear cupones.
+                    </div>
+                    
+                    <div class="params">
+                        <strong>Body Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">code</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>Código único del cupón</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">name</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>Nombre descriptivo del cupón</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">description</span>
+                            <span class="param-type">string</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Descripción detallada del cupón</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">discountType</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>Tipo de descuento: 'percentage' | 'fixed'</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">discountValue</span>
+                            <span class="param-type">number</span>
+                            <span class="param-required">Requerido</span>
+                            <div>Valor del descuento (porcentaje o monto fijo)</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">minOrderAmount</span>
+                            <span class="param-type">number</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Monto mínimo de pedido para aplicar el cupón</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">maxUses</span>
+                            <span class="param-type">number</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Número máximo de usos del cupón</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">expiresAt</span>
+                            <span class="param-type">Date</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Fecha de expiración del cupón</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">category</span>
+                            <span class="param-type">string</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Categoría de productos aplicable</div>
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (201 Created):</div>
+                        <div class="code-block">
+{
+  "_id": "507f1f77bcf86cd799439011",
+  "code": "DESCUENTO20",
+  "name": "Descuento 20%",
+  "description": "20% de descuento en toda la tienda",
+  "discountType": "percentage",
+  "discountValue": 20,
+  "minOrderAmount": 50,
+  "maxUses": 100,
+  "currentUses": 0,
+  "expiresAt": "2024-12-31T23:59:59.000Z",
+  "category": "general",
+  "isActive": true,
+  "createdAt": "2024-01-15T10:30:00.000Z",
+  "updatedAt": "2024-01-15T10:30:00.000Z"
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📋 Listar Cupones</h2>
+                <div class="endpoint">
+                    <div class="method get">GET</div>
+                    <span class="url">/coupons</span>
+                    <div class="description">
+                        Obtener todos los cupones con filtros y paginación. Requiere autenticación.
+                    </div>
+                    
+                    <div class="params">
+                        <strong>Query Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">page</span>
+                            <span class="param-type">number</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Número de página (default: 1)</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">limit</span>
+                            <span class="param-type">number</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Elementos por página (default: 10)</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">isActive</span>
+                            <span class="param-type">boolean</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Filtrar por estado activo</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">discountType</span>
+                            <span class="param-type">string</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Filtrar por tipo de descuento</div>
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+{
+  "coupons": [
+    {
+      "_id": "507f1f77bcf86cd799439011",
+      "code": "DESCUENTO20",
+      "name": "Descuento 20%",
+      "discountType": "percentage",
+      "discountValue": 20,
+      "isActive": true,
+      "currentUses": 5,
+      "maxUses": 100
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "totalPages": 1
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>✅ Cupones Activos (Público)</h2>
+                <div class="endpoint">
+                    <div class="method get">GET</div>
+                    <span class="url">/coupons/active</span>
+                    <div class="description">
+                        Obtener cupones activos disponibles. Endpoint público sin autenticación.
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+[
+  {
+    "_id": "507f1f77bcf86cd799439011",
+    "code": "DESCUENTO20",
+    "name": "Descuento 20%",
+    "description": "20% de descuento en toda la tienda",
+    "discountType": "percentage",
+    "discountValue": 20,
+    "minOrderAmount": 50,
+    "expiresAt": "2024-12-31T23:59:59.000Z"
+  }
+]
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🏷️ Filtrar por Categoría</h2>
+                <div class="endpoint">
+                    <div class="method get">GET</div>
+                    <span class="url">/coupons/category/:category</span>
+                    <div class="description">
+                        Obtener cupones por categoría específica. Endpoint público.
+                    </div>
+                    
+                    <div class="params">
+                        <strong>Path Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">category</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>Nombre de la categoría (ej: "bebidas", "comida")</div>
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+[
+  {
+    "_id": "507f1f77bcf86cd799439012",
+    "code": "BEBIDAS10",
+    "name": "10% en bebidas",
+    "category": "bebidas",
+    "discountType": "percentage",
+    "discountValue": 10
+  }
+]
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔍 Filtrar por Tipo</h2>
+                <div class="endpoint">
+                    <div class="method get">GET</div>
+                    <span class="url">/coupons/type/:type</span>
+                    <div class="description">
+                        Obtener cupones por tipo de descuento. Endpoint público.
+                    </div>
+                    
+                    <div class="params">
+                        <strong>Path Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">type</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>Tipo de descuento: "percentage" | "fixed"</div>
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+[
+  {
+    "_id": "507f1f77bcf86cd799439013",
+    "code": "FIXO5",
+    "name": "5€ de descuento",
+    "discountType": "fixed",
+    "discountValue": 5
+  }
+]
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔍 Buscar por Código</h2>
+                <div class="endpoint">
+                    <div class="method get">GET</div>
+                    <span class="url">/coupons/code/:code</span>
+                    <div class="description">
+                        Buscar un cupón específico por su código. Endpoint público.
+                    </div>
+                    
+                    <div class="params">
+                        <strong>Path Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">code</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>Código del cupón a buscar</div>
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+{
+  "_id": "507f1f77bcf86cd799439011",
+  "code": "DESCUENTO20",
+  "name": "Descuento 20%",
+  "description": "20% de descuento en toda la tienda",
+  "discountType": "percentage",
+  "discountValue": 20,
+  "minOrderAmount": 50,
+  "maxUses": 100,
+  "currentUses": 5,
+  "expiresAt": "2024-12-31T23:59:59.000Z",
+  "category": "general",
+  "isActive": true
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>✅ Validar Cupón</h2>
+                <div class="endpoint">
+                    <div class="method post">POST</div>
+                    <span class="url">/coupons/validate</span>
+                    <div class="description">
+                        Validar un cupón antes de usarlo. Endpoint público.
+                    </div>
+                    
+                    <div class="params">
+                        <strong>Body Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">code</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>Código del cupón a validar</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">orderAmount</span>
+                            <span class="param-type">number</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Monto del pedido para validar monto mínimo</div>
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+{
+  "isValid": true,
+  "coupon": {
+    "_id": "507f1f77bcf86cd799439011",
+    "code": "DESCUENTO20",
+    "name": "Descuento 20%",
+    "discountType": "percentage",
+    "discountValue": 20
+  },
+  "message": "Cupón válido",
+  "discount": 10
+}
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK) - Cupón Inválido:</div>
+                        <div class="code-block">
+{
+  "isValid": false,
+  "message": "Cupón expirado",
+  "discount": 0
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🎯 Usar Cupón</h2>
+                <div class="endpoint">
+                    <div class="method post">POST</div>
+                    <span class="url">/coupons/use/:code</span>
+                    <div class="description">
+                        Marcar un cupón como usado. Incrementa el contador de usos.
+                    </div>
+                    
+                    <div class="params">
+                        <strong>Path Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">code</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>Código del cupón a usar</div>
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+{
+  "_id": "507f1f77bcf86cd799439011",
+  "code": "DESCUENTO20",
+  "name": "Descuento 20%",
+  "currentUses": 6,
+  "maxUses": 100,
+  "isActive": true
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📱 Generar QR</h2>
+                <div class="endpoint">
+                    <div class="method get">GET</div>
+                    <span class="url">/coupons/:id/qr</span>
+                    <div class="description">
+                        Generar código QR para un cupón específico.
+                    </div>
+                    
+                    <div class="params">
+                        <strong>Path Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">id</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>ID del cupón</div>
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+{
+  "qrCode": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>✏️ Actualizar Cupón</h2>
+                <div class="endpoint">
+                    <div class="method patch">PATCH</div>
+                    <span class="url">/coupons/:id</span>
+                    <div class="description">
+                        Actualizar un cupón existente. Solo administradores.
+                    </div>
+                    
+                    <div class="params">
+                        <strong>Path Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">id</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>ID del cupón a actualizar</div>
+                        </div>
+                    </div>
+
+                    <div class="params">
+                        <strong>Body Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">name</span>
+                            <span class="param-type">string</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Nuevo nombre del cupón</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">description</span>
+                            <span class="param-type">string</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Nueva descripción</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">isActive</span>
+                            <span class="param-type">boolean</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Estado activo/inactivo</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">expiresAt</span>
+                            <span class="param-type">Date</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Nueva fecha de expiración</div>
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+{
+  "_id": "507f1f77bcf86cd799439011",
+  "code": "DESCUENTO20",
+  "name": "Descuento 20% Actualizado",
+  "description": "Nueva descripción",
+  "isActive": true,
+  "updatedAt": "2024-01-15T11:30:00.000Z"
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🗑️ Eliminar Cupón</h2>
+                <div class="endpoint">
+                    <div class="method delete">DELETE</div>
+                    <span class="url">/coupons/:id</span>
+                    <div class="description">
+                        Eliminar un cupón permanentemente. Solo administradores.
+                    </div>
+                    
+                    <div class="params">
+                        <strong>Path Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">id</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>ID del cupón a eliminar</div>
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+{
+  "message": "Cupón eliminado exitosamente"
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📊 Tipos de Descuento</h2>
+                <div class="note">
+                    <strong>🎯 Tipos disponibles:</strong>
+                    <ul>
+                        <li><strong>percentage:</strong> Descuento porcentual (ej: 20% de descuento)</li>
+                        <li><strong>fixed:</strong> Descuento de monto fijo (ej: 5€ de descuento)</li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <strong>📋 Categorías sugeridas:</strong>
+                    <ul>
+                        <li><strong>general:</strong> Aplicable a toda la tienda</li>
+                        <li><strong>bebidas:</strong> Solo para bebidas</li>
+                        <li><strong>comida:</strong> Solo para comida</li>
+                        <li><strong>postres:</strong> Solo para postres</li>
+                        <li><strong>especiales:</strong> Productos especiales</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔒 Seguridad y Validaciones</h2>
+                <div class="warning">
+                    <strong>⚠️ Validaciones automáticas:</strong>
+                    <ul>
+                        <li>Verificación de fechas de expiración</li>
+                        <li>Control de límite de usos</li>
+                        <li>Validación de monto mínimo de pedido</li>
+                        <li>Verificación de estado activo/inactivo</li>
+                        <li>Unicidad de códigos de cupón</li>
+                    </ul>
+                </div>
+
+                <div class="success">
+                    <strong>✅ Características de seguridad:</strong>
+                    <ul>
+                        <li>Autenticación JWT para operaciones sensibles</li>
+                        <li>Validación de entrada en todos los endpoints</li>
+                        <li>Control de acceso basado en roles</li>
+                        <li>Logs de auditoría para cambios</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📈 Ejemplos de Uso</h2>
+                <div class="note">
+                    <strong>🛒 Flujo típico de uso:</strong>
+                    <ol>
+                        <li>Cliente busca cupones activos: <code>GET /coupons/active</code></li>
+                        <li>Cliente valida un cupón: <code>POST /coupons/validate</code></li>
+                        <li>Cliente aplica el cupón al pedido</li>
+                        <li>Sistema marca el cupón como usado: <code>POST /coupons/use/:code</code></li>
+                    </ol>
+                </div>
+
+                <div class="note">
+                    <strong>🎫 Gestión administrativa:</strong>
+                    <ol>
+                        <li>Admin crea nuevo cupón: <code>POST /coupons</code></li>
+                        <li>Admin genera QR: <code>GET /coupons/:id/qr</code></li>
+                        <li>Admin monitorea uso: <code>GET /coupons</code></li>
+                        <li>Admin actualiza o elimina: <code>PATCH/DELETE /coupons/:id</code></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

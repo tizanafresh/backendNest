@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API de Fidelización - Tizanas Fresh</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 40px;
+        }
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            border-left: 5px solid #f39c12;
+        }
+        .section h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            font-size: 1.8em;
+        }
+        .endpoint {
+            background: white;
+            margin: 20px 0;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #f39c12;
+        }
+        .method {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-right: 10px;
+            color: white;
+            min-width: 60px;
+            text-align: center;
+        }
+        .post { background: #27ae60; }
+        .get { background: #3498db; }
+        .put { background: #f39c12; }
+        .delete { background: #e74c3c; }
+        .url {
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+        .description {
+            color: #7f8c8d;
+            margin: 15px 0;
+        }
+        .params {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .param {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            border-left: 3px solid #3498db;
+        }
+        .param-name {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .param-type {
+            color: #e74c3c;
+            font-size: 0.9em;
+        }
+        .param-required {
+            background: #e74c3c;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.7em;
+            margin-left: 10px;
+        }
+        .param-optional {
+            background: #95a5a6;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.7em;
+            margin-left: 10px;
+        }
+        .response {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 3px solid #27ae60;
+        }
+        .response-title {
+            font-weight: bold;
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .warning {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .nav {
+            background: #34495e;
+            padding: 20px;
+            text-align: center;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .nav a:hover {
+            background: #2c3e50;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-left: 10px;
+            color: white;
+            background: #27ae60;
+        }
+        .level-card {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border-left: 4px solid #f39c12;
+        }
+        .level-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #f39c12;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏆 API de Fidelización</h1>
+            <p>Sistema completo de puntos de fidelización y beneficios</p>
+            <p>Niveles de usuario, historial y recompensas</p>
+        </div>
+
+        <div class="nav">
+            <a href="index.html">🏠 Índice</a>
+            <a href="auth-api.html">🔐 Auth</a>
+            <a href="products-api.html">🍹 Productos</a>
+            <a href="orders-api.html">📦 Pedidos</a>
+            <a href="coupons-api.html">🎫 Cupones</a>
+            <a href="notifications-api.html">🔔 Notificaciones</a>
+            <a href="seed-api.html">🌱 Seed</a>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2>📋 Información General</h2>
+                <div class="success">
+                    <strong>✅ Estado:</strong> <span class="status-badge">IMPLEMENTADO</span>
+                    <p>El sistema de fidelización está completamente implementado y funcional.</p>
+                </div>
+                
+                <div class="note">
+                    <strong>🎯 Características principales:</strong>
+                    <ul>
+                        <li>Gestión de puntos de fidelización por usuario</li>
+                        <li>Sistema de niveles con beneficios automáticos</li>
+                        <li>Historial completo de transacciones</li>
+                        <li>Estadísticas detalladas de fidelización</li>
+                        <li>Validación de códigos de beneficio</li>
+                        <li>Aplicación automática de descuentos por nivel</li>
+                        <li>Autenticación JWT para todas las operaciones</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔐 Autenticación</h2>
+                <div class="warning">
+                    <strong>⚠️ Nota:</strong> Todos los endpoints requieren autenticación JWT. El usuario debe estar logueado para acceder a cualquier funcionalidad de fidelización.
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📝 Crear Registro de Fidelización</h2>
+                <div class="endpoint">
+                    <div class="method post">POST</div>
+                    <span class="url">/loyalty</span>
+                    <div class="description">
+                        Crear un nuevo registro de fidelización. Usado por administradores o el sistema automáticamente.
+                    </div>
+                    
+                    <div class="params">
+                        <strong>Body Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">userId</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>ID del usuario</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">points</span>
+                            <span class="param-type">number</span>
+                            <span class="param-required">Requerido</span>
+                            <div>Puntos a agregar (positivo) o restar (negativo)</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">type</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>Tipo de transacción: 'purchase', 'bonus', 'redemption', 'expiration'</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">description</span>
+                            <span class="param-type">string</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Descripción de la transacción</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">orderId</span>
+                            <span class="param-type">string</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>ID del pedido relacionado</div>
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (201 Created):</div>
+                        <div class="code-block">
+{
+  "_id": "507f1f77bcf86cd799439011",
+  "userId": "507f1f77bcf86cd799439012",
+  "points": 50,
+  "type": "purchase",
+  "description": "Puntos por compra de €25.00",
+  "orderId": "507f1f77bcf86cd799439013",
+  "previousBalance": 150,
+  "newBalance": 200,
+  "createdAt": "2024-01-15T10:30:00.000Z"
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📊 Mi Historial de Fidelización</h2>
+                <div class="endpoint">
+                    <div class="method get">GET</div>
+                    <span class="url">/loyalty/my-history</span>
+                    <div class="description">
+                        Obtener el historial de fidelización del usuario autenticado con paginación.
+                    </div>
+                    
+                    <div class="params">
+                        <strong>Query Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">page</span>
+                            <span class="param-type">number</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Número de página (default: 1)</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">limit</span>
+                            <span class="param-type">number</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Elementos por página (default: 10)</div>
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+{
+  "history": [
+    {
+      "_id": "507f1f77bcf86cd799439011",
+      "points": 50,
+      "type": "purchase",
+      "description": "Puntos por compra de €25.00",
+      "previousBalance": 150,
+      "newBalance": 200,
+      "createdAt": "2024-01-15T10:30:00.000Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439012",
+      "points": -20,
+      "type": "redemption",
+      "description": "Canje por descuento de €2.00",
+      "previousBalance": 200,
+      "newBalance": 180,
+      "createdAt": "2024-01-14T15:20:00.000Z"
+    }
+  ],
+  "total": 2,
+  "page": 1,
+  "totalPages": 1
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📈 Mis Estadísticas</h2>
+                <div class="endpoint">
+                    <div class="method get">GET</div>
+                    <span class="url">/loyalty/my-stats</span>
+                    <div class="description">
+                        Obtener estadísticas de fidelización del usuario autenticado.
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+{
+  "currentPoints": 180,
+  "currentLevel": "Silver",
+  "totalPointsEarned": 500,
+  "totalPointsRedeemed": 320,
+  "totalTransactions": 15,
+  "purchaseTransactions": 10,
+  "redemptionTransactions": 3,
+  "bonusTransactions": 2,
+  "nextLevel": "Gold",
+  "pointsToNextLevel": 120,
+  "levelBenefits": [
+    "5% de descuento en todas las compras",
+    "Envío gratuito en pedidos superiores a €15"
+  ]
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>👥 Historial de Usuario (Admin)</h2>
+                <div class="endpoint">
+                    <div class="method get">GET</div>
+                    <span class="url">/loyalty/user/:userId</span>
+                    <div class="description">
+                        Obtener historial de fidelización de cualquier usuario. Solo administradores.
+                    </div>
+                    
+                    <div class="params">
+                        <strong>Path Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">userId</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>ID del usuario a consultar</div>
+                        </div>
+                    </div>
+
+                    <div class="params">
+                        <strong>Query Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">page</span>
+                            <span class="param-type">number</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Número de página (default: 1)</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">limit</span>
+                            <span class="param-type">number</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Elementos por página (default: 10)</div>
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+{
+  "history": [
+    {
+      "_id": "507f1f77bcf86cd799439011",
+      "userId": "507f1f77bcf86cd799439012",
+      "points": 50,
+      "type": "purchase",
+      "description": "Puntos por compra de €25.00",
+      "previousBalance": 150,
+      "newBalance": 200,
+      "createdAt": "2024-01-15T10:30:00.000Z"
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "totalPages": 1
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📊 Estadísticas de Usuario (Admin)</h2>
+                <div class="endpoint">
+                    <div class="method get">GET</div>
+                    <span class="url">/loyalty/user/:userId/stats</span>
+                    <div class="description">
+                        Obtener estadísticas de fidelización de cualquier usuario. Solo administradores.
+                    </div>
+                    
+                    <div class="params">
+                        <strong>Path Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">userId</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>ID del usuario a consultar</div>
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+{
+  "currentPoints": 180,
+  "currentLevel": "Silver",
+  "totalPointsEarned": 500,
+  "totalPointsRedeemed": 320,
+  "totalTransactions": 15,
+  "userInfo": {
+    "name": "Juan Pérez",
+    "email": "juan@example.com"
+  }
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📋 Todos los Registros (Admin)</h2>
+                <div class="endpoint">
+                    <div class="method get">GET</div>
+                    <span class="url">/loyalty</span>
+                    <div class="description">
+                        Obtener todos los registros de fidelización del sistema. Solo administradores.
+                    </div>
+                    
+                    <div class="params">
+                        <strong>Query Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">page</span>
+                            <span class="param-type">number</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Número de página (default: 1)</div>
+                        </div>
+                        <div class="param">
+                            <span class="param-name">limit</span>
+                            <span class="param-type">number</span>
+                            <span class="param-optional">Opcional</span>
+                            <div>Elementos por página (default: 10)</div>
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+{
+  "records": [
+    {
+      "_id": "507f1f77bcf86cd799439011",
+      "userId": "507f1f77bcf86cd799439012",
+      "points": 50,
+      "type": "purchase",
+      "description": "Puntos por compra de €25.00",
+      "userInfo": {
+        "name": "Juan Pérez",
+        "email": "juan@example.com"
+      },
+      "createdAt": "2024-01-15T10:30:00.000Z"
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "totalPages": 1
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🏆 Beneficios por Nivel</h2>
+                <div class="endpoint">
+                    <div class="method get">GET</div>
+                    <span class="url">/loyalty/benefits/levels</span>
+                    <div class="description">
+                        Obtener información de todos los niveles de fidelización y sus beneficios.
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+{
+  "levels": [
+    {
+      "name": "Bronze",
+      "minPoints": 0,
+      "maxPoints": 299,
+      "benefits": [
+        "1 punto por cada €1 gastado",
+        "Acceso a cupones básicos"
+      ]
+    },
+    {
+      "name": "Silver",
+      "minPoints": 300,
+      "maxPoints": 799,
+      "benefits": [
+        "1.2 puntos por cada €1 gastado",
+        "5% de descuento en todas las compras",
+        "Envío gratuito en pedidos superiores a €15"
+      ]
+    },
+    {
+      "name": "Gold",
+      "minPoints": 800,
+      "maxPoints": 1499,
+      "benefits": [
+        "1.5 puntos por cada €1 gastado",
+        "10% de descuento en todas las compras",
+        "Envío gratuito en todos los pedidos",
+        "Acceso prioritario a nuevos productos"
+      ]
+    },
+    {
+      "name": "Platinum",
+      "minPoints": 1500,
+      "maxPoints": null,
+      "benefits": [
+        "2 puntos por cada €1 gastado",
+        "15% de descuento en todas las compras",
+        "Envío gratuito en todos los pedidos",
+        "Acceso exclusivo a productos premium",
+        "Soporte prioritario 24/7"
+      ]
+    }
+  ]
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🎁 Mis Beneficios</h2>
+                <div class="endpoint">
+                    <div class="method get">GET</div>
+                    <span class="url">/loyalty/benefits/user</span>
+                    <div class="description">
+                        Obtener beneficios específicos del usuario autenticado según su nivel actual.
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+{
+  "currentLevel": "Silver",
+  "currentPoints": 450,
+  "nextLevel": "Gold",
+  "pointsToNextLevel": 350,
+  "benefits": [
+    "1.2 puntos por cada €1 gastado",
+    "5% de descuento en todas las compras",
+    "Envío gratuito en pedidos superiores a €15"
+  ],
+  "nextLevelBenefits": [
+    "1.5 puntos por cada €1 gastado",
+    "10% de descuento en todas las compras",
+    "Envío gratuito en todos los pedidos",
+    "Acceso prioritario a nuevos productos"
+  ]
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💰 Aplicar Descuento por Nivel</h2>
+                <div class="endpoint">
+                    <div class="method post">POST</div>
+                    <span class="url">/loyalty/benefits/apply-discount</span>
+                    <div class="description">
+                        Aplicar descuento automático según el nivel de fidelización del usuario.
+                    </div>
+                    
+                    <div class="params">
+                        <strong>Body Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">orderTotal</span>
+                            <span class="param-type">number</span>
+                            <span class="param-required">Requerido</span>
+                            <div>Monto total del pedido antes del descuento</div>
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK):</div>
+                        <div class="code-block">
+{
+  "originalTotal": 50.00,
+  "discountAmount": 2.50,
+  "discountPercentage": 5,
+  "finalTotal": 47.50,
+  "level": "Silver",
+  "message": "Descuento de 5% aplicado por nivel Silver"
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔍 Validar Código de Beneficio</h2>
+                <div class="endpoint">
+                    <div class="method post">POST</div>
+                    <span class="url">/loyalty/benefits/validate-code</span>
+                    <div class="description">
+                        Validar un código de beneficio especial del usuario.
+                    </div>
+                    
+                    <div class="params">
+                        <strong>Body Parameters:</strong>
+                        <div class="param">
+                            <span class="param-name">code</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">Requerido</span>
+                            <div>Código de beneficio a validar</div>
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK) - Válido:</div>
+                        <div class="code-block">
+{
+  "isValid": true,
+  "benefit": {
+    "type": "free_delivery",
+    "description": "Envío gratuito",
+    "value": 3.50
+  },
+  "message": "Código válido: Envío gratuito aplicado"
+}
+                        </div>
+                    </div>
+
+                    <div class="response">
+                        <div class="response-title">Response (200 OK) - Inválido:</div>
+                        <div class="code-block">
+{
+  "isValid": false,
+  "message": "Código no válido o ya utilizado"
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📊 Sistema de Niveles</h2>
+                <div class="level-card">
+                    <div class="level-name">🥉 Bronze (0-299 puntos)</div>
+                    <ul>
+                        <li>1 punto por cada €1 gastado</li>
+                        <li>Acceso a cupones básicos</li>
+                        <li>Descuentos ocasionales</li>
+                    </ul>
+                </div>
+
+                <div class="level-card">
+                    <div class="level-name">🥈 Silver (300-799 puntos)</div>
+                    <ul>
+                        <li>1.2 puntos por cada €1 gastado</li>
+                        <li>5% de descuento en todas las compras</li>
+                        <li>Envío gratuito en pedidos superiores a €15</li>
+                        <li>Acceso a cupones premium</li>
+                    </ul>
+                </div>
+
+                <div class="level-card">
+                    <div class="level-name">🥇 Gold (800-1499 puntos)</div>
+                    <ul>
+                        <li>1.5 puntos por cada €1 gastado</li>
+                        <li>10% de descuento en todas las compras</li>
+                        <li>Envío gratuito en todos los pedidos</li>
+                        <li>Acceso prioritario a nuevos productos</li>
+                        <li>Códigos de beneficio exclusivos</li>
+                    </ul>
+                </div>
+
+                <div class="level-card">
+                    <div class="level-name">💎 Platinum (1500+ puntos)</div>
+                    <ul>
+                        <li>2 puntos por cada €1 gastado</li>
+                        <li>15% de descuento en todas las compras</li>
+                        <li>Envío gratuito en todos los pedidos</li>
+                        <li>Acceso exclusivo a productos premium</li>
+                        <li>Soporte prioritario 24/7</li>
+                        <li>Beneficios personalizados</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔄 Tipos de Transacciones</h2>
+                <div class="note">
+                    <strong>📝 Tipos disponibles:</strong>
+                    <ul>
+                        <li><strong>purchase:</strong> Puntos ganados por compras</li>
+                        <li><strong>bonus:</strong> Puntos extra por promociones o eventos</li>
+                        <li><strong>redemption:</strong> Puntos canjeados por beneficios</li>
+                        <li><strong>expiration:</strong> Puntos expirados por inactividad</li>
+                        <li><strong>adjustment:</strong> Ajustes manuales por administradores</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔒 Seguridad y Validaciones</h2>
+                <div class="warning">
+                    <strong>⚠️ Validaciones automáticas:</strong>
+                    <ul>
+                        <li>Verificación de saldo suficiente para canjes</li>
+                        <li>Control de límites de puntos por transacción</li>
+                        <li>Validación de códigos de beneficio únicos</li>
+                        <li>Prevención de transacciones duplicadas</li>
+                        <li>Auditoría completa de todas las operaciones</li>
+                    </ul>
+                </div>
+
+                <div class="success">
+                    <strong>✅ Características de seguridad:</strong>
+                    <ul>
+                        <li>Autenticación JWT obligatoria</li>
+                        <li>Autorización basada en roles</li>
+                        <li>Validación de entrada en todos los endpoints</li>
+                        <li>Logs de auditoría para transacciones</li>
+                        <li>Protección contra manipulación de puntos</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📈 Ejemplos de Uso</h2>
+                <div class="note">
+                    <strong>🛒 Flujo típico de fidelización:</strong>
+                    <ol>
+                        <li>Usuario completa una compra</li>
+                        <li>Sistema calcula puntos: <code>POST /loyalty</code></li>
+                        <li>Usuario consulta su nivel: <code>GET /loyalty/my-stats</code></li>
+                        <li>Usuario aplica descuento: <code>POST /loyalty/benefits/apply-discount</code></li>
+                        <li>Usuario canjea puntos: <code>POST /loyalty</code> (tipo: redemption)</li>
+                    </ol>
+                </div>
+
+                <div class="note">
+                    <strong>👨‍💼 Gestión administrativa:</strong>
+                    <ol>
+                        <li>Admin consulta historial: <code>GET /loyalty/user/:userId</code></li>
+                        <li>Admin ajusta puntos: <code>POST /loyalty</code></li>
+                        <li>Admin genera códigos: <code>POST /loyalty/benefits/validate-code</code></li>
+                        <li>Admin monitorea estadísticas: <code>GET /loyalty</code></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

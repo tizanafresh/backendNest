@@ -173,25 +173,25 @@
                 
                 <div class="summary-stats">
                     <div class="stat-card">
-                        <div class="stat-number">4</div>
+                        <div class="stat-number">8</div>
                         <div class="stat-label">Módulos Documentados</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-number">1</div>
-                        <div class="stat-label">Implementado</div>
+                        <div class="stat-number">8</div>
+                        <div class="stat-label">Implementados</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-number">3</div>
+                        <div class="stat-number">0</div>
                         <div class="stat-label">Planificados</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-number">25+</div>
+                        <div class="stat-number">80+</div>
                         <div class="stat-label">Endpoints Totales</div>
                     </div>
                 </div>
 
                 <div class="note">
-                    <strong>📝 Nota:</strong> Esta documentación se actualiza automáticamente conforme se implementan nuevos módulos. Los endpoints planificados están basados en la documentación técnica del proyecto.
+                    <strong>🎉 ¡Excelente!</strong> Todos los módulos del sistema están completamente implementados y documentados. La API está lista para producción.
                 </div>
             </div>
 
@@ -232,6 +232,16 @@
                                 <span class="url">/auth/verify</span>
                                 <span>Verificar token JWT</span>
                             </li>
+                            <li>
+                                <span class="method post">POST</span>
+                                <span class="url">/auth/forgot-password</span>
+                                <span>Solicitar recuperación de contraseña</span>
+                            </li>
+                            <li>
+                                <span class="method post">POST</span>
+                                <span class="url">/auth/reset-password</span>
+                                <span>Resetear contraseña</span>
+                            </li>
                         </ul>
                     </div>
 
@@ -241,6 +251,7 @@
                             <li>Autenticación JWT con bcrypt</li>
                             <li>Validación de usuarios contra base de datos</li>
                             <li>Guards de autenticación</li>
+                            <li>Recuperación de contraseña por email</li>
                             <li>Usuarios de prueba incluidos</li>
                         </ul>
                     </div>
@@ -248,17 +259,17 @@
             </div>
 
             <div class="section">
-                <h2>🌱 Módulo de Seeding</h2>
+                <h2>👥 Módulo de Usuarios</h2>
                 
                 <div class="api-card">
-                    <a href="seed-api.html">
+                    <a href="users-api.html">
                         <h3>
-                            🌱 API de Seeding
+                            👥 API de Usuarios
                             <span class="status-badge implemented">IMPLEMENTADO</span>
                         </h3>
                     </a>
                     <div class="description">
-                        Sistema de población de base de datos con datos de prueba para desarrollo y testing.
+                        Gestión completa de usuarios, perfiles, favoritos y sistema de puntos de fidelización.
                     </div>
                     
                     <div class="endpoints">
@@ -266,28 +277,51 @@
                         <ul class="endpoint-list">
                             <li>
                                 <span class="method post">POST</span>
-                                <span class="url">/seed</span>
-                                <span>Poblar base de datos</span>
+                                <span class="url">/users/register</span>
+                                <span>Registrar usuario</span>
                             </li>
                             <li>
                                 <span class="method get">GET</span>
-                                <span class="url">/seed/status</span>
-                                <span>Estado del endpoint</span>
+                                <span class="url">/users</span>
+                                <span>Listar usuarios (Admin)</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/users/profile/me</span>
+                                <span>Mi perfil</span>
+                            </li>
+                            <li>
+                                <span class="method put">PUT</span>
+                                <span class="url">/users/profile/me</span>
+                                <span>Actualizar mi perfil</span>
+                            </li>
+                            <li>
+                                <span class="method put">PUT</span>
+                                <span class="url">/users/profile/change-password</span>
+                                <span>Cambiar contraseña</span>
+                            </li>
+                            <li>
+                                <span class="method post">POST</span>
+                                <span class="url">/users/favorites/:productId</span>
+                                <span>Agregar a favoritos</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/users/favorites</span>
+                                <span>Mis favoritos</span>
                             </li>
                         </ul>
                     </div>
 
                     <div class="note">
-                        <strong>✅ Datos creados:</strong>
+                        <strong>✅ Características implementadas:</strong>
                         <ul>
-                            <li>5 usuarios con diferentes niveles de fidelización</li>
-                            <li>5 categorías de productos</li>
-                            <li>5 productos con información nutricional</li>
-                            <li>3 cupones de diferentes tipos</li>
-                            <li>2 pedidos de ejemplo</li>
-                            <li>4 notificaciones</li>
-                            <li>4 registros de fidelización</li>
-                            <li>3 tokens de dispositivos</li>
+                            <li>CRUD completo de usuarios</li>
+                            <li>Sistema de roles y permisos</li>
+                            <li>Gestión de favoritos</li>
+                            <li>Sistema de puntos y niveles</li>
+                            <li>Códigos QR únicos</li>
+                            <li>Autenticación JWT obligatoria</li>
                         </ul>
                     </div>
                 </div>
@@ -381,7 +415,7 @@
                     <a href="orders-api.html">
                         <h3>
                             📦 API de Pedidos
-                            <span class="status-badge planned">PLANIFICADO</span>
+                            <span class="status-badge implemented">IMPLEMENTADO</span>
                         </h3>
                     </a>
                     <div class="description">
@@ -389,7 +423,7 @@
                     </div>
                     
                     <div class="endpoints">
-                        <strong>Endpoints planificados:</strong>
+                        <strong>Endpoints disponibles:</strong>
                         <ul class="endpoint-list">
                             <li>
                                 <span class="method post">POST</span>
@@ -399,7 +433,12 @@
                             <li>
                                 <span class="method get">GET</span>
                                 <span class="url">/orders</span>
-                                <span>Listar pedidos del usuario</span>
+                                <span>Listar todos los pedidos (Admin)</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/orders/my-orders</span>
+                                <span>Mis pedidos</span>
                             </li>
                             <li>
                                 <span class="method get">GET</span>
@@ -408,99 +447,359 @@
                             </li>
                             <li>
                                 <span class="method put">PUT</span>
-                                <span class="url">/orders/:id/status</span>
-                                <span>Actualizar estado (Admin)</span>
+                                <span class="url">/orders/:id</span>
+                                <span>Actualizar pedido</span>
                             </li>
                             <li>
                                 <span class="method delete">DELETE</span>
+                                <span class="url">/orders/:id</span>
+                                <span>Eliminar pedido</span>
+                            </li>
+                            <li>
+                                <span class="method put">PUT</span>
+                                <span class="url">/orders/:id/confirm</span>
+                                <span>Confirmar pedido</span>
+                            </li>
+                            <li>
+                                <span class="method put">PUT</span>
+                                <span class="url">/orders/:id/preparing</span>
+                                <span>Marcar en preparación</span>
+                            </li>
+                            <li>
+                                <span class="method put">PUT</span>
+                                <span class="url">/orders/:id/ready</span>
+                                <span>Marcar listo</span>
+                            </li>
+                            <li>
+                                <span class="method put">PUT</span>
+                                <span class="url">/orders/:id/delivered</span>
+                                <span>Marcar entregado</span>
+                            </li>
+                            <li>
+                                <span class="method put">PUT</span>
                                 <span class="url">/orders/:id/cancel</span>
                                 <span>Cancelar pedido</span>
                             </li>
                             <li>
                                 <span class="method get">GET</span>
-                                <span class="url">/orders/admin/all</span>
-                                <span>Listar todos los pedidos (Admin)</span>
+                                <span class="url">/orders/stats/admin</span>
+                                <span>Estadísticas (Admin)</span>
                             </li>
                             <li>
                                 <span class="method get">GET</span>
-                                <span class="url">/orders/admin/stats</span>
-                                <span>Estadísticas (Admin)</span>
+                                <span class="url">/orders/stats/my-orders</span>
+                                <span>Mis estadísticas</span>
                             </li>
                         </ul>
                     </div>
 
                     <div class="note">
-                        <strong>🚧 Características planificadas:</strong>
+                        <strong>✅ Características implementadas:</strong>
                         <ul>
                             <li>Estados de pedido: PENDING → CONFIRMED → PREPARING → READY → DELIVERED</li>
                             <li>Integración con cupones y descuentos</li>
                             <li>Tracking completo de pedidos</li>
-                            <li>Estadísticas para administradores</li>
+                            <li>Estadísticas para administradores y usuarios</li>
                             <li>Notificaciones automáticas</li>
+                            <li>CRUD completo con validaciones</li>
+                            <li>Autenticación JWT obligatoria</li>
                         </ul>
                     </div>
                 </div>
             </div>
 
             <div class="section">
-                <h2>🚧 Módulos Futuros</h2>
+                <h2>🎫 Módulo de Cupones</h2>
                 
                 <div class="api-card">
-                    <h3>
-                        🎫 API de Cupones
-                        <span class="status-badge planned">PLANIFICADO</span>
-                    </h3>
+                    <a href="coupons-api.html">
+                        <h3>
+                            🎫 API de Cupones
+                            <span class="status-badge implemented">IMPLEMENTADO</span>
+                        </h3>
+                    </a>
                     <div class="description">
-                        Sistema de cupones de descuento con códigos QR, validación y gestión de usos.
+                        Sistema completo de cupones de descuento con códigos QR, validación y gestión de usos.
                     </div>
                     
+                    <div class="endpoints">
+                        <strong>Endpoints disponibles:</strong>
+                        <ul class="endpoint-list">
+                            <li>
+                                <span class="method post">POST</span>
+                                <span class="url">/coupons</span>
+                                <span>Crear cupón (Admin)</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/coupons</span>
+                                <span>Listar cupones (Admin)</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/coupons/active</span>
+                                <span>Cupones activos (Público)</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/coupons/category/:category</span>
+                                <span>Cupones por categoría</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/coupons/code/:code</span>
+                                <span>Buscar por código</span>
+                            </li>
+                            <li>
+                                <span class="method post">POST</span>
+                                <span class="url">/coupons/validate</span>
+                                <span>Validar cupón</span>
+                            </li>
+                            <li>
+                                <span class="method post">POST</span>
+                                <span class="url">/coupons/use/:code</span>
+                                <span>Usar cupón</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/coupons/:id/qr</span>
+                                <span>Generar QR</span>
+                            </li>
+                            <li>
+                                <span class="method patch">PATCH</span>
+                                <span class="url">/coupons/:id</span>
+                                <span>Actualizar cupón</span>
+                            </li>
+                            <li>
+                                <span class="method delete">DELETE</span>
+                                <span class="url">/coupons/:id</span>
+                                <span>Eliminar cupón</span>
+                            </li>
+                        </ul>
+                    </div>
+
                     <div class="note">
-                        <strong>📋 Endpoints planificados:</strong>
+                        <strong>✅ Características implementadas:</strong>
                         <ul>
-                            <li>GET /coupons - Listar cupones disponibles</li>
-                            <li>POST /coupons/validate - Validar cupón</li>
-                            <li>POST /coupons - Crear cupón (Admin)</li>
-                            <li>GET /coupons/admin/all - Gestión de cupones (Admin)</li>
+                            <li>CRUD completo de cupones</li>
+                            <li>Validación automática de cupones</li>
+                            <li>Generación de códigos QR</li>
+                            <li>Control de usos y fechas de expiración</li>
+                            <li>Filtros por categoría y tipo de descuento</li>
+                            <li>Tipos de descuento: porcentual y fijo</li>
+                            <li>Autenticación JWT para operaciones sensibles</li>
                         </ul>
                     </div>
                 </div>
+            </div>
 
+            <div class="section">
+                <h2>🏆 Módulo de Fidelización</h2>
+                
                 <div class="api-card">
-                    <h3>
-                        🏆 API de Fidelización
-                        <span class="status-badge planned">PLANIFICADO</span>
-                    </h3>
+                    <a href="loyalty-api.html">
+                        <h3>
+                            🏆 API de Fidelización
+                            <span class="status-badge implemented">IMPLEMENTADO</span>
+                        </h3>
+                    </a>
                     <div class="description">
-                        Sistema de puntos de fidelización, niveles de usuario y historial de transacciones.
+                        Sistema completo de puntos de fidelización, niveles de usuario y historial de transacciones.
                     </div>
                     
+                    <div class="endpoints">
+                        <strong>Endpoints disponibles:</strong>
+                        <ul class="endpoint-list">
+                            <li>
+                                <span class="method post">POST</span>
+                                <span class="url">/loyalty</span>
+                                <span>Crear registro de fidelización</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/loyalty/my-history</span>
+                                <span>Mi historial</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/loyalty/my-stats</span>
+                                <span>Mis estadísticas</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/loyalty/user/:userId</span>
+                                <span>Historial de usuario (Admin)</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/loyalty</span>
+                                <span>Todos los registros (Admin)</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/loyalty/benefits/levels</span>
+                                <span>Beneficios por nivel</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/loyalty/benefits/user</span>
+                                <span>Mis beneficios</span>
+                            </li>
+                            <li>
+                                <span class="method post">POST</span>
+                                <span class="url">/loyalty/benefits/apply-discount</span>
+                                <span>Aplicar descuento por nivel</span>
+                            </li>
+                            <li>
+                                <span class="method post">POST</span>
+                                <span class="url">/loyalty/benefits/validate-code</span>
+                                <span>Validar código de beneficio</span>
+                            </li>
+                        </ul>
+                    </div>
+
                     <div class="note">
-                        <strong>📋 Endpoints planificados:</strong>
+                        <strong>✅ Características implementadas:</strong>
                         <ul>
-                            <li>GET /loyalty/points - Obtener puntos del usuario</li>
-                            <li>GET /loyalty/history - Historial de puntos</li>
-                            <li>POST /loyalty/redeem - Canjear puntos</li>
-                            <li>GET /loyalty/levels - Información de niveles</li>
+                            <li>Sistema de puntos de fidelización</li>
+                            <li>Niveles: Bronze, Silver, Gold, Platinum</li>
+                            <li>Historial completo de transacciones</li>
+                            <li>Estadísticas detalladas</li>
+                            <li>Beneficios automáticos por nivel</li>
+                            <li>Validación de códigos de beneficio</li>
+                            <li>Autenticación JWT obligatoria</li>
                         </ul>
                     </div>
                 </div>
+            </div>
 
+            <div class="section">
+                <h2>🔔 Módulo de Notificaciones</h2>
+                
                 <div class="api-card">
-                    <h3>
-                        🔔 API de Notificaciones
-                        <span class="status-badge planned">PLANIFICADO</span>
-                    </h3>
+                    <a href="notifications-api.html">
+                        <h3>
+                            🔔 API de Notificaciones
+                            <span class="status-badge implemented">IMPLEMENTADO</span>
+                        </h3>
+                    </a>
                     <div class="description">
-                        Sistema de notificaciones push, emails y gestión de tokens de dispositivos.
+                        Sistema completo de notificaciones push, emails y gestión de tokens de dispositivos.
                     </div>
                     
+                    <div class="endpoints">
+                        <strong>Endpoints disponibles:</strong>
+                        <ul class="endpoint-list">
+                            <li>
+                                <span class="method post">POST</span>
+                                <span class="url">/notifications</span>
+                                <span>Crear notificación</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/notifications</span>
+                                <span>Listar notificaciones (Admin)</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/notifications/my-notifications</span>
+                                <span>Mis notificaciones</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/notifications/unread</span>
+                                <span>Notificaciones no leídas</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/notifications/stats</span>
+                                <span>Estadísticas</span>
+                            </li>
+                            <li>
+                                <span class="method post">POST</span>
+                                <span class="url">/notifications/device-token</span>
+                                <span>Registrar token</span>
+                            </li>
+                            <li>
+                                <span class="method patch">PATCH</span>
+                                <span class="url">/notifications/:id/read</span>
+                                <span>Marcar como leída</span>
+                            </li>
+                            <li>
+                                <span class="method patch">PATCH</span>
+                                <span class="url">/notifications/read-all</span>
+                                <span>Marcar todas como leídas</span>
+                            </li>
+                            <li>
+                                <span class="method post">POST</span>
+                                <span class="url">/notifications/send-push</span>
+                                <span>Enviar push individual</span>
+                            </li>
+                            <li>
+                                <span class="method post">POST</span>
+                                <span class="url">/notifications/send-push-massive</span>
+                                <span>Enviar push masivo</span>
+                            </li>
+                        </ul>
+                    </div>
+
                     <div class="note">
-                        <strong>📋 Endpoints planificados:</strong>
+                        <strong>✅ Características implementadas:</strong>
                         <ul>
-                            <li>GET /notifications - Listar notificaciones</li>
-                            <li>PUT /notifications/:id/read - Marcar como leída</li>
-                            <li>POST /notifications/tokens - Registrar token de dispositivo</li>
-                            <li>POST /notifications/send - Enviar notificación (Admin)</li>
+                            <li>Gestión completa de notificaciones push</li>
+                            <li>Registro y gestión de tokens de dispositivos</li>
+                            <li>Notificaciones personalizadas y masivas</li>
+                            <li>Sistema de lectura/no lectura</li>
+                            <li>Estadísticas de notificaciones</li>
+                            <li>Diferentes tipos: info, success, warning, error</li>
+                            <li>Soporte para Android, iOS y Web</li>
+                            <li>Autenticación JWT para operaciones sensibles</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🌱 Módulo de Seeding</h2>
+                
+                <div class="api-card">
+                    <a href="seed-api.html">
+                        <h3>
+                            🌱 API de Seeding
+                            <span class="status-badge implemented">IMPLEMENTADO</span>
+                        </h3>
+                    </a>
+                    <div class="description">
+                        Sistema de población de base de datos con datos de prueba para desarrollo y testing.
+                    </div>
+                    
+                    <div class="endpoints">
+                        <strong>Endpoints disponibles:</strong>
+                        <ul class="endpoint-list">
+                            <li>
+                                <span class="method post">POST</span>
+                                <span class="url">/seed</span>
+                                <span>Poblar base de datos</span>
+                            </li>
+                            <li>
+                                <span class="method get">GET</span>
+                                <span class="url">/seed/status</span>
+                                <span>Estado del endpoint</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="note">
+                        <strong>✅ Datos creados:</strong>
+                        <ul>
+                            <li>5 usuarios con diferentes niveles de fidelización</li>
+                            <li>5 categorías de productos</li>
+                            <li>5 productos con información nutricional</li>
+                            <li>3 cupones de diferentes tipos</li>
+                            <li>2 pedidos de ejemplo</li>
+                            <li>4 notificaciones</li>
+                            <li>4 registros de fidelización</li>
+                            <li>3 tokens de dispositivos</li>
                         </ul>
                     </div>
                 </div>
@@ -517,6 +816,8 @@
                         <li><strong>Autenticación:</strong> JWT + Passport</li>
                         <li><strong>Validación:</strong> class-validator + class-transformer</li>
                         <li><strong>Documentación:</strong> HTML personalizado</li>
+                        <li><strong>Notificaciones:</strong> Firebase Cloud Messaging</li>
+                        <li><strong>Email:</strong> Nodemailer</li>
                     </ul>
                 </div>
 
@@ -528,16 +829,32 @@
                         <li>Guards de autenticación y autorización</li>
                         <li>Validación de entrada en todos los endpoints</li>
                         <li>Rate limiting (planificado)</li>
+                        <li>CORS configurado</li>
+                        <li>Helmet para headers de seguridad</li>
                     </ul>
                 </div>
 
                 <div class="note">
                     <strong>📊 Base de Datos:</strong>
                     <ul>
-                        <li><strong>Colecciones:</strong> Users, Categories, Products, Orders, Coupons, Notifications, LoyaltyHistory, DeviceTokens</li>
+                        <li><strong>Colecciones:</strong> Users, Categories, Products, Orders, Coupons, Notifications, LoyaltyHistory, DeviceTokens, PasswordResets</li>
                         <li><strong>Relaciones:</strong> Referencias ObjectId entre colecciones</li>
                         <li><strong>Índices:</strong> Optimizados para búsquedas y consultas frecuentes</li>
                         <li><strong>Validación:</strong> Esquemas Mongoose con validación de datos</li>
+                        <li><strong>Transacciones:</strong> Soporte para operaciones atómicas</li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <strong>🚀 Características Avanzadas:</strong>
+                    <ul>
+                        <li><strong>Paginación:</strong> Implementada en todos los endpoints de listado</li>
+                        <li><strong>Filtros:</strong> Búsqueda avanzada con múltiples criterios</li>
+                        <li><strong>Ordenamiento:</strong> Personalizable por diferentes campos</li>
+                        <li><strong>Logs:</strong> Sistema de logging para auditoría</li>
+                        <li><strong>Error Handling:</strong> Manejo centralizado de errores</li>
+                        <li><strong>Testing:</strong> Tests unitarios y de integración</li>
+                        <li><strong>Documentación:</strong> API completa documentada</li>
                     </ul>
                 </div>
             </div>
